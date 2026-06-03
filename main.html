@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -9,28 +8,18 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        :root {
-            font-family: 'Inter', system-ui, Avenir, Helvetica, Arial, sans-serif;
-            line-height: 1.5;
-            font-weight: 400;
-            color-scheme: light;
-            color: #333;
-            background-color: #f8f9fa;
-            font-synthesis: none;
-            text-rendering: optimizeLegibility;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-        }
-
         * {
-            box-sizing: border-box;
             margin: 0;
             padding: 0;
+            box-sizing: border-box;
         }
 
         body {
-            margin: 0;
-            padding: 0;
+            font-family: 'Inter', system-ui, Avenir, Helvetica, Arial, sans-serif;
+            line-height: 1.5;
+            font-weight: 400;
+            color: #333;
+            background-color: #f8f9fa;
             background-image: url('https://i.postimg.cc/pV8cRV0q/z7661851515824-697191548b7f61fce0f4c0a12536ee69.jpg');
             background-size: cover;
             background-position: center;
@@ -52,6 +41,7 @@
             z-index: 0;
         }
 
+        /* Thanh vàng và nền trắng kết hợp làm một khối liền mạch */
         #app {
             position: relative;
             z-index: 1;
@@ -60,8 +50,7 @@
             height: 100vh;
             max-width: 1200px;
             margin: 0 auto;
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
+            background: white;
             box-shadow: 0 0 20px rgba(0,0,0,0.1);
             overflow: hidden;
             border-radius: 0;
@@ -74,7 +63,6 @@
             padding: 15px 20px;
             background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
             color: white;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
             flex-shrink: 0;
         }
 
@@ -101,14 +89,20 @@
             gap: 15px;
         }
 
-        .user-info span {
+        .login-btn {
+            background: none;
+            border: none;
+            color: white;
             cursor: pointer;
             padding: 8px;
             border-radius: 50%;
             transition: background-color 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        .user-info span:hover {
+        .login-btn:hover {
             background-color: rgba(255,255,255,0.2);
         }
 
@@ -121,6 +115,7 @@
             justify-content: center;
             overflow-y: auto;
             width: 100%;
+            background: white;
         }
 
         .dashboard {
@@ -210,7 +205,7 @@
             align-items: center;
             justify-content: center;
             padding: 20px;
-            background: white;
+            background: #f8f9fa;
             color: #333;
             text-decoration: none;
             border-radius: 15px;
@@ -339,19 +334,44 @@
             box-shadow: none;
         }
 
-        .loading {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 3px solid rgba(255,255,255,.3);
+        /* Loading Overlay - nền tối đen mờ, đè lên toàn bộ màn hình */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* Vòng xoay */
+        .loading-overlay .spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid rgba(255, 215, 0, 0.3);
             border-radius: 50%;
-            border-top-color: #fff;
-            animation: spin 1s ease-in-out infinite;
-            margin-right: 10px;
+            border-top-color: #FFD700;
+            animation: spin 0.8s linear infinite;
+        }
+
+        /* Chữ - không viền, không background */
+        .loading-overlay .loading-text {
+            color: white;
+            font-size: 18px;
+            font-weight: 400;
+            letter-spacing: 1px;
         }
 
         @keyframes spin {
-            to { transform: rotate(360deg); }
+            to {
+                transform: rotate(360deg);
+            }
         }
 
         .ai-words-list {
@@ -439,17 +459,10 @@
             background-color: #ff3333;
         }
 
-        #attention-reveal, #attention-drag {
-            text-align: center;
-            margin-bottom: 15px;
-            color: #666;
-            display: none;
-        }
-
         .card {
             width: 100%;
-            max-width: 300px;
-            height: 200px;
+            max-width: 450px;
+            height: 300px;
             perspective: 1000px;
             margin: 20px auto;
         }
@@ -625,7 +638,7 @@
             justify-content: center;
             padding: 15px;
             background: white;
-            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
             flex-shrink: 0;
         }
 
@@ -640,6 +653,7 @@
             padding: 5px 20px;
             border-radius: 10px;
             margin: 0 10px;
+            cursor: pointer;
         }
 
         .nav-item.active {
@@ -658,7 +672,7 @@
         .voice-btn {
             background: none;
             border: none;
-            color: #666;
+            color: white;
             cursor: pointer;
             padding: 5px;
             border-radius: 50%;
@@ -667,8 +681,7 @@
         }
 
         .voice-btn:hover {
-            background-color: rgba(255, 215, 0, 0.2);
-            color: #FFA500;
+            background-color: rgba(255,255,255,0.2);
         }
 
         .word-with-voice {
@@ -683,25 +696,6 @@
             justify-content: center;
             gap: 10px;
             margin-top: 10px;
-        }
-
-        .test-pronunciation-btn {
-            position: absolute;
-            right: 10px;
-            top: 50%;
-            transform: translateY(-50%);
-            background: none;
-            border: none;
-            color: #666;
-            cursor: pointer;
-            padding: 5px;
-            border-radius: 50%;
-            transition: all 0.3s ease;
-        }
-
-        .test-pronunciation-btn:hover {
-            background-color: rgba(255, 215, 0, 0.2);
-            color: #FFA500;
         }
 
         .tab-container {
@@ -723,129 +717,11 @@
             font-weight: 600;
         }
 
-        .ai-usage-message {
-            background-color: #E8F5E9;
-            border: 1px solid #A5D6A7;
-            border-radius: 8px;
-            padding: 12px;
-            margin-bottom: 15px;
-            color: #2E7D32;
-            font-size: 14px;
-            text-align: center;
-        }
-
-        .login-btn {
-            background: none;
-            border: none;
-            color: white;
-            cursor: pointer;
-            padding: 8px;
-            border-radius: 50%;
-            transition: background-color 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .login-btn:hover {
-            background-color: rgba(255,255,255,0.2);
-        }
-
-        .analytics-section {
-            background: white;
-            border-radius: 15px;
-            padding: 20px;
-            margin-top: 20px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-        }
-
-        .analytics-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .analytics-header h2 {
-            color: #333;
-            font-size: 20px;
-        }
-
         .chart-container {
             position: relative;
             height: 300px;
             width: 100%;
             margin-bottom: 20px;
-        }
-
-        .progress-summary {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-
-        .progress-item {
-            background: #f8f9fa;
-            border-radius: 10px;
-            padding: 15px;
-            text-align: center;
-        }
-
-        .progress-item .label {
-            font-size: 14px;
-            color: #666;
-            margin-bottom: 5px;
-        }
-
-        .progress-item .value {
-            font-size: 24px;
-            font-weight: 700;
-            color: #333;
-        }
-
-        .progress-item .change {
-            font-size: 12px;
-            margin-top: 5px;
-        }
-
-        .progress-item .change.positive {
-            color: #4CAF50;
-        }
-
-        .progress-item .change.negative {
-            color: #f44336;
-        }
-
-        .evaluation {
-            text-align: center;
-            padding: 15px;
-            border-radius: 10px;
-            margin-top: 20px;
-        }
-
-        .evaluation.excellent {
-            background: #E8F5E9;
-            color: #2E7D32;
-        }
-
-        .evaluation.good {
-            background: #E3F2FD;
-            color: #1565C0;
-        }
-
-        .evaluation.average {
-            background: #FFF8E1;
-            color: #FF8F00;
-        }
-
-        .evaluation.poor {
-            background: #FFEBEE;
-            color: #C62828;
-        }
-
-        .evaluation h3 {
-            margin-bottom: 10px;
         }
 
         @media (max-width: 768px) {
@@ -868,9 +744,6 @@
             .pop-up-content {
                 margin: 10px;
                 padding: 20px;
-            }
-            .progress-summary {
-                grid-template-columns: 1fr;
             }
         }
 
@@ -900,13 +773,6 @@
             .nav-item span {
                 font-size: 20px;
             }
-            .word-with-voice {
-                flex-direction: column;
-                gap: 10px;
-            }
-            .voice-btn {
-                margin-left: 0;
-            }
             #buttons {
                 grid-template-columns: 1fr;
             }
@@ -927,42 +793,27 @@
             </div>
         </div>
 
+        <!-- Popup thêm từ mới -->
         <div class="pop-up" id="add-menu">
             <div class="pop-up-content">
                 <span id="close-add-menu" class="material-symbols-outlined close">close</span>
                 <h2>Thêm từ mới</h2>
                 <div class="form-group">
-                    <input type="text" placeholder="Từ tiếng Anh" id="word" />
-                    <button class="test-pronunciation-btn" id="test-pronunciation" title="Kiểm tra phát âm">
-                        <span class="material-symbols-outlined">volume_up</span>
-                    </button>
+                    <input type="text" placeholder="Nhập từ tiếng Anh" id="word" />
                 </div>
-                <div class="form-group">
-                    <input type="text" placeholder="Nghĩa tiếng Việt" id="meaning" />
-                </div>
-                <div class="form-group">
-                    <input type="text" placeholder="Ví dụ (tiếng Anh)" id="example" />
-                </div>
-                <div id="auto-enrich-status" style="font-size: 12px; color: #666; margin-bottom: 10px; text-align: center;"></div>
                 <button type="button" id="submit" class="btn">Thêm từ</button>
             </div>
         </div>
 
+        <!-- Popup thêm từ bằng AI theo chủ đề -->
         <div class="pop-up" id="ai-add-menu">
             <div class="pop-up-content">
                 <span id="close-ai-add-menu" class="material-symbols-outlined close">close</span>
-                <h2>Thêm từ bằng AI</h2>
-                
-                <div class="ai-usage-message" id="ai-usage-message">
-                    <p><strong>✨ Tính năng AI mạnh mẽ:</strong> Bạn có thể tạo từ vựng <strong>không giới hạn</strong> số lần. Hãy nhập chủ đề và số lượng từ mong muốn (tối đa 30 từ mỗi lần).</p>
-                </div>
-                
+                <h2>Thêm từ bằng AI theo chủ đề</h2>
                 <div class="form-group">
-                    <label for="ai-topic">Chủ đề từ vựng</label>
-                    <input type="text" placeholder="Ví dụ: Động vật, Công nghệ, Thể thao..." id="ai-topic" />
+                    <input type="text" placeholder="Chủ đề (Ví dụ: Động vật, Công nghệ, Thể thao...)" id="ai-topic" />
                 </div>
                 <div class="form-group">
-                    <label for="ai-level">Mức độ</label>
                     <select id="ai-level">
                         <option value="cơ bản">Cơ bản</option>
                         <option value="trung bình">Trung bình</option>
@@ -970,21 +821,17 @@
                     </select>
                 </div>
                 <div class="form-group">
-                    <label for="ai-count">Số lượng từ (tối đa 30)</label>
-                    <input type="number" id="ai-count" min="1" max="30" value="10" />
+                    <input type="number" id="ai-count" min="1" max="30" value="5" />
                 </div>
-                <button type="button" id="generate-words" class="btn">
-                    Tạo từ vựng
-                </button>
-                
-                <div id="ai-results" class="ai-words-list" style="display: none;">
-                    <h3>Từ vựng được tạo</h3>
-                    <div id="ai-words-container"></div>
+                <button type="button" id="generate-words" class="btn">Tạo từ vựng</button>
+                <div id="ai-results" style="display: none;">
+                    <div class="ai-words-list" id="ai-words-container"></div>
                     <button type="button" id="add-all-words" class="btn" style="margin-top: 10px;">Thêm tất cả</button>
                 </div>
             </div>
         </div>
 
+        <!-- Popup danh sách từ vựng -->
         <div class="pop-up" id="card-list-menu">
             <div class="pop-up-content">
                 <span id="close-card-list-menu" class="material-symbols-outlined close">close</span>
@@ -998,11 +845,10 @@
             </div>
         </div>
 
+        <!-- Popup học từ -->
         <div class="pop-up" id="learn-menu">
             <div class="pop-up-content">
                 <span id="close-learn-menu" class="material-symbols-outlined close">close</span>
-                <span id="attention-reveal">Bấm vào thẻ để xem đáp án</span>
-                <span id="attention-drag">Kéo thẻ sang trái hoặc phải</span>
                 <div class="card" id="flashcard">
                     <div class="card-inner">
                         <div class="front"></div>
@@ -1012,11 +858,10 @@
             </div>
         </div>
 
+        <!-- Popup ôn tập -->
         <div class="pop-up" id="review-menu">
             <div class="pop-up-content">
                 <span id="close-review-menu" class="material-symbols-outlined close">close</span>
-                <span id="attention-reveal-review">Bấm vào thẻ để xem đáp án</span>
-                <span id="attention-drag-review">Kéo thẻ sang trái hoặc phải</span>
                 <div class="card" id="review-flashcard">
                     <div class="card-inner">
                         <div class="front"></div>
@@ -1026,6 +871,7 @@
             </div>
         </div>
 
+        <!-- Popup thư viện chủ đề -->
         <div class="pop-up" id="library-menu">
             <div class="pop-up-content">
                 <span id="close-library-menu" class="material-symbols-outlined close">close</span>
@@ -1035,41 +881,19 @@
             </div>
         </div>
 
+        <!-- Popup thống kê -->
         <div class="pop-up" id="analytics-menu">
             <div class="pop-up-content">
                 <span id="close-analytics-menu" class="material-symbols-outlined close">close</span>
-                <h2>Đánh giá và Tổng kết</h2>
-                <div class="analytics-section">
-                    <div class="analytics-header">
-                        <h2>Tiến độ học tập</h2>
-                        <span id="analytics-date-range">Hôm nay</span>
-                    </div>
-                    
-                    <div class="chart-container">
-                        <canvas id="progress-chart"></canvas>
-                    </div>
-                    
-                    <div class="progress-summary">
-                        <div class="progress-item">
-                            <div class="label">Từ đã học</div>
-                            <div class="value" id="learned-today">0</div>
-                            <div class="change positive" id="learned-change">+0</div>
-                        </div>
-                        <div class="progress-item">
-                            <div class="label">Từ đã thuộc</div>
-                            <div class="value" id="mastered-today">0</div>
-                            <div class="change positive" id="mastered-change">+0</div>
-                        </div>
-                    </div>
-                    
-                    <div class="evaluation" id="evaluation-message">
-                        <h3>Đánh giá</h3>
-                        <p>Chưa có đủ dữ liệu để đánh giá</p>
-                    </div>
+                <h2>Thống kê học tập</h2>
+                <div class="chart-container">
+                    <canvas id="progress-chart"></canvas>
                 </div>
+                <div id="analytics-summary" style="margin-top: 20px;"></div>
             </div>
         </div>
 
+        <!-- Nội dung chính -->
         <div id="content">
             <div class="dashboard">
                 <div class="welcome-section">
@@ -1120,41 +944,40 @@
                     </button>
                     <button class="action-btn" id="analytics">
                         <span class="material-symbols-outlined">analytics</span>
-                        Đánh giá
+                        Thống kê
                     </button>
                     <button class="action-btn classroom" id="classroom">
                         <span class="material-symbols-outlined">school</span>
                         Lớp học
                     </button>
-                    <button class="action-btn" id="admin" style="display: none;">
-                        <span class="material-symbols-outlined">admin_panel_settings</span>
-                        Quản trị
-                    </button>
                 </div>
             </div>
         </div>
 
-        <div id="alert">
-            Đã xóa từ này khỏi bộ thẻ.
-        </div>
+        <div id="alert"></div>
 
         <div class="navigation">
-            <a class="nav-item active" id="nav-home">
+            <div class="nav-item active" id="nav-home">
                 <span class="material-symbols-outlined">home</span>
                 Trang chính
-            </a>
-            <a class="nav-item" id="nav-admin" style="display: none;">
-                <span class="material-symbols-outlined">admin_panel_settings</span>
-                Quản trị
-            </a>
+            </div>
         </div>
+    </div>
+
+    <!-- Loading Overlay - đè lên toàn bộ màn hình, không logo, không viền -->
+    <div id="loading-overlay" style="display: none;" class="loading-overlay">
+        <div class="spinner"></div>
+        <div class="loading-text" id="loading-text">AI đang tạo từ vựng...</div>
     </div>
 
     <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
-    
+
     <script>
+        // ============================================================
+        // CẤU HÌNH FIREBASE
+        // ============================================================
         const firebaseConfig = {
             apiKey: "AIzaSyBc55gGulDbOCgGp2USL_HXeVLwqqXFTTU",
             authDomain: "niceng-c235d.firebaseapp.com",
@@ -1169,14 +992,19 @@
         const auth = firebase.auth();
         const db = firebase.firestore();
 
+        // ============================================================
+        // BIẾN TOÀN CỤC
+        // ============================================================
         let userCards = [];
         let currentCardIndex = 0;
         let cardsToLearn = [];
         let cardsToReview = [];
-        let isAdmin = false;
         let aiGeneratedWords = [];
         let progressChart = null;
 
+        // ============================================================
+        // HÀM LẤY API KEY
+        // ============================================================
         function getAPIKey() {
             const originalKey = "v6xGqEar3C7yKR9K2GmO5dTZx2OLCg258qLWdF5o7kt5ImQu-ks";
             const reversedKey = originalKey.split('').reverse().join('');
@@ -1187,403 +1015,97 @@
         const API_CHAT_ENDPOINT = "/chat/completions";
         const API_URL = API_BASE_URL + API_CHAT_ENDPOINT;
 
-        async function enrichWordData(wordData) {
+        // ============================================================
+        // HIỂN THỊ / ẨN LOADING OVERLAY
+        // ============================================================
+        function showLoading(message) {
+            const overlay = document.getElementById('loading-overlay');
+            const textElement = document.getElementById('loading-text');
+            textElement.textContent = message;
+            overlay.style.display = 'flex';
+        }
+
+        function hideLoading() {
+            const overlay = document.getElementById('loading-overlay');
+            overlay.style.display = 'none';
+        }
+
+        // ============================================================
+        // HÀM GỌI AI LẤY ĐẦY ĐỦ THÔNG TIN CHO MỘT TỪ
+        // ============================================================
+        async function getFullWordDataFromAI(word) {
             const API_KEY = getAPIKey();
-            const prompt = `Cung cấp thông tin cho từ tiếng Anh "${wordData.english}" với câu ví dụ "${wordData.example}".
-Trả về JSON duy nhất với cấu trúc:
-{
-    "pronunciation": "phiên âm IPA",
-    "exampleTranslation": "bản dịch tiếng Việt của câu ví dụ"
-}
-Chỉ trả về JSON.`;
+            const prompt = "Hãy cung cấp thông tin đầy đủ cho từ tiếng Anh \"" + word + "\" dành cho người học tiếng Anh.\n\nYêu cầu:\n- Phiên âm IPA (International Phonetic Alphabet)\n- Nghĩa tiếng Việt (chính xác, phổ biến)\n- Một câu ví dụ bằng tiếng Anh (ngắn gọn, dễ hiểu)\n- Bản dịch tiếng Việt của câu ví dụ đó\n\nTrả về DUY NHẤT một JSON object với cấu trúc:\n{\n    \"pronunciation\": \"phiên âm IPA ở đây\",\n    \"meaning\": \"nghĩa tiếng Việt ở đây\",\n    \"example\": \"Câu ví dụ bằng tiếng Anh ở đây\",\n    \"exampleTranslation\": \"Bản dịch tiếng Việt của câu ví dụ ở đây\"\n}\n\nKhông thêm bất kỳ văn bản nào khác ngoài JSON.";
 
             try {
                 const response = await fetch(API_URL, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${API_KEY}`
+                        'Authorization': 'Bearer ' + API_KEY
                     },
                     body: JSON.stringify({
                         model: 'gpt-5.4-nano',
                         messages: [
                             {
                                 role: 'system',
-                                content: 'Bạn là trợ lý chuyên cung cấp phiên âm IPA và dịch thuật chính xác.'
+                                content: 'Bạn là trợ lý chuyên cung cấp phiên âm IPA, nghĩa tiếng Việt, câu ví dụ và bản dịch. Bạn chỉ trả về JSON hợp lệ.'
                             },
                             {
                                 role: 'user',
                                 content: prompt
                             }
                         ],
-                        max_completion_tokens: 200,
+                        max_tokens: 400,
                         temperature: 0.7
                     })
                 });
 
-                if (!response.ok) {
-                    console.warn('Không thể lấy dữ liệu bổ sung');
-                    return { pronunciation: '', exampleTranslation: '' };
+                if (response.ok === false) {
+                    console.warn('API response not OK:', response.status);
+                    return { pronunciation: '', meaning: word, example: '', exampleTranslation: '' };
                 }
 
                 const data = await response.json();
                 const content = data.choices[0].message.content;
-                const jsonMatch = content.match(/\{[\s\S]*\}/);
+                
+                let cleanContent = content;
+                cleanContent = cleanContent.replace(/```json/gi, '');
+                cleanContent = cleanContent.replace(/```/g, '');
+                cleanContent = cleanContent.trim();
+                
+                const jsonMatch = cleanContent.match(/\{[\s\S]*\}/);
                 if (jsonMatch) {
-                    return JSON.parse(jsonMatch[0]);
+                    const result = JSON.parse(jsonMatch[0]);
+                    return {
+                        pronunciation: result.pronunciation || '',
+                        meaning: result.meaning || word,
+                        example: result.example || '',
+                        exampleTranslation: result.exampleTranslation || ''
+                    };
                 } else {
-                    return { pronunciation: '', exampleTranslation: '' };
+                    console.error('No JSON found in response:', content);
+                    return { pronunciation: '', meaning: word, example: '', exampleTranslation: '' };
                 }
             } catch (error) {
-                console.error('Lỗi khi lấy dữ liệu bổ sung:', error);
-                return { pronunciation: '', exampleTranslation: '' };
+                console.error('Lỗi khi gọi API lấy dữ liệu từ:', error);
+                return { pronunciation: '', meaning: word, example: '', exampleTranslation: '' };
             }
         }
 
-        auth.onAuthStateChanged((user) => {
-            if (user) {
-                db.collection('users').doc(user.uid).get().then((doc) => {
-                    if (doc.exists) {
-                        const userData = doc.data();
-                        isAdmin = userData.role === 'admin';
-                        
-                        if (isAdmin) {
-                            document.getElementById('admin').style.display = 'flex';
-                            document.getElementById('nav-admin').style.display = 'flex';
-                        }
-                    }
-                    
-                    loadUserCards();
-                    loadLibraryCategories();
-                });
-            } else {
-                auth.signInAnonymously()
-                    .then(() => {
-                        console.log('Đã đăng nhập ẩn danh');
-                    })
-                    .catch((error) => {
-                        console.error('Lỗi đăng nhập ẩn danh:', error);
-                    });
-            }
-        });
-
-        function speakText(text, rate = 0.8, pitch = 1) {
-            if (!('speechSynthesis' in window)) {
-                alert('Trình duyệt của bạn không hỗ trợ chức năng đọc văn bản. Vui lòng sử dụng Chrome, Edge hoặc Safari mới nhất.');
-                return;
-            }
-
-            window.speechSynthesis.cancel();
-
-            const utterance = new SpeechSynthesisUtterance(text);
-            utterance.lang = 'en-US';
-            utterance.rate = rate;
-            utterance.pitch = pitch;
-            utterance.volume = 1;
-
-            window.speechSynthesis.speak(utterance);
-        }
-
-        function createVoiceButton(word) {
-            const button = document.createElement('button');
-            button.className = 'voice-btn';
-            button.innerHTML = '<span class="material-symbols-outlined">volume_up</span>';
-            button.title = 'Nghe phát âm';
-            button.addEventListener('click', (e) => {
-                e.stopPropagation();
-                speakText(word);
-            });
-            return button;
-        }
-
-        function loadUserCards() {
-            const user = auth.currentUser;
-            if (!user) return;
-
-            db.collection('users').doc(user.uid).collection('cards')
-                .onSnapshot((snapshot) => {
-                    userCards = [];
-                    snapshot.forEach((doc) => {
-                        userCards.push({
-                            id: doc.id,
-                            ...doc.data()
-                        });
-                    });
-                    
-                    updateStats();
-                    updateCardList();
-                });
-        }
-
-        function loadLibraryCategories() {
-            const libraryContent = document.getElementById('library-content');
-            
-            db.collection('categories').get().then((snapshot) => {
-                libraryContent.innerHTML = '';
-                
-                if (snapshot.empty) {
-                    libraryContent.innerHTML = '<p>Chưa có chủ đề nào trong thư viện.</p>';
-                    return;
-                }
-                
-                snapshot.forEach((doc) => {
-                    const category = doc.data();
-                    const categoryElement = document.createElement('div');
-                    categoryElement.className = 'category-card';
-                    categoryElement.innerHTML = `
-                        <div class="category-icon" style="background-image: url('${category.icon || 'https://learnenglishwithaurora.github.io/homepage/flashcard.svg'}')"></div>
-                        <h3>${category.name}</h3>
-                        <p>${category.description || 'Không có mô tả'}</p>
-                        <p><strong>${category.cardCount || 0}</strong> từ</p>
-                        <button class="add-category-btn" data-id="${doc.id}">Thêm vào bộ thẻ</button>
-                    `;
-                    libraryContent.appendChild(categoryElement);
-                });
-                
-                document.querySelectorAll('.add-category-btn').forEach(button => {
-                    button.addEventListener('click', (e) => {
-                        const categoryId = e.target.getAttribute('data-id');
-                        addCategoryToMyCards(categoryId);
-                    });
-                });
-            });
-        }
-
-        function addCategoryToMyCards(categoryId) {
-            const user = auth.currentUser;
-            if (!user) return;
-            
-            db.collection('categories').doc(categoryId).get().then((categoryDoc) => {
-                if (!categoryDoc.exists) return;
-                
-                const category = categoryDoc.data();
-                
-                db.collection('systemCards')
-                  .where('categoryId', '==', categoryId)
-                  .get()
-                  .then((snapshot) => {
-                      let addedCount = 0;
-                      
-                      snapshot.forEach((doc) => {
-                          const card = doc.data();
-                          
-                          db.collection('users').doc(user.uid).collection('cards')
-                            .where('word', '==', card.word)
-                            .get()
-                            .then((existingCards) => {
-                                if (existingCards.empty) {
-                                    db.collection('users').doc(user.uid).collection('cards').add({
-                                        word: card.word,
-                                        meaning: card.meaning,
-                                        example: card.example,
-                                        category: category.name,
-                                        status: 'learning',
-                                        createdAt: firebase.firestore.FieldValue.serverTimestamp()
-                                    }).then(() => {
-                                        addedCount++;
-                                    });
-                                }
-                            });
-                      });
-                      
-                      setTimeout(() => {
-                          showAlert(`Đã thêm ${addedCount} từ từ chủ đề "${category.name}" vào bộ thẻ của bạn!`);
-                      }, 1000);
-                  });
-            });
-        }
-
-        function updateStats() {
-            const toLearn = userCards.filter(card => card.status === 'learning' || !card.status).length;
-            const known = userCards.filter(card => card.status === 'known').length;
-            const mastered = userCards.filter(card => card.status === 'mastered').length;
-            
-            document.querySelector('#green .number').textContent = toLearn;
-            document.querySelector('#blue .number').textContent = known;
-            document.querySelector('#yellow .number').textContent = mastered;
-        }
-
-        function updateCardList() {
-            const cardList = document.getElementById('card-list');
-            const masteredList = document.getElementById('mastered-list');
-            
-            cardList.innerHTML = '';
-            masteredList.innerHTML = '';
-            
-            if (userCards.length === 0) {
-                cardList.innerHTML = '<p style="text-align: center; color: #666;">Bạn chưa có thẻ nào. Hãy thêm thẻ mới hoặc chọn từ thư viện!</p>';
-                masteredList.innerHTML = '<p style="text-align: center; color: #666;">Bạn chưa có từ nào đã thuộc.</p>';
-                return;
-            }
-            
-            const learningCards = userCards.filter(card => card.status === 'learning' || !card.status);
-            const knownCards = userCards.filter(card => card.status === 'known');
-            const masteredCards = userCards.filter(card => card.status === 'mastered');
-            
-            if (learningCards.length === 0 && knownCards.length === 0) {
-                cardList.innerHTML = '<p style="text-align: center; color: #666;">Tất cả các từ của bạn đã được học!</p>';
-            } else {
-                [...learningCards, ...knownCards].forEach(card => {
-                    const cardItem = document.createElement('div');
-                    cardItem.className = 'card-item';
-                    
-                    cardItem.innerHTML = `
-                        <div>
-                            <div style="margin-bottom: 5px;">
-                                <strong>${card.word}</strong>: ${card.meaning}
-                            </div>
-                            ${card.example ? `<div><small>Ví dụ: ${card.example}</small></div>` : ''}
-                            ${card.pronunciation ? `<div><small>/${card.pronunciation}/</small></div>` : ''}
-                            ${card.exampleTranslation ? `<div><small>→ ${card.exampleTranslation}</small></div>` : ''}
-                            ${card.category ? `<br><small style="color: #FFA500;">Chủ đề: ${card.category}</small>` : ''}
-                            ${card.status === 'known' ? '<br><small style="color: #2196F3;">(Đã biết)</small>' : ''}
-                        </div>
-                        <button class="delete-card" data-id="${card.id}">Xóa</button>
-                    `;
-                    cardList.appendChild(cardItem);
-                });
-            }
-            
-            if (masteredCards.length === 0) {
-                masteredList.innerHTML = '<p style="text-align: center; color: #666;">Bạn chưa có từ nào đã thuộc.</p>';
-            } else {
-                masteredCards.forEach(card => {
-                    const cardItem = document.createElement('div');
-                    cardItem.className = 'card-item';
-                    
-                    cardItem.innerHTML = `
-                        <div>
-                            <div style="margin-bottom: 5px;">
-                                <strong>${card.word}</strong>: ${card.meaning}
-                            </div>
-                            ${card.example ? `<div><small>Ví dụ: ${card.example}</small></div>` : ''}
-                            ${card.category ? `<br><small style="color: #FFA500;">Chủ đề: ${card.category}</small>` : ''}
-                            <br><small style="color: #4CAF50;">(Đã thuộc)</small>
-                        </div>
-                        <button class="delete-card" data-id="${card.id}">Xóa</button>
-                    `;
-                    masteredList.appendChild(cardItem);
-                });
-            }
-            
-            document.querySelectorAll('.delete-card').forEach(button => {
-                button.addEventListener('click', (e) => {
-                    const cardId = e.target.getAttribute('data-id');
-                    deleteCard(cardId);
-                });
-            });
-        }
-
-        function deleteCard(cardId) {
-            const user = auth.currentUser;
-            if (!user) return;
-            
-            db.collection('users').doc(user.uid).collection('cards').doc(cardId).delete()
-                .then(() => {
-                    showAlert('Đã xóa từ này khỏi bộ thẻ.');
-                })
-                .catch((error) => {
-                    console.error('Error deleting card: ', error);
-                });
-        }
-
-        function showAlert(message) {
-            const alert = document.getElementById('alert');
-            alert.textContent = message;
-            alert.style.display = 'block';
-            
-            setTimeout(() => {
-                alert.style.display = 'none';
-            }, 3000);
-        }
-
-        document.getElementById('submit').addEventListener('click', async () => {
-            const word = document.getElementById('word').value.trim();
-            const meaning = document.getElementById('meaning').value.trim();
-            const example = document.getElementById('example').value.trim();
-            
-            if (!word || !meaning) {
-                alert('Vui lòng nhập từ và nghĩa!');
-                return;
-            }
-            
-            const statusDiv = document.getElementById('auto-enrich-status');
-            let pronunciation = '';
-            let exampleTranslation = '';
-            
-            if (example) {
-                statusDiv.innerHTML = '🔄 Đang lấy phiên âm và dịch ví dụ...';
-                const enrichment = await enrichWordData({ english: word, example: example });
-                pronunciation = enrichment.pronunciation;
-                exampleTranslation = enrichment.exampleTranslation;
-                statusDiv.innerHTML = '✅ Đã lấy xong phiên âm và dịch ví dụ!';
-            } else {
-                statusDiv.innerHTML = '';
-            }
-            
-            const user = auth.currentUser;
-            if (!user) return;
-            
-            db.collection('users').doc(user.uid).collection('cards').add({
-                word: word,
-                meaning: meaning,
-                example: example,
-                pronunciation: pronunciation,
-                exampleTranslation: exampleTranslation,
-                status: 'learning',
-                createdAt: firebase.firestore.FieldValue.serverTimestamp()
-            })
-            .then(() => {
-                document.getElementById('word').value = '';
-                document.getElementById('meaning').value = '';
-                document.getElementById('example').value = '';
-                document.getElementById('add-menu').classList.remove('active');
-                statusDiv.innerHTML = '';
-                showAlert('Đã thêm từ mới!');
-            })
-            .catch((error) => {
-                console.error('Error adding card: ', error);
-                statusDiv.innerHTML = '❌ Có lỗi xảy ra khi thêm từ!';
-            });
-        });
-
-        document.getElementById('test-pronunciation').addEventListener('click', () => {
-            const word = document.getElementById('word').value;
-            if (word.trim()) {
-                speakText(word.trim());
-            } else {
-                alert('Vui lòng nhập từ tiếng Anh trước khi kiểm tra phát âm!');
-            }
-        });
-
+        // ============================================================
+        // HÀM TẠO NHIỀU TỪ VỰNG THEO CHỦ ĐỀ
+        // ============================================================
         async function generateVocabularyWithAI(topic, level, count) {
             const API_KEY = getAPIKey();
-            
+            const prompt = "Tạo " + count + " từ vựng tiếng Anh về chủ đề \"" + topic + "\" ở mức độ " + level + " cho người học tiếng Anh.\n\nMỗi từ vựng cần có:\n- Từ tiếng Anh\n- Phiên âm IPA\n- Nghĩa tiếng Việt\n- Một câu ví dụ bằng tiếng Anh (ngắn gọn, dễ hiểu)\n- Bản dịch tiếng Việt của câu ví dụ đó\n\nĐịnh dạng trả về phải là JSON như sau:\n{\n    \"words\": [\n        {\n            \"english\": \"từ tiếng Anh\",\n            \"pronunciation\": \"phiên âm IPA\",\n            \"vietnamese\": \"nghĩa tiếng Việt\",\n            \"example\": \"câu ví dụ bằng tiếng Anh\",\n            \"exampleTranslation\": \"bản dịch tiếng Việt của câu ví dụ\"\n        }\n    ]\n}\n\nChỉ trả về JSON, không thêm bất kỳ văn bản nào khác.";
+
             try {
-                const prompt = `Tạo ${count} từ vựng tiếng Anh về chủ đề "${topic}" ở mức độ ${level} cho người học tiếng Anh.
-Mỗi từ vựng cần có:
-- Từ tiếng Anh
-- Nghĩa tiếng Việt
-- Một câu ví dụ bằng tiếng Anh (ngắn gọn, dễ hiểu)
-
-Định dạng trả về phải là JSON như sau:
-{
-    "words": [
-        {
-            "english": "từ tiếng Anh",
-            "vietnamese": "nghĩa tiếng Việt", 
-            "example": "câu ví dụ bằng tiếng Anh"
-        }
-    ]
-}
-
-Chỉ trả về JSON, không thêm bất kỳ văn bản nào khác.`;
-
                 const response = await fetch(API_URL, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${API_KEY}`
+                        'Authorization': 'Bearer ' + API_KEY
                     },
                     body: JSON.stringify({
                         model: 'gpt-5.4-nano',
@@ -1597,493 +1119,125 @@ Chỉ trả về JSON, không thêm bất kỳ văn bản nào khác.`;
                                 content: prompt
                             }
                         ],
-                        max_tokens: 2000,
+                        max_tokens: 3000,
                         temperature: 0.7
                     })
                 });
 
-                if (!response.ok) {
+                if (response.ok === false) {
                     const errorData = await response.json();
-                    throw new Error(`API error: ${errorData.error?.message || response.status}`);
+                    throw new Error('API error: ' + (errorData.error?.message || response.status));
                 }
 
                 const data = await response.json();
                 const content = data.choices[0].message.content;
                 
-                let cleanContent = content
-                    .replace(/```json/gi, '')
-                    .replace(/```/g, '')
-                    .trim();
+                let cleanContent = content;
+                cleanContent = cleanContent.replace(/```json/gi, '');
+                cleanContent = cleanContent.replace(/```/g, '');
+                cleanContent = cleanContent.trim();
 
                 const jsonMatch = cleanContent.match(/\{[\s\S]*\}/);
                 if (jsonMatch) {
-                    try {
-                        return JSON.parse(jsonMatch[0]);
-                    } catch (parseError) {
-                        console.error('JSON parse error:', parseError);
-                        console.error('Raw content:', content);
-                        throw new Error('Không thể phân tích phản hồi từ AI');
-                    }
+                    return JSON.parse(jsonMatch[0]);
                 } else {
                     console.error('Raw content từ AI:', content);
                     throw new Error('Không thể phân tích phản hồi từ AI');
                 }
-
             } catch (error) {
-                console.error('Lỗi khi gọi API:', error);
+                console.error('Lỗi khi gọi API tạo từ vựng:', error);
                 throw error;
             }
         }
 
-        async function enrichAllWords(wordsArray) {
-            const enrichedWords = [];
-            for (const word of wordsArray) {
-                const enrichment = await enrichWordData({ english: word.english, example: word.example });
-                enrichedWords.push({
-                    ...word,
-                    pronunciation: enrichment.pronunciation || '',
-                    exampleTranslation: enrichment.exampleTranslation || ''
-                });
+        // ============================================================
+        // HÀM PHÁT ÂM
+        // ============================================================
+        function speakText(text, rate, pitch) {
+            if (rate === undefined) rate = 0.8;
+            if (pitch === undefined) pitch = 1;
+            
+            if (!('speechSynthesis' in window)) {
+                alert('Trình duyệt của bạn không hỗ trợ chức năng đọc văn bản.');
+                return;
             }
-            return enrichedWords;
+
+            window.speechSynthesis.cancel();
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'en-US';
+            utterance.rate = rate;
+            utterance.pitch = pitch;
+            utterance.volume = 1;
+            window.speechSynthesis.speak(utterance);
         }
 
-        document.getElementById('generate-words').addEventListener('click', async () => {
-            const topic = document.getElementById('ai-topic').value.trim();
-            const level = document.getElementById('ai-level').value;
-            const count = parseInt(document.getElementById('ai-count').value);
+        // ============================================================
+        // HÀM TẠO NÚT NGHE
+        // ============================================================
+        function createVoiceButton(word) {
+            const button = document.createElement('button');
+            button.className = 'voice-btn';
+            button.innerHTML = '<span class="material-symbols-outlined">volume_up</span>';
+            button.title = 'Nghe phát âm';
             
-            if (!topic) {
-                alert('Vui lòng nhập chủ đề từ vựng!');
-                return;
-            }
-            
-            if (count < 1 || count > 30) {
-                alert('Số lượng từ phải từ 1 đến 30!');
-                return;
-            }
-            
-            const generateBtn = document.getElementById('generate-words');
-            const originalHTML = generateBtn.innerHTML;
-            
-            generateBtn.disabled = true;
-            generateBtn.innerHTML = '<span class="loading"></span>Đang tạo từ vựng...';
-            
-            try {
-                const result = await generateVocabularyWithAI(topic, level, count);
-                const rawWords = result.words;
-                
-                generateBtn.innerHTML = '<span class="loading"></span>Đang lấy phiên âm và dịch ví dụ...';
-                
-                const enrichedWords = await enrichAllWords(rawWords);
-                aiGeneratedWords = enrichedWords;
-                
-                displayAIWords(aiGeneratedWords);
-                document.getElementById('ai-results').style.display = 'block';
-                
-            } catch (error) {
-                console.error('Error:', error);
-                alert('Có lỗi xảy ra khi tạo từ vựng: ' + error.message);
-            } finally {
-                generateBtn.innerHTML = originalHTML;
-                generateBtn.disabled = false;
-            }
-        });
-
-        function displayAIWords(words) {
-            const container = document.getElementById('ai-words-container');
-            container.innerHTML = '';
-            
-            words.forEach((word, index) => {
-                const wordItem = document.createElement('div');
-                wordItem.className = 'ai-word-item';
-                wordItem.innerHTML = `
-                    <div class="ai-word-content">
-                        <strong>${word.english}</strong> ${word.pronunciation ? `<span style="font-size: 0.85em; color: #666;">/${word.pronunciation}/</span>` : ''}<br>
-                        <span style="color: #2196F3;">${word.vietnamese}</span><br>
-                        ${word.example ? `<small><em>${word.example}</em></small>` : ''}
-                        ${word.exampleTranslation ? `<br><small style="color: #4CAF50;">→ ${word.exampleTranslation}</small>` : ''}
-                    </div>
-                    <div class="ai-word-actions">
-                        <button class="ai-add-btn" data-index="${index}">Thêm</button>
-                    </div>
-                `;
-                container.appendChild(wordItem);
+            button.addEventListener('click', function(event) {
+                event.stopPropagation();
+                speakText(word);
             });
             
-            document.querySelectorAll('.ai-add-btn').forEach(button => {
-                button.addEventListener('click', (e) => {
-                    const index = parseInt(e.target.getAttribute('data-index'));
-                    addAIWordToCollection(index);
-                });
-            });
+            return button;
         }
 
-        function addAIWordToCollection(index) {
-            const wordData = aiGeneratedWords[index];
-            const user = auth.currentUser;
+        // ============================================================
+        // HIỂN THỊ THÔNG BÁO
+        // ============================================================
+        function showAlert(message) {
+            const alertElement = document.getElementById('alert');
+            alertElement.textContent = message;
+            alertElement.style.display = 'block';
             
-            if (!user) return;
-            
-            const cardData = {
-                word: wordData.english,
-                meaning: wordData.vietnamese,
-                example: wordData.example || '',
-                pronunciation: wordData.pronunciation || '',
-                exampleTranslation: wordData.exampleTranslation || '',
-                category: document.getElementById('ai-topic').value,
-                status: 'learning',
-                createdAt: firebase.firestore.FieldValue.serverTimestamp()
-            };
-            
-            db.collection('users').doc(user.uid).collection('cards')
-                .where('word', '==', wordData.english)
-                .get()
-                .then((existingCards) => {
-                    if (existingCards.empty) {
-                        return db.collection('users').doc(user.uid).collection('cards').add(cardData);
-                    } else {
-                        throw new Error('Từ này đã tồn tại trong bộ thẻ của bạn!');
-                    }
-                })
-                .then(() => {
-                    const addBtn = document.querySelector(`.ai-add-btn[data-index="${index}"]`);
-                    addBtn.textContent = 'Đã thêm';
-                    addBtn.classList.add('added');
-                    addBtn.disabled = true;
-                    
-                    showAlert(`Đã thêm từ "${wordData.english}" vào bộ thẻ!`);
-                })
-                .catch((error) => {
-                    if (error.message === 'Từ này đã tồn tại trong bộ thẻ của bạn!') {
-                        alert(error.message);
-                    } else {
-                        console.error('Error adding word:', error);
-                        alert('Có lỗi xảy ra khi thêm từ!');
-                    }
-                });
+            setTimeout(function() {
+                alertElement.style.display = 'none';
+            }, 3000);
         }
 
-        document.getElementById('add-all-words').addEventListener('click', () => {
-            const user = auth.currentUser;
-            if (!user) return;
-            
-            let addedCount = 0;
-            const totalWords = aiGeneratedWords.length;
-            
-            aiGeneratedWords.forEach((wordData, index) => {
-                const cardData = {
-                    word: wordData.english,
-                    meaning: wordData.vietnamese,
-                    example: wordData.example || '',
-                    pronunciation: wordData.pronunciation || '',
-                    exampleTranslation: wordData.exampleTranslation || '',
-                    category: document.getElementById('ai-topic').value,
-                    status: 'learning',
-                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
-                };
-                
-                db.collection('users').doc(user.uid).collection('cards')
-                    .where('word', '==', wordData.english)
-                    .get()
-                    .then((existingCards) => {
-                        if (existingCards.empty) {
-                            return db.collection('users').doc(user.uid).collection('cards').add(cardData);
-                        }
-                        return Promise.resolve();
-                    })
-                    .then(() => {
-                        addedCount++;
-                        
-                        const addBtn = document.querySelector(`.ai-add-btn[data-index="${index}"]`);
-                        if (addBtn) {
-                            addBtn.textContent = 'Đã thêm';
-                            addBtn.classList.add('added');
-                            addBtn.disabled = true;
-                        }
-                        
-                        if (addedCount === totalWords) {
-                            showAlert(`Đã thêm ${addedCount} từ vào bộ thẻ!`);
-                        }
-                    })
-                    .catch((error) => {
-                        console.error('Error adding word:', error);
-                    });
-            });
-        });
-
-        document.getElementById('login-btn').addEventListener('click', () => {
-            window.location.href = 'login.html';
-        });
-
-        document.getElementById('start').addEventListener('click', () => {
-            if (userCards.length === 0) {
-                alert('Bạn chưa có thẻ nào để học! Hãy thêm một số thẻ trước.');
-                return;
-            }
-            
-            cardsToLearn = userCards.filter(card => card.status === 'learning' || !card.status);
-            
-            if (cardsToLearn.length === 0) {
-                alert('Tất cả các thẻ của bạn đã được học!');
-                return;
-            }
-            
-            shuffleArray(cardsToLearn);
-            currentCardIndex = 0;
-            
-            showCard();
-            document.getElementById('learn-menu').classList.add('active');
-            document.getElementById('attention-reveal').style.display = 'block';
-            document.getElementById('attention-drag').style.display = 'none';
-        });
-
-        document.getElementById('review').addEventListener('click', () => {
-            if (userCards.length === 0) {
-                alert('Bạn chưa có thẻ nào để ôn tập! Hãy thêm một số thẻ trước.');
-                return;
-            }
-            
-            cardsToReview = userCards.filter(card => card.status === 'known');
-            
-            if (cardsToReview.length === 0) {
-                alert('Bạn chưa có từ nào để ôn tập! Hãy học một số từ trước.');
-                return;
-            }
-            
-            shuffleArray(cardsToReview);
-            currentCardIndex = 0;
-            
-            showReviewCard();
-            document.getElementById('review-menu').classList.add('active');
-            document.getElementById('attention-reveal-review').style.display = 'block';
-            document.getElementById('attention-drag-review').style.display = 'none';
-        });
-
-        function showCard() {
-            if (currentCardIndex >= cardsToLearn.length) {
-                document.getElementById('learn-menu').classList.remove('active');
-                alert('Chúc mừng! Bạn đã học xong tất cả các thẻ!');
-                return;
-            }
-            
-            const card = cardsToLearn[currentCardIndex];
-            const flashcard = document.getElementById('flashcard');
-            
-            flashcard.classList.remove('flipped');
-            
-            const front = flashcard.querySelector('.front');
-            const wordContainer = document.createElement('div');
-            wordContainer.className = 'word-with-voice';
-            wordContainer.innerHTML = `<h1>${card.word}</h1>`;
-            wordContainer.appendChild(createVoiceButton(card.word));
-            front.innerHTML = '';
-            front.appendChild(wordContainer);
-            
-            const back = flashcard.querySelector('.back');
-            
-            let backHtml = `
-                <div class="word-with-voice">
-                    <h1>${card.meaning}</h1>
-                </div>
-            `;
-            
-            if (card.pronunciation) {
-                backHtml += `<div style="font-size: 0.9rem; margin-top: 5px; opacity: 0.9;">/${card.pronunciation}/</div>`;
-            }
-            
-            if (card.example) {
-                backHtml += `<div class="example-with-voice" style="flex-direction: column; margin-top: 10px;">
-                                <p style="font-style: italic;">${card.example}</p>`;
-                if (card.exampleTranslation) {
-                    backHtml += `<p style="font-size: 0.85rem; opacity: 0.9;">→ ${card.exampleTranslation}</p>`;
-                }
-                backHtml += `<div style="margin-top: 5px;"></div>`;
-                backHtml += `</div>`;
-            }
-            
-            backHtml += `<div class="back-actions">
-                            <p id="wrong">Học lại</p>
-                            <p id="right">Đã nhớ</p>
-                        </div>`;
-            
-            back.innerHTML = backHtml;
-            
-            if (card.example) {
-                const exampleContainer = back.querySelector('.example-with-voice');
-                if (exampleContainer) {
-                    const exampleVoiceBtn = createVoiceButton(card.example);
-                    exampleVoiceBtn.style.marginLeft = '0';
-                    exampleVoiceBtn.style.marginTop = '5px';
-                    exampleContainer.appendChild(exampleVoiceBtn);
-                }
-            }
-            
-            back.querySelector('#right').addEventListener('click', () => markCardAsKnown());
-            back.querySelector('#wrong').addEventListener('click', () => markCardAsLearning());
-        }
-
-        function showReviewCard() {
-            if (currentCardIndex >= cardsToReview.length) {
-                document.getElementById('review-menu').classList.remove('active');
-                alert('Chúc mừng! Bạn đã ôn tập xong tất cả các thẻ!');
-                return;
-            }
-            
-            const card = cardsToReview[currentCardIndex];
-            const flashcard = document.getElementById('review-flashcard');
-            
-            flashcard.classList.remove('flipped');
-            
-            const front = flashcard.querySelector('.front');
-            const wordContainer = document.createElement('div');
-            wordContainer.className = 'word-with-voice';
-            wordContainer.innerHTML = `<h1>${card.word}</h1>`;
-            wordContainer.appendChild(createVoiceButton(card.word));
-            front.innerHTML = '';
-            front.appendChild(wordContainer);
-            
-            const back = flashcard.querySelector('.back');
-            let backHtml = `
-                <div class="word-with-voice">
-                    <h1>${card.meaning}</h1>
-                </div>
-            `;
-            
-            if (card.pronunciation) {
-                backHtml += `<div style="font-size: 0.9rem; margin-top: 5px; opacity: 0.9;">/${card.pronunciation}/</div>`;
-            }
-            
-            if (card.example) {
-                backHtml += `<div class="example-with-voice" style="flex-direction: column; margin-top: 10px;">
-                                <p style="font-style: italic;">${card.example}</p>`;
-                if (card.exampleTranslation) {
-                    backHtml += `<p style="font-size: 0.85rem; opacity: 0.9;">→ ${card.exampleTranslation}</p>`;
-                }
-                backHtml += `<div style="margin-top: 5px;"></div>`;
-                backHtml += `</div>`;
-            }
-            
-            backHtml += `<div class="back-actions">
-                            <p id="review-wrong">Cần ôn lại</p>
-                            <p id="review-right">Đã thuộc</p>
-                        </div>`;
-            
-            back.innerHTML = backHtml;
-            
-            if (card.example) {
-                const exampleContainer = back.querySelector('.example-with-voice');
-                if (exampleContainer) {
-                    const exampleVoiceBtn = createVoiceButton(card.example);
-                    exampleVoiceBtn.style.marginLeft = '0';
-                    exampleVoiceBtn.style.marginTop = '5px';
-                    exampleContainer.appendChild(exampleVoiceBtn);
-                }
-            }
-            
-            back.querySelector('#review-right').addEventListener('click', () => markCardAsMastered());
-            back.querySelector('#review-wrong').addEventListener('click', () => markCardForReview());
-        }
-
-        function markCardAsKnown() {
-            const card = cardsToLearn[currentCardIndex];
-            const user = auth.currentUser;
-            
-            if (!user) return;
-            
-            saveLearningHistory('learned', card.word);
-            
-            db.collection('users').doc(user.uid).collection('cards').doc(card.id).update({
-                status: 'known'
-            })
-            .then(() => {
-                currentCardIndex++;
-                showCard();
-            })
-            .catch((error) => {
-                console.error('Error updating card: ', error);
-            });
-        }
-
-        function markCardAsLearning() {
-            const card = cardsToLearn[currentCardIndex];
-            const user = auth.currentUser;
-            
-            if (!user) return;
-            
-            db.collection('users').doc(user.uid).collection('cards').doc(card.id).update({
-                status: 'learning'
-            })
-            .then(() => {
-                cardsToLearn.push(cardsToLearn.splice(currentCardIndex, 1)[0]);
-                showCard();
-            })
-            .catch((error) => {
-                console.error('Error updating card: ', error);
-            });
-        }
-
-        function markCardAsMastered() {
-            const card = cardsToReview[currentCardIndex];
-            const user = auth.currentUser;
-            
-            if (!user) return;
-            
-            saveLearningHistory('mastered', card.word);
-            
-            db.collection('users').doc(user.uid).collection('cards').doc(card.id).update({
-                status: 'mastered'
-            })
-            .then(() => {
-                currentCardIndex++;
-                showReviewCard();
-            })
-            .catch((error) => {
-                console.error('Error updating card: ', error);
-            });
-        }
-
-        function markCardForReview() {
-            const card = cardsToReview[currentCardIndex];
-            const user = auth.currentUser;
-            
-            if (!user) return;
-            
-            db.collection('users').doc(user.uid).collection('cards').doc(card.id).update({
-                status: 'known'
-            })
-            .then(() => {
-                cardsToReview.push(cardsToReview.splice(currentCardIndex, 1)[0]);
-                showReviewCard();
-            })
-            .catch((error) => {
-                console.error('Error updating card: ', error);
-            });
-        }
-
+        // ============================================================
+        // LƯU LỊCH SỬ HỌC TẬP
+        // ============================================================
         function saveLearningHistory(action, word) {
             const user = auth.currentUser;
-            if (!user) return;
+            if (!user) {
+                return;
+            }
             
             const today = new Date();
             const dateString = today.toISOString().split('T')[0];
             
             db.collection('users').doc(user.uid).collection('learningHistory').doc(dateString).get()
-                .then((doc) => {
+                .then(function(doc) {
                     if (doc.exists) {
                         const data = doc.data();
-                        const updatedData = { ...data };
+                        const updatedData = {};
+                        
+                        for (let key in data) {
+                            updatedData[key] = data[key];
+                        }
                         
                         if (action === 'learned') {
                             updatedData.learnedToday = (updatedData.learnedToday || 0) + 1;
-                            updatedData.learnedWords = [...(updatedData.learnedWords || []), word];
+                            if (!updatedData.learnedWords) {
+                                updatedData.learnedWords = [];
+                            }
+                            updatedData.learnedWords = [...updatedData.learnedWords, word];
                         } else if (action === 'mastered') {
                             updatedData.masteredToday = (updatedData.masteredToday || 0) + 1;
-                            updatedData.masteredWords = [...(updatedData.masteredWords || []), word];
+                            if (!updatedData.masteredWords) {
+                                updatedData.masteredWords = [];
+                            }
+                            updatedData.masteredWords = [...updatedData.masteredWords, word];
                         }
                         
                         updatedData.lastUpdated = firebase.firestore.FieldValue.serverTimestamp();
-                        
                         return db.collection('users').doc(user.uid).collection('learningHistory').doc(dateString).set(updatedData);
                     } else {
                         const newData = {
@@ -2106,88 +1260,696 @@ Chỉ trả về JSON, không thêm bất kỳ văn bản nào khác.`;
                         return db.collection('users').doc(user.uid).collection('learningHistory').doc(dateString).set(newData);
                     }
                 })
-                .catch((error) => {
+                .catch(function(error) {
                     console.error('Error saving learning history:', error);
                 });
         }
 
-        function showAnalytics() {
-            document.getElementById('analytics-menu').classList.add('active');
-            loadAnalyticsData();
-        }
-
-        function loadAnalyticsData() {
+        // ============================================================
+        // XÓA THẺ
+        // ============================================================
+        function deleteCard(cardId) {
             const user = auth.currentUser;
-            if (!user) return;
+            if (!user) {
+                return;
+            }
             
-            const today = new Date();
-            const dateString = today.toISOString().split('T')[0];
-            
-            db.collection('users').doc(user.uid).collection('learningHistory').doc(dateString).get()
-                .then((todayDoc) => {
-                    let learnedToday = 0;
-                    let masteredToday = 0;
-                    
-                    if (todayDoc.exists) {
-                        const todayData = todayDoc.data();
-                        learnedToday = todayData.learnedToday || 0;
-                        masteredToday = todayData.masteredToday || 0;
-                    }
-                    
-                    const last7Days = [];
-                    for (let i = 6; i >= 0; i--) {
-                        const date = new Date();
-                        date.setDate(date.getDate() - i);
-                        last7Days.push(date.toISOString().split('T')[0]);
-                    }
-                    
-                    Promise.all(
-                        last7Days.map(day => 
-                            db.collection('users').doc(user.uid).collection('learningHistory').doc(day).get()
-                        )
-                    ).then(docs => {
-                        const learnedData = [];
-                        const masteredData = [];
-                        const labels = [];
-                        
-                        docs.forEach((doc, index) => {
-                            const date = last7Days[index];
-                            const dayLabel = new Date(date).toLocaleDateString('vi-VN', { weekday: 'short' });
-                            labels.push(dayLabel);
-                            
-                            if (doc.exists) {
-                                const data = doc.data();
-                                learnedData.push(data.learnedToday || 0);
-                                masteredData.push(data.masteredToday || 0);
-                            } else {
-                                learnedData.push(0);
-                                masteredData.push(0);
-                            }
-                        });
-                        
-                        updateProgressChart(labels, learnedData, masteredData);
-                        
-                        const yesterdayIndex = docs.length - 2;
-                        const yesterdayLearned = yesterdayIndex >= 0 ? learnedData[yesterdayIndex] : 0;
-                        const yesterdayMastered = yesterdayIndex >= 0 ? masteredData[yesterdayIndex] : 0;
-                        
-                        const learnedChange = learnedToday - yesterdayLearned;
-                        const masteredChange = masteredToday - yesterdayMastered;
-                        
-                        document.getElementById('learned-today').textContent = learnedToday;
-                        document.getElementById('mastered-today').textContent = masteredToday;
-                        
-                        document.getElementById('learned-change').textContent = (learnedChange >= 0 ? '+' : '') + learnedChange;
-                        document.getElementById('mastered-change').textContent = (masteredChange >= 0 ? '+' : '') + masteredChange;
-                        
-                        evaluateProgress(learnedToday, masteredToday, learnedChange, masteredChange);
-                    });
+            db.collection('users').doc(user.uid).collection('cards').doc(cardId).delete()
+                .then(function() {
+                    showAlert('Đã xóa từ này khỏi bộ thẻ.');
                 })
-                .catch((error) => {
-                    console.error('Error loading analytics data:', error);
+                .catch(function(error) {
+                    console.error('Error deleting card: ', error);
                 });
         }
 
+        // ============================================================
+        // CẬP NHẬT THỐNG KÊ
+        // ============================================================
+        function updateStats() {
+            let toLearn = 0;
+            let known = 0;
+            let mastered = 0;
+            
+            for (let i = 0; i < userCards.length; i++) {
+                const card = userCards[i];
+                if (card.status === 'learning' || !card.status) {
+                    toLearn++;
+                } else if (card.status === 'known') {
+                    known++;
+                } else if (card.status === 'mastered') {
+                    mastered++;
+                }
+            }
+            
+            document.querySelector('#green .number').textContent = toLearn;
+            document.querySelector('#blue .number').textContent = known;
+            document.querySelector('#yellow .number').textContent = mastered;
+        }
+
+        // ============================================================
+        // ESCAPE HTML
+        // ============================================================
+        function escapeHtml(str) {
+            if (!str) {
+                return '';
+            }
+            return str
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
+        // ============================================================
+        // CẬP NHẬT DANH SÁCH THẺ
+        // ============================================================
+        function updateCardList() {
+            const cardListDiv = document.getElementById('card-list');
+            const masteredListDiv = document.getElementById('mastered-list');
+            
+            cardListDiv.innerHTML = '';
+            masteredListDiv.innerHTML = '';
+            
+            if (userCards.length === 0) {
+                cardListDiv.innerHTML = '<p style="text-align: center; color: #666;">Bạn chưa có thẻ nào. Hãy thêm thẻ mới hoặc chọn từ thư viện!</p>';
+                masteredListDiv.innerHTML = '<p style="text-align: center; color: #666;">Bạn chưa có từ nào đã thuộc.</p>';
+                return;
+            }
+            
+            const learningCards = [];
+            const knownCards = [];
+            const masteredCards = [];
+            
+            for (let i = 0; i < userCards.length; i++) {
+                const card = userCards[i];
+                if (card.status === 'learning' || !card.status) {
+                    learningCards.push(card);
+                } else if (card.status === 'known') {
+                    knownCards.push(card);
+                } else if (card.status === 'mastered') {
+                    masteredCards.push(card);
+                }
+            }
+            
+            if (learningCards.length === 0 && knownCards.length === 0) {
+                cardListDiv.innerHTML = '<p style="text-align: center; color: #666;">Tất cả các từ của bạn đã được học!</p>';
+            } else {
+                const allLearningAndKnown = [...learningCards, ...knownCards];
+                for (let i = 0; i < allLearningAndKnown.length; i++) {
+                    const card = allLearningAndKnown[i];
+                    const cardItem = document.createElement('div');
+                    cardItem.className = 'card-item';
+                    
+                    let html = '<div>';
+                    html += '<div style="margin-bottom: 5px;">';
+                    html += '<strong>' + escapeHtml(card.word) + '</strong>: ' + escapeHtml(card.meaning);
+                    html += '</div>';
+                    
+                    if (card.pronunciation) {
+                        html += '<div><small>/' + escapeHtml(card.pronunciation) + '/</small></div>';
+                    }
+                    
+                    if (card.example) {
+                        html += '<div><small>Ví dụ: ' + escapeHtml(card.example) + '</small></div>';
+                    }
+                    
+                    if (card.exampleTranslation) {
+                        html += '<div><small>→ ' + escapeHtml(card.exampleTranslation) + '</small></div>';
+                    }
+                    
+                    if (card.category) {
+                        html += '<br><small style="color: #FFA500;">Chủ đề: ' + escapeHtml(card.category) + '</small>';
+                    }
+                    
+                    if (card.status === 'known') {
+                        html += '<br><small style="color: #2196F3;">(Đã biết)</small>';
+                    }
+                    
+                    html += '</div>';
+                    html += '<button class="delete-card" data-id="' + card.id + '">Xóa</button>';
+                    
+                    cardItem.innerHTML = html;
+                    cardListDiv.appendChild(cardItem);
+                }
+            }
+            
+            if (masteredCards.length === 0) {
+                masteredListDiv.innerHTML = '<p style="text-align: center; color: #666;">Bạn chưa có từ nào đã thuộc.</p>';
+            } else {
+                for (let i = 0; i < masteredCards.length; i++) {
+                    const card = masteredCards[i];
+                    const cardItem = document.createElement('div');
+                    cardItem.className = 'card-item';
+                    
+                    let html = '<div>';
+                    html += '<div style="margin-bottom: 5px;">';
+                    html += '<strong>' + escapeHtml(card.word) + '</strong>: ' + escapeHtml(card.meaning);
+                    html += '</div>';
+                    
+                    if (card.pronunciation) {
+                        html += '<div><small>/' + escapeHtml(card.pronunciation) + '/</small></div>';
+                    }
+                    
+                    if (card.example) {
+                        html += '<div><small>Ví dụ: ' + escapeHtml(card.example) + '</small></div>';
+                    }
+                    
+                    if (card.exampleTranslation) {
+                        html += '<div><small>→ ' + escapeHtml(card.exampleTranslation) + '</small></div>';
+                    }
+                    
+                    if (card.category) {
+                        html += '<br><small style="color: #FFA500;">Chủ đề: ' + escapeHtml(card.category) + '</small>';
+                    }
+                    
+                    html += '<br><small style="color: #4CAF50;">(Đã thuộc)</small>';
+                    html += '</div>';
+                    html += '<button class="delete-card" data-id="' + card.id + '">Xóa</button>';
+                    
+                    cardItem.innerHTML = html;
+                    masteredListDiv.appendChild(cardItem);
+                }
+            }
+            
+            const deleteButtons = document.querySelectorAll('.delete-card');
+            for (let i = 0; i < deleteButtons.length; i++) {
+                const button = deleteButtons[i];
+                button.addEventListener('click', function(e) {
+                    const cardId = e.target.getAttribute('data-id');
+                    deleteCard(cardId);
+                });
+            }
+        }
+
+        // ============================================================
+        // TẢI DỮ LIỆU NGƯỜI DÙNG
+        // ============================================================
+        function loadUserCards() {
+            const user = auth.currentUser;
+            if (!user) {
+                return;
+            }
+
+            db.collection('users').doc(user.uid).collection('cards')
+                .onSnapshot(function(snapshot) {
+                    userCards = [];
+                    snapshot.forEach(function(doc) {
+                        const cardData = doc.data();
+                        cardData.id = doc.id;
+                        userCards.push(cardData);
+                    });
+                    updateStats();
+                    updateCardList();
+                });
+        }
+
+        // ============================================================
+        // TẢI THƯ VIỆN CHỦ ĐỀ
+        // ============================================================
+        function loadLibraryCategories() {
+            const libraryContent = document.getElementById('library-content');
+            
+            db.collection('categories').get().then(function(snapshot) {
+                libraryContent.innerHTML = '';
+                
+                if (snapshot.empty) {
+                    libraryContent.innerHTML = '<p>Chưa có chủ đề nào trong thư viện.</p>';
+                    return;
+                }
+                
+                snapshot.forEach(function(doc) {
+                    const category = doc.data();
+                    const categoryElement = document.createElement('div');
+                    categoryElement.className = 'category-card';
+                    
+                    categoryElement.innerHTML = `
+                        <div class="category-icon" style="background-image: url('${category.icon || 'https://learnenglishwithaurora.github.io/homepage/flashcard.svg'}')"></div>
+                        <h3>${escapeHtml(category.name)}</h3>
+                        <p>${escapeHtml(category.description || 'Không có mô tả')}</p>
+                        <p><strong>${category.cardCount || 0}</strong> từ</p>
+                        <button class="add-category-btn" data-id="${doc.id}">Thêm vào bộ thẻ</button>
+                    `;
+                    
+                    libraryContent.appendChild(categoryElement);
+                });
+                
+                const addButtons = document.querySelectorAll('.add-category-btn');
+                for (let i = 0; i < addButtons.length; i++) {
+                    const button = addButtons[i];
+                    button.addEventListener('click', function(e) {
+                        const categoryId = e.target.getAttribute('data-id');
+                        addCategoryToMyCards(categoryId);
+                    });
+                }
+            });
+        }
+
+        // ============================================================
+        // THÊM CHỦ ĐỀ VÀO BỘ THẺ CỦA TÔI
+        // ============================================================
+        function addCategoryToMyCards(categoryId) {
+            const user = auth.currentUser;
+            if (!user) {
+                return;
+            }
+            
+            db.collection('categories').doc(categoryId).get().then(function(categoryDoc) {
+                if (!categoryDoc.exists) {
+                    return;
+                }
+                
+                const category = categoryDoc.data();
+                
+                db.collection('systemCards')
+                  .where('categoryId', '==', categoryId)
+                  .get()
+                  .then(function(snapshot) {
+                      let addedCount = 0;
+                      const totalToAdd = snapshot.size;
+                      
+                      if (totalToAdd === 0) {
+                          showAlert('Chủ đề "' + category.name + '" không có từ nào.');
+                          return;
+                      }
+                      
+                      snapshot.forEach(function(doc) {
+                          const card = doc.data();
+                          
+                          db.collection('users').doc(user.uid).collection('cards')
+                            .where('word', '==', card.word)
+                            .get()
+                            .then(function(existingCards) {
+                                if (existingCards.empty) {
+                                    db.collection('users').doc(user.uid).collection('cards').add({
+                                        word: card.word,
+                                        meaning: card.meaning,
+                                        example: card.example || '',
+                                        pronunciation: card.pronunciation || '',
+                                        exampleTranslation: card.exampleTranslation || '',
+                                        category: category.name,
+                                        status: 'learning',
+                                        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                                    }).then(function() {
+                                        addedCount++;
+                                        if (addedCount === totalToAdd) {
+                                            showAlert('Đã thêm ' + addedCount + ' từ từ chủ đề "' + category.name + '" vào bộ thẻ của bạn!');
+                                        }
+                                    });
+                                } else {
+                                    addedCount++;
+                                    if (addedCount === totalToAdd) {
+                                        showAlert('Đã thêm ' + addedCount + ' từ từ chủ đề "' + category.name + '" vào bộ thẻ của bạn!');
+                                    }
+                                }
+                            });
+                      });
+                  });
+            });
+        }
+
+        // ============================================================
+        // HIỂN THỊ THẺ HỌC
+        // ============================================================
+        function showCard() {
+            if (currentCardIndex >= cardsToLearn.length) {
+                document.getElementById('learn-menu').classList.remove('active');
+                alert('Chúc mừng! Bạn đã học xong tất cả các thẻ!');
+                return;
+            }
+            
+            const card = cardsToLearn[currentCardIndex];
+            const flashcard = document.getElementById('flashcard');
+            
+            flashcard.classList.remove('flipped');
+            
+            const front = flashcard.querySelector('.front');
+            const wordContainer = document.createElement('div');
+            wordContainer.className = 'word-with-voice';
+            wordContainer.innerHTML = '<h1>' + escapeHtml(card.word) + '</h1>';
+            wordContainer.appendChild(createVoiceButton(card.word));
+            front.innerHTML = '';
+            front.appendChild(wordContainer);
+            
+            const back = flashcard.querySelector('.back');
+            
+            let backHtml = '';
+            backHtml += '<div class="word-with-voice">';
+            backHtml += '<h1>' + escapeHtml(card.meaning) + '</h1>';
+            backHtml += '</div>';
+            
+            if (card.pronunciation) {
+                backHtml += '<div style="font-size: 0.9rem; margin-top: 5px; opacity: 0.9;">/' + escapeHtml(card.pronunciation) + '/</div>';
+            }
+            
+            if (card.example) {
+                backHtml += '<div class="example-with-voice" style="flex-direction: column; margin-top: 10px;">';
+                backHtml += '<p style="font-style: italic;">' + escapeHtml(card.example) + '</p>';
+                if (card.exampleTranslation) {
+                    backHtml += '<p style="font-size: 0.85rem; opacity: 0.9;">→ ' + escapeHtml(card.exampleTranslation) + '</p>';
+                }
+                backHtml += '<div style="margin-top: 5px;"></div>';
+                backHtml += '</div>';
+            }
+            
+            backHtml += '<div class="back-actions">';
+            backHtml += '<p id="wrong">Học lại</p>';
+            backHtml += '<p id="right">Đã nhớ</p>';
+            backHtml += '</div>';
+            
+            back.innerHTML = backHtml;
+            
+            if (card.example) {
+                const exampleContainer = back.querySelector('.example-with-voice');
+                if (exampleContainer) {
+                    const exampleVoiceBtn = createVoiceButton(card.example);
+                    exampleVoiceBtn.style.marginLeft = '0';
+                    exampleVoiceBtn.style.marginTop = '5px';
+                    exampleContainer.appendChild(exampleVoiceBtn);
+                }
+            }
+            
+            const rightBtn = back.querySelector('#right');
+            rightBtn.addEventListener('click', function() {
+                const user = auth.currentUser;
+                if (!user) {
+                    return;
+                }
+                saveLearningHistory('learned', card.word);
+                db.collection('users').doc(user.uid).collection('cards').doc(card.id).update({
+                    status: 'known'
+                }).then(function() {
+                    currentCardIndex++;
+                    showCard();
+                });
+            });
+            
+            const wrongBtn = back.querySelector('#wrong');
+            wrongBtn.addEventListener('click', function() {
+                cardsToLearn.push(cardsToLearn.splice(currentCardIndex, 1)[0]);
+                showCard();
+            });
+        }
+
+        // ============================================================
+        // HIỂN THỊ THẺ ÔN TẬP
+        // ============================================================
+        function showReviewCard() {
+            if (currentCardIndex >= cardsToReview.length) {
+                document.getElementById('review-menu').classList.remove('active');
+                alert('Chúc mừng! Bạn đã ôn tập xong tất cả các thẻ!');
+                return;
+            }
+            
+            const card = cardsToReview[currentCardIndex];
+            const flashcard = document.getElementById('review-flashcard');
+            
+            flashcard.classList.remove('flipped');
+            
+            const front = flashcard.querySelector('.front');
+            const wordContainer = document.createElement('div');
+            wordContainer.className = 'word-with-voice';
+            wordContainer.innerHTML = '<h1>' + escapeHtml(card.word) + '</h1>';
+            wordContainer.appendChild(createVoiceButton(card.word));
+            front.innerHTML = '';
+            front.appendChild(wordContainer);
+            
+            const back = flashcard.querySelector('.back');
+            
+            let backHtml = '';
+            backHtml += '<div class="word-with-voice">';
+            backHtml += '<h1>' + escapeHtml(card.meaning) + '</h1>';
+            backHtml += '</div>';
+            
+            if (card.pronunciation) {
+                backHtml += '<div style="font-size: 0.9rem; margin-top: 5px; opacity: 0.9;">/' + escapeHtml(card.pronunciation) + '/</div>';
+            }
+            
+            if (card.example) {
+                backHtml += '<div class="example-with-voice" style="flex-direction: column; margin-top: 10px;">';
+                backHtml += '<p style="font-style: italic;">' + escapeHtml(card.example) + '</p>';
+                if (card.exampleTranslation) {
+                    backHtml += '<p style="font-size: 0.85rem; opacity: 0.9;">→ ' + escapeHtml(card.exampleTranslation) + '</p>';
+                }
+                backHtml += '<div style="margin-top: 5px;"></div>';
+                backHtml += '</div>';
+            }
+            
+            backHtml += '<div class="back-actions">';
+            backHtml += '<p id="review-wrong">Cần ôn lại</p>';
+            backHtml += '<p id="review-right">Đã thuộc</p>';
+            backHtml += '</div>';
+            
+            back.innerHTML = backHtml;
+            
+            if (card.example) {
+                const exampleContainer = back.querySelector('.example-with-voice');
+                if (exampleContainer) {
+                    const exampleVoiceBtn = createVoiceButton(card.example);
+                    exampleVoiceBtn.style.marginLeft = '0';
+                    exampleVoiceBtn.style.marginTop = '5px';
+                    exampleContainer.appendChild(exampleVoiceBtn);
+                }
+            }
+            
+            const rightBtn = back.querySelector('#review-right');
+            rightBtn.addEventListener('click', function() {
+                const user = auth.currentUser;
+                if (!user) {
+                    return;
+                }
+                saveLearningHistory('mastered', card.word);
+                db.collection('users').doc(user.uid).collection('cards').doc(card.id).update({
+                    status: 'mastered'
+                }).then(function() {
+                    currentCardIndex++;
+                    showReviewCard();
+                });
+            });
+            
+            const wrongBtn = back.querySelector('#review-wrong');
+            wrongBtn.addEventListener('click', function() {
+                cardsToReview.push(cardsToReview.splice(currentCardIndex, 1)[0]);
+                showReviewCard();
+            });
+        }
+
+        // ============================================================
+        // HIỂN THỊ TỪ DO AI TẠO
+        // ============================================================
+        function displayAIWords(words) {
+            const container = document.getElementById('ai-words-container');
+            container.innerHTML = '';
+            
+            for (let i = 0; i < words.length; i++) {
+                const word = words[i];
+                const wordItem = document.createElement('div');
+                wordItem.className = 'ai-word-item';
+                
+                let html = '';
+                html += '<div class="ai-word-content">';
+                html += '<strong>' + escapeHtml(word.english) + '</strong>';
+                if (word.pronunciation) {
+                    html += '<span style="font-size: 0.85em; color: #666;"> /' + escapeHtml(word.pronunciation) + '/</span>';
+                }
+                html += '<br>';
+                html += '<span style="color: #2196F3;">' + escapeHtml(word.vietnamese) + '</span><br>';
+                html += '<small><em>' + escapeHtml(word.example) + '</em></small><br>';
+                if (word.exampleTranslation) {
+                    html += '<small style="color: #4CAF50;">→ ' + escapeHtml(word.exampleTranslation) + '</small>';
+                }
+                html += '</div>';
+                html += '<div class="ai-word-actions">';
+                html += '<button class="ai-add-btn" data-index="' + i + '">Thêm</button>';
+                html += '</div>';
+                
+                wordItem.innerHTML = html;
+                container.appendChild(wordItem);
+            }
+            
+            const addButtons = document.querySelectorAll('.ai-add-btn');
+            for (let i = 0; i < addButtons.length; i++) {
+                const button = addButtons[i];
+                button.addEventListener('click', function(e) {
+                    const index = parseInt(e.target.getAttribute('data-index'));
+                    addAIWordToCollection(index);
+                });
+            }
+        }
+
+        // ============================================================
+        // THÊM TỪ DO AI TẠO VÀO BỘ SƯU TẬP
+        // ============================================================
+        function addAIWordToCollection(index) {
+            const wordData = aiGeneratedWords[index];
+            const user = auth.currentUser;
+            
+            if (!user) {
+                return;
+            }
+            
+            const topic = document.getElementById('ai-topic').value;
+            
+            const cardData = {
+                word: wordData.english,
+                meaning: wordData.vietnamese,
+                example: wordData.example || '',
+                pronunciation: wordData.pronunciation || '',
+                exampleTranslation: wordData.exampleTranslation || '',
+                category: topic,
+                status: 'learning',
+                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+            };
+            
+            db.collection('users').doc(user.uid).collection('cards')
+                .where('word', '==', wordData.english)
+                .get()
+                .then(function(existingCards) {
+                    if (existingCards.empty) {
+                        return db.collection('users').doc(user.uid).collection('cards').add(cardData);
+                    } else {
+                        throw new Error('Từ này đã tồn tại trong bộ thẻ của bạn!');
+                    }
+                })
+                .then(function() {
+                    const addBtn = document.querySelector('.ai-add-btn[data-index="' + index + '"]');
+                    if (addBtn) {
+                        addBtn.textContent = 'Đã thêm';
+                        addBtn.classList.add('added');
+                        addBtn.disabled = true;
+                    }
+                    showAlert('Đã thêm từ "' + wordData.english + '" vào bộ thẻ!');
+                })
+                .catch(function(error) {
+                    if (error.message === 'Từ này đã tồn tại trong bộ thẻ của bạn!') {
+                        alert(error.message);
+                    } else {
+                        console.error('Error adding word:', error);
+                        alert('Có lỗi xảy ra khi thêm từ!');
+                    }
+                });
+        }
+
+        // ============================================================
+        // THÊM TẤT CẢ TỪ AI
+        // ============================================================
+        function addAllAIWords() {
+            const user = auth.currentUser;
+            if (!user) {
+                return;
+            }
+            
+            let addedCount = 0;
+            const totalWords = aiGeneratedWords.length;
+            const topic = document.getElementById('ai-topic').value;
+            
+            for (let i = 0; i < aiGeneratedWords.length; i++) {
+                const wordData = aiGeneratedWords[i];
+                
+                const cardData = {
+                    word: wordData.english,
+                    meaning: wordData.vietnamese,
+                    example: wordData.example || '',
+                    pronunciation: wordData.pronunciation || '',
+                    exampleTranslation: wordData.exampleTranslation || '',
+                    category: topic,
+                    status: 'learning',
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                };
+                
+                db.collection('users').doc(user.uid).collection('cards')
+                    .where('word', '==', wordData.english)
+                    .get()
+                    .then(function(existingCards) {
+                        if (existingCards.empty) {
+                            return db.collection('users').doc(user.uid).collection('cards').add(cardData);
+                        }
+                        return Promise.resolve();
+                    })
+                    .then(function() {
+                        addedCount++;
+                        const addBtn = document.querySelector('.ai-add-btn[data-index="' + i + '"]');
+                        if (addBtn) {
+                            addBtn.textContent = 'Đã thêm';
+                            addBtn.classList.add('added');
+                            addBtn.disabled = true;
+                        }
+                        if (addedCount === totalWords) {
+                            showAlert('Đã thêm ' + addedCount + ' từ vào bộ thẻ!');
+                        }
+                    })
+                    .catch(function(error) {
+                        console.error('Error adding word:', error);
+                    });
+            }
+        }
+
+        // ============================================================
+        // TẢI DỮ LIỆU THỐNG KÊ
+        // ============================================================
+        function loadAnalyticsData() {
+            const user = auth.currentUser;
+            if (!user) {
+                return;
+            }
+            
+            const last7Days = [];
+            for (let i = 6; i >= 0; i--) {
+                const date = new Date();
+                date.setDate(date.getDate() - i);
+                last7Days.push(date.toISOString().split('T')[0]);
+            }
+            
+            const promises = [];
+            for (let i = 0; i < last7Days.length; i++) {
+                const day = last7Days[i];
+                promises.push(db.collection('users').doc(user.uid).collection('learningHistory').doc(day).get());
+            }
+            
+            Promise.all(promises).then(function(docs) {
+                const learnedData = [];
+                const masteredData = [];
+                const labels = [];
+                
+                for (let i = 0; i < docs.length; i++) {
+                    const doc = docs[i];
+                    const date = last7Days[i];
+                    const dayLabel = new Date(date).toLocaleDateString('vi-VN', { weekday: 'short' });
+                    labels.push(dayLabel);
+                    
+                    if (doc.exists) {
+                        const data = doc.data();
+                        learnedData.push(data.learnedToday || 0);
+                        masteredData.push(data.masteredToday || 0);
+                    } else {
+                        learnedData.push(0);
+                        masteredData.push(0);
+                    }
+                }
+                
+                updateProgressChart(labels, learnedData, masteredData);
+                
+                const summaryDiv = document.getElementById('analytics-summary');
+                let totalLearned = 0;
+                let totalMastered = 0;
+                
+                for (let i = 0; i < learnedData.length; i++) {
+                    totalLearned += learnedData[i];
+                    totalMastered += masteredData[i];
+                }
+                
+                summaryDiv.innerHTML = '';
+                summaryDiv.innerHTML = '<div style="text-align: center;">';
+                summaryDiv.innerHTML += '<p><strong>Tổng số từ đã học trong 7 ngày:</strong> ' + totalLearned + '</p>';
+                summaryDiv.innerHTML += '<p><strong>Tổng số từ đã thuộc trong 7 ngày:</strong> ' + totalMastered + '</p>';
+                summaryDiv.innerHTML += '</div>';
+            });
+        }
+
+        // ============================================================
+        // CẬP NHẬT BIỂU ĐỒ
+        // ============================================================
         function updateProgressChart(labels, learnedData, masteredData) {
             const ctx = document.getElementById('progress-chart').getContext('2d');
             
@@ -2223,11 +1985,7 @@ Chỉ trả về JSON, không thêm bất kỳ văn bản nào khác.`;
                     maintainAspectRatio: false,
                     plugins: {
                         legend: {
-                            position: 'top',
-                        },
-                        tooltip: {
-                            mode: 'index',
-                            intersect: false
+                            position: 'top'
                         }
                     },
                     scales: {
@@ -2242,186 +2000,319 @@ Chỉ trả về JSON, không thêm bất kỳ văn bản nào khác.`;
             });
         }
 
-        function evaluateProgress(learnedToday, masteredToday, learnedChange, masteredChange) {
-            const evaluationElement = document.getElementById('evaluation-message');
-            const totalProgress = learnedToday + masteredToday;
-            
-            evaluationElement.className = 'evaluation';
-            
-            if (totalProgress === 0) {
-                evaluationElement.innerHTML = `
-                    <h3>Chưa có hoạt động học tập hôm nay</h3>
-                    <p>Hãy bắt đầu học từ mới để xem đánh giá tiến độ!</p>
-                `;
-                return;
-            }
-            
-            let evaluationText = '';
-            let evaluationClass = '';
-            
-            if (totalProgress >= 15) {
-                evaluationText = 'Xuất sắc!';
-                evaluationClass = 'excellent';
-                evaluationElement.innerHTML = `
-                    <h3>${evaluationText}</h3>
-                    <p>Bạn đã học được ${learnedToday} từ mới và thuộc ${masteredToday} từ hôm nay. Tiếp tục phát huy nhé!</p>
-                `;
-            } else if (totalProgress >= 10) {
-                evaluationText = 'Tốt!';
-                evaluationClass = 'good';
-                evaluationElement.innerHTML = `
-                    <h3>${evaluationText}</h3>
-                    <p>Bạn đã học được ${learnedToday} từ mới và thuộc ${masteredToday} từ hôm nay. Cố gắng hơn nữa nhé!</p>
-                `;
-            } else if (totalProgress >= 5) {
-                evaluationText = 'Khá';
-                evaluationClass = 'average';
-                evaluationElement.innerHTML = `
-                    <h3>${evaluationText}</h3>
-                    <p>Bạn đã học được ${learnedToday} từ mới và thuộc ${masteredToday} từ hôm nay. Hãy cố gắng học thêm một chút nữa!</p>
-                `;
-            } else {
-                evaluationText = 'Cần cải thiện';
-                evaluationClass = 'poor';
-                evaluationElement.innerHTML = `
-                    <h3>${evaluationText}</h3>
-                    <p>Bạn đã học được ${learnedToday} từ mới và thuộc ${masteredToday} từ hôm nay. Hãy dành nhiều thời gian hơn cho việc học từ vựng!</p>
-                `;
-            }
-            
-            evaluationElement.classList.add(evaluationClass);
-        }
-
-        function shuffleArray(array) {
-            for (let i = array.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [array[i], array[j]] = [array[j], array[i]];
-            }
-            return array;
-        }
-
+        // ============================================================
+        // RESET POPUP AI
+        // ============================================================
         function resetAIPopup() {
             document.getElementById('ai-topic').value = '';
             document.getElementById('ai-level').selectedIndex = 0;
-            document.getElementById('ai-count').value = '10';
+            document.getElementById('ai-count').value = '5';
             document.getElementById('ai-results').style.display = 'none';
             document.getElementById('ai-words-container').innerHTML = '';
             aiGeneratedWords = [];
         }
 
-        document.getElementById('add').addEventListener('click', () => {
-            document.getElementById('add-menu').classList.add('active');
-        });
-
-        document.getElementById('ai-add').addEventListener('click', () => {
-            resetAIPopup();
-            document.getElementById('ai-add-menu').classList.add('active');
-        });
-
-        document.getElementById('list').addEventListener('click', () => {
-            document.getElementById('card-list-menu').classList.add('active');
-        });
-
-        document.getElementById('library').addEventListener('click', () => {
-            document.getElementById('library-menu').classList.add('active');
-        });
-
-        document.getElementById('analytics').addEventListener('click', () => {
-            showAnalytics();
-        });
-
-        document.getElementById('classroom').addEventListener('click', () => {
-            window.open('thi.html', '_blank');
-        });
-
-        document.getElementById('admin').addEventListener('click', () => {
-            window.location.href = 'admin.html';
-        });
-
-        document.getElementById('nav-admin').addEventListener('click', () => {
-            window.location.href = 'admin.html';
-        });
-
-        document.getElementById('close-add-menu').addEventListener('click', () => {
-            document.getElementById('add-menu').classList.remove('active');
-        });
-
-        document.getElementById('close-ai-add-menu').addEventListener('click', () => {
-            document.getElementById('ai-add-menu').classList.remove('active');
-            resetAIPopup();
-        });
-
-        document.getElementById('close-card-list-menu').addEventListener('click', () => {
-            document.getElementById('card-list-menu').classList.remove('active');
-        });
-
-        document.getElementById('close-learn-menu').addEventListener('click', () => {
-            document.getElementById('learn-menu').classList.remove('active');
-        });
-
-        document.getElementById('close-review-menu').addEventListener('click', () => {
-            document.getElementById('review-menu').classList.remove('active');
-        });
-
-        document.getElementById('close-library-menu').addEventListener('click', () => {
-            document.getElementById('library-menu').classList.remove('active');
-        });
-
-        document.getElementById('close-analytics-menu').addEventListener('click', () => {
-            document.getElementById('analytics-menu').classList.remove('active');
-        });
-
-        document.addEventListener('click', (e) => {
-            const aiPopup = document.getElementById('ai-add-menu');
-            if (aiPopup.classList.contains('active') && e.target === aiPopup) {
-                aiPopup.classList.remove('active');
+        // ============================================================
+        // KHỞI TẠO SỰ KIỆN
+        // ============================================================
+        function initEventListeners() {
+            // Đóng popup khi click ra ngoài
+            const allPopups = document.querySelectorAll('.pop-up');
+            for (let i = 0; i < allPopups.length; i++) {
+                const popup = allPopups[i];
+                popup.addEventListener('click', function(e) {
+                    if (e.target === popup) {
+                        popup.classList.remove('active');
+                        if (popup.id === 'ai-add-menu') {
+                            resetAIPopup();
+                        }
+                    }
+                });
+            }
+            
+            // Nút đăng nhập
+            const loginBtn = document.getElementById('login-btn');
+            loginBtn.addEventListener('click', function() {
+                window.location.href = 'login.html';
+            });
+            
+            // Nút Thêm từ
+            const addBtn = document.getElementById('add');
+            addBtn.addEventListener('click', function() {
+                document.getElementById('add-menu').classList.add('active');
+            });
+            
+            // Nút Thêm từ bằng AI
+            const aiAddBtn = document.getElementById('ai-add');
+            aiAddBtn.addEventListener('click', function() {
                 resetAIPopup();
-            }
-        });
-
-        document.getElementById('flashcard').addEventListener('click', (e) => {
-            if (!e.target.closest('.back-actions')) {
-                document.getElementById('flashcard').classList.toggle('flipped');
-                document.getElementById('attention-reveal').style.display = 'none';
-                document.getElementById('attention-drag').style.display = 'block';
-            }
-        });
-
-        document.getElementById('review-flashcard').addEventListener('click', (e) => {
-            if (!e.target.closest('.back-actions')) {
-                document.getElementById('review-flashcard').classList.toggle('flipped');
-                document.getElementById('attention-reveal-review').style.display = 'none';
-                document.getElementById('attention-drag-review').style.display = 'block';
-            }
-        });
-
-        document.getElementById('nav-home').addEventListener('click', () => {
-            document.querySelectorAll('.nav-item').forEach(item => {
-                item.classList.remove('active');
+                document.getElementById('ai-add-menu').classList.add('active');
             });
-            document.getElementById('nav-home').classList.add('active');
-        });
-
-        document.getElementById('nav-admin').addEventListener('click', () => {
-            document.querySelectorAll('.nav-item').forEach(item => {
-                item.classList.remove('active');
+            
+            // Nút Danh sách
+            const listBtn = document.getElementById('list');
+            listBtn.addEventListener('click', function() {
+                document.getElementById('card-list-menu').classList.add('active');
             });
-            document.getElementById('nav-admin').classList.add('active');
-        });
+            
+            // Nút Thư viện
+            const libraryBtn = document.getElementById('library');
+            libraryBtn.addEventListener('click', function() {
+                document.getElementById('library-menu').classList.add('active');
+            });
+            
+            // Nút Thống kê
+            const analyticsBtn = document.getElementById('analytics');
+            analyticsBtn.addEventListener('click', function() {
+                document.getElementById('analytics-menu').classList.add('active');
+                loadAnalyticsData();
+            });
+            
+            // Nút Lớp học
+            const classroomBtn = document.getElementById('classroom');
+            classroomBtn.addEventListener('click', function() {
+                window.open('thi.html', '_blank');
+            });
+            
+            // Nút Bắt đầu học
+            const startBtn = document.getElementById('start');
+            startBtn.addEventListener('click', function() {
+                if (userCards.length === 0) {
+                    alert('Bạn chưa có thẻ nào để học! Hãy thêm một số thẻ trước.');
+                    return;
+                }
+                
+                cardsToLearn = [];
+                for (let i = 0; i < userCards.length; i++) {
+                    const card = userCards[i];
+                    if (card.status === 'learning' || !card.status) {
+                        cardsToLearn.push(card);
+                    }
+                }
+                
+                if (cardsToLearn.length === 0) {
+                    alert('Tất cả các thẻ của bạn đã được học!');
+                    return;
+                }
+                
+                // Xáo trộn mảng
+                for (let i = cardsToLearn.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    const temp = cardsToLearn[i];
+                    cardsToLearn[i] = cardsToLearn[j];
+                    cardsToLearn[j] = temp;
+                }
+                
+                currentCardIndex = 0;
+                showCard();
+                document.getElementById('learn-menu').classList.add('active');
+            });
+            
+            // Nút Ôn tập
+            const reviewBtn = document.getElementById('review');
+            reviewBtn.addEventListener('click', function() {
+                if (userCards.length === 0) {
+                    alert('Bạn chưa có thẻ nào để ôn tập!');
+                    return;
+                }
+                
+                cardsToReview = [];
+                for (let i = 0; i < userCards.length; i++) {
+                    const card = userCards[i];
+                    if (card.status === 'known') {
+                        cardsToReview.push(card);
+                    }
+                }
+                
+                if (cardsToReview.length === 0) {
+                    alert('Bạn chưa có từ nào để ôn tập! Hãy học một số từ trước.');
+                    return;
+                }
+                
+                // Xáo trộn mảng
+                for (let i = cardsToReview.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    const temp = cardsToReview[i];
+                    cardsToReview[i] = cardsToReview[j];
+                    cardsToReview[j] = temp;
+                }
+                
+                currentCardIndex = 0;
+                showReviewCard();
+                document.getElementById('review-menu').classList.add('active');
+            });
+            
+            // Nút đóng popup (dấu X)
+            const closeButtons = document.querySelectorAll('.close');
+            for (let i = 0; i < closeButtons.length; i++) {
+                const btn = closeButtons[i];
+                btn.addEventListener('click', function() {
+                    const popup = this.closest('.pop-up');
+                    popup.classList.remove('active');
+                    if (popup && popup.id === 'ai-add-menu') {
+                        resetAIPopup();
+                    }
+                });
+            }
+            
+            // Tab trong danh sách thẻ
+            const tabLearning = document.getElementById('tab-learning');
+            const tabMastered = document.getElementById('tab-mastered');
+            const cardListDiv = document.getElementById('card-list');
+            const masteredListDiv = document.getElementById('mastered-list');
+            
+            tabLearning.addEventListener('click', function() {
+                tabLearning.classList.add('active');
+                tabMastered.classList.remove('active');
+                cardListDiv.style.display = 'block';
+                masteredListDiv.style.display = 'none';
+            });
+            
+            tabMastered.addEventListener('click', function() {
+                tabMastered.classList.add('active');
+                tabLearning.classList.remove('active');
+                cardListDiv.style.display = 'none';
+                masteredListDiv.style.display = 'block';
+            });
+            
+            // Nút thêm từ chính (có loading overlay)
+            const submitBtn = document.getElementById('submit');
+            submitBtn.addEventListener('click', async function() {
+                const wordInput = document.getElementById('word');
+                const word = wordInput.value.trim();
+                
+                if (!word) {
+                    alert('Vui lòng nhập từ tiếng Anh!');
+                    return;
+                }
+                
+                const user = auth.currentUser;
+                if (!user) {
+                    return;
+                }
+                
+                showLoading('AI đang tạo từ "' + word + '"...');
+                
+                const wordData = await getFullWordDataFromAI(word);
+                
+                const finalMeaning = wordData.meaning || word;
+                const finalExample = wordData.example || '';
+                const finalPronunciation = wordData.pronunciation || '';
+                const finalExampleTranslation = wordData.exampleTranslation || '';
+                
+                db.collection('users').doc(user.uid).collection('cards').add({
+                    word: word,
+                    meaning: finalMeaning,
+                    example: finalExample,
+                    pronunciation: finalPronunciation,
+                    exampleTranslation: finalExampleTranslation,
+                    status: 'learning',
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                })
+                .then(function() {
+                    wordInput.value = '';
+                    document.getElementById('add-menu').classList.remove('active');
+                    showAlert('Đã thêm từ "' + word + '" thành công!');
+                    hideLoading();
+                })
+                .catch(function(error) {
+                    console.error('Error adding card: ', error);
+                    alert('Có lỗi xảy ra khi thêm từ!');
+                    hideLoading();
+                });
+            });
+            
+            // Nút tạo từ vựng bằng AI (có loading overlay toàn màn hình)
+            const generateBtn = document.getElementById('generate-words');
+            generateBtn.addEventListener('click', async function() {
+                const topic = document.getElementById('ai-topic').value.trim();
+                const level = document.getElementById('ai-level').value;
+                const count = parseInt(document.getElementById('ai-count').value);
+                
+                if (!topic) {
+                    alert('Vui lòng nhập chủ đề từ vựng!');
+                    return;
+                }
+                
+                if (count < 1 || count > 30) {
+                    alert('Số lượng từ phải từ 1 đến 30!');
+                    return;
+                }
+                
+                const originalHTML = generateBtn.innerHTML;
+                generateBtn.disabled = true;
+                generateBtn.innerHTML = 'Đang tạo...';
+                
+                showLoading('AI đang tạo ' + count + ' từ vựng về chủ đề "' + topic + '"...');
+                
+                try {
+                    const result = await generateVocabularyWithAI(topic, level, count);
+                    aiGeneratedWords = result.words || [];
+                    
+                    if (aiGeneratedWords.length === 0) {
+                        throw new Error('Không tạo được từ vựng');
+                    }
+                    
+                    displayAIWords(aiGeneratedWords);
+                    document.getElementById('ai-results').style.display = 'block';
+                    hideLoading();
+                } catch (error) {
+                    console.error('Error:', error);
+                    hideLoading();
+                    alert('Có lỗi xảy ra khi tạo từ vựng: ' + error.message);
+                } finally {
+                    generateBtn.innerHTML = originalHTML;
+                    generateBtn.disabled = false;
+                }
+            });
+            
+            // Nút thêm tất cả từ AI
+            const addAllBtn = document.getElementById('add-all-words');
+            addAllBtn.addEventListener('click', function() {
+                if (aiGeneratedWords.length === 0) {
+                    return;
+                }
+                addAllAIWords();
+            });
+            
+            // Lật thẻ
+            const flashcard = document.getElementById('flashcard');
+            flashcard.addEventListener('click', function(e) {
+                if (!e.target.closest('.back-actions')) {
+                    flashcard.classList.toggle('flipped');
+                }
+            });
+            
+            const reviewFlashcard = document.getElementById('review-flashcard');
+            reviewFlashcard.addEventListener('click', function(e) {
+                if (!e.target.closest('.back-actions')) {
+                    reviewFlashcard.classList.toggle('flipped');
+                }
+            });
+        }
 
-        document.getElementById('tab-learning').addEventListener('click', () => {
-            document.getElementById('tab-learning').classList.add('active');
-            document.getElementById('tab-mastered').classList.remove('active');
-            document.getElementById('card-list').style.display = 'block';
-            document.getElementById('mastered-list').style.display = 'none';
+        // ============================================================
+        // XỬ LÝ ĐĂNG NHẬP
+        // ============================================================
+        auth.onAuthStateChanged(function(user) {
+            if (user) {
+                loadUserCards();
+                loadLibraryCategories();
+            } else {
+                auth.signInAnonymously()
+                    .then(function() {
+                        console.log('Đã đăng nhập ẩn danh');
+                    })
+                    .catch(function(error) {
+                        console.error('Lỗi đăng nhập ẩn danh:', error);
+                    });
+            }
         });
-
-        document.getElementById('tab-mastered').addEventListener('click', () => {
-            document.getElementById('tab-mastered').classList.add('active');
-            document.getElementById('tab-learning').classList.remove('active');
-            document.getElementById('card-list').style.display = 'none';
-            document.getElementById('mastered-list').style.display = 'block';
-        });
+        
+        // ============================================================
+        // KHỞI CHẠY
+        // ============================================================
+        initEventListeners();
     </script>
 </body>
 </html>
