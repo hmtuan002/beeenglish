@@ -41,7 +41,6 @@
             z-index: 0;
         }
 
-        /* Thanh vàng và nền trắng kết hợp làm một khối liền mạch */
         #app {
             position: relative;
             z-index: 1;
@@ -334,7 +333,6 @@
             box-shadow: none;
         }
 
-        /* Loading Overlay - nền tối đen mờ, đè lên toàn bộ màn hình */
         .loading-overlay {
             position: fixed;
             top: 0;
@@ -350,7 +348,6 @@
             gap: 20px;
         }
 
-        /* Vòng xoay */
         .loading-overlay .spinner {
             width: 60px;
             height: 60px;
@@ -360,7 +357,6 @@
             animation: spin 0.8s linear infinite;
         }
 
-        /* Chữ - không viền, không background */
         .loading-overlay .loading-text {
             color: white;
             font-size: 18px;
@@ -893,6 +889,16 @@
             </div>
         </div>
 
+        <!-- Popup xem chi tiết chủ đề -->
+        <div class="pop-up" id="category-detail-menu">
+            <div class="pop-up-content">
+                <span id="close-category-detail" class="material-symbols-outlined close">close</span>
+                <h2 id="category-detail-title">Chi tiết chủ đề</h2>
+                <div id="category-detail-words" class="ai-words-list"></div>
+                <button type="button" id="add-all-category-words" class="btn" style="margin-top: 10px;">Thêm tất cả vào bộ thẻ của tôi</button>
+            </div>
+        </div>
+
         <!-- Nội dung chính -->
         <div id="content">
             <div class="dashboard">
@@ -964,7 +970,7 @@
         </div>
     </div>
 
-    <!-- Loading Overlay - đè lên toàn bộ màn hình, không logo, không viền -->
+    <!-- Loading Overlay -->
     <div id="loading-overlay" style="display: none;" class="loading-overlay">
         <div class="spinner"></div>
         <div class="loading-text" id="loading-text">AI đang tạo từ vựng...</div>
@@ -1001,6 +1007,8 @@
         let cardsToReview = [];
         let aiGeneratedWords = [];
         let progressChart = null;
+        let currentCategoryWords = [];
+        let currentCategoryInfo = null;
 
         // ============================================================
         // HÀM LẤY API KEY
@@ -1302,9 +1310,13 @@
                 }
             }
             
-            document.querySelector('#green .number').textContent = toLearn;
-            document.querySelector('#blue .number').textContent = known;
-            document.querySelector('#yellow .number').textContent = mastered;
+            const greenElement = document.querySelector('#green .number');
+            const blueElement = document.querySelector('#blue .number');
+            const yellowElement = document.querySelector('#yellow .number');
+            
+            if (greenElement) greenElement.textContent = toLearn;
+            if (blueElement) blueElement.textContent = known;
+            if (yellowElement) yellowElement.textContent = mastered;
         }
 
         // ============================================================
@@ -1328,6 +1340,8 @@
         function updateCardList() {
             const cardListDiv = document.getElementById('card-list');
             const masteredListDiv = document.getElementById('mastered-list');
+            
+            if (!cardListDiv || !masteredListDiv) return;
             
             cardListDiv.innerHTML = '';
             masteredListDiv.innerHTML = '';
@@ -1466,106 +1480,355 @@
         }
 
         // ============================================================
-        // TẢI THƯ VIỆN CHỦ ĐỀ
+        // TẢI THƯ VIỆN CHỦ ĐỀ (LẤY TỪ FIRESTORE - DO ADMIN THÊM)
         // ============================================================
         function loadLibraryCategories() {
             const libraryContent = document.getElementById('library-content');
+            if (!libraryContent) return;
             
-            db.collection('categories').get().then(function(snapshot) {
-                libraryContent.innerHTML = '';
-                
-                if (snapshot.empty) {
-                    libraryContent.innerHTML = '<p>Chưa có chủ đề nào trong thư viện.</p>';
+            libraryContent.innerHTML = '<div class="category-grid"><p>Đang tải thư viện chủ đề...</p></div>';
+            
+            // Lấy tất cả categories từ collection categories (do admin thêm)
+            db.collection('categories').get().then(function(categoriesSnapshot) {
+                if (categoriesSnapshot.empty) {
+                    libraryContent.innerHTML = '<div class="category-grid"><p>Chưa có chủ đề nào trong thư viện. Admin hãy thêm chủ đề mới!</p></div>';
                     return;
                 }
                 
-                snapshot.forEach(function(doc) {
-                    const category = doc.data();
-                    const categoryElement = document.createElement('div');
-                    categoryElement.className = 'category-card';
+                libraryContent.innerHTML = '';
+                
+                // Dùng Promise để đếm số lượng từ trong mỗi category
+                const categoryPromises = [];
+                const categoriesArray = [];
+                
+                categoriesSnapshot.forEach(function(categoryDoc) {
+                    const category = categoryDoc.data();
+                    const categoryId = categoryDoc.id;
                     
-                    categoryElement.innerHTML = `
-                        <div class="category-icon" style="background-image: url('${category.icon || 'https://learnenglishwithaurora.github.io/homepage/flashcard.svg'}')"></div>
-                        <h3>${escapeHtml(category.name)}</h3>
-                        <p>${escapeHtml(category.description || 'Không có mô tả')}</p>
-                        <p><strong>${category.cardCount || 0}</strong> từ</p>
-                        <button class="add-category-btn" data-id="${doc.id}">Thêm vào bộ thẻ</button>
-                    `;
+                    const promise = db.collection('systemCards').where('categoryId', '==', categoryId).get()
+                        .then(function(cardsSnapshot) {
+                            return {
+                                id: categoryId,
+                                name: category.name,
+                                description: category.description || 'Không có mô tả',
+                                icon: category.icon || 'https://learnenglishwithaurora.github.io/homepage/flashcard.svg',
+                                cardCount: cardsSnapshot.size,
+                                cards: []
+                            };
+                        });
                     
-                    libraryContent.appendChild(categoryElement);
+                    categoryPromises.push(promise);
                 });
                 
-                const addButtons = document.querySelectorAll('.add-category-btn');
-                for (let i = 0; i < addButtons.length; i++) {
-                    const button = addButtons[i];
-                    button.addEventListener('click', function(e) {
-                        const categoryId = e.target.getAttribute('data-id');
-                        addCategoryToMyCards(categoryId);
-                    });
-                }
+                Promise.all(categoryPromises).then(function(categoriesWithCounts) {
+                    for (let i = 0; i < categoriesWithCounts.length; i++) {
+                        const cat = categoriesWithCounts[i];
+                        const categoryElement = document.createElement('div');
+                        categoryElement.className = 'category-card';
+                        
+                        categoryElement.innerHTML = `
+                            <div class="category-icon" style="background-image: url('${escapeHtml(cat.icon)}')"></div>
+                            <h3>${escapeHtml(cat.name)}</h3>
+                            <p>${escapeHtml(cat.description)}</p>
+                            <p><strong>${cat.cardCount}</strong> từ</p>
+                            <button class="add-category-btn" data-id="${cat.id}" data-name="${escapeHtml(cat.name)}">Thêm vào bộ thẻ</button>
+                            <button class="view-category-btn" data-id="${cat.id}" data-name="${escapeHtml(cat.name)}" style="margin-top: 10px; background: #2196F3; color: white; border: none; padding: 8px 15px; border-radius: 20px; cursor: pointer;">Xem chi tiết</button>
+                        `;
+                        
+                        libraryContent.appendChild(categoryElement);
+                    }
+                    
+                    // Gắn sự kiện cho nút "Thêm vào bộ thẻ"
+                    const addButtons = document.querySelectorAll('.add-category-btn');
+                    for (let i = 0; i < addButtons.length; i++) {
+                        const button = addButtons[i];
+                        button.addEventListener('click', function(e) {
+                            e.stopPropagation();
+                            const categoryId = e.target.getAttribute('data-id');
+                            const categoryName = e.target.getAttribute('data-name');
+                            addCategoryToMyCards(categoryId, categoryName);
+                        });
+                    }
+                    
+                    // Gắn sự kiện cho nút "Xem chi tiết"
+                    const viewButtons = document.querySelectorAll('.view-category-btn');
+                    for (let i = 0; i < viewButtons.length; i++) {
+                        const button = viewButtons[i];
+                        button.addEventListener('click', function(e) {
+                            e.stopPropagation();
+                            const categoryId = e.target.getAttribute('data-id');
+                            const categoryName = e.target.getAttribute('data-name');
+                            showCategoryDetail(categoryId, categoryName);
+                        });
+                    }
+                });
+            }).catch(function(error) {
+                console.error('Error loading categories:', error);
+                libraryContent.innerHTML = '<div class="category-grid"><p>Có lỗi khi tải thư viện chủ đề!</p></div>';
             });
         }
-
+        
         // ============================================================
-        // THÊM CHỦ ĐỀ VÀO BỘ THẺ CỦA TÔI
+        // HIỂN THỊ CHI TIẾT CHỦ ĐỀ (CÁC TỪ TRONG CHỦ ĐỀ)
         // ============================================================
-        function addCategoryToMyCards(categoryId) {
+        function showCategoryDetail(categoryId, categoryName) {
+            const modal = document.getElementById('category-detail-menu');
+            const titleEl = document.getElementById('category-detail-title');
+            const wordsContainer = document.getElementById('category-detail-words');
+            const addAllBtn = document.getElementById('add-all-category-words');
+            
+            if (!modal || !titleEl || !wordsContainer || !addAllBtn) return;
+            
+            titleEl.textContent = '📚 Từ vựng chủ đề: ' + categoryName;
+            wordsContainer.innerHTML = '<div style="text-align: center; padding: 20px;">Đang tải từ vựng...</div>';
+            
+            modal.classList.add('active');
+            
+            // Lấy tất cả systemCards thuộc category này
+            db.collection('systemCards').where('categoryId', '==', categoryId).get()
+                .then(function(snapshot) {
+                    if (snapshot.empty) {
+                        wordsContainer.innerHTML = '<div style="text-align: center; padding: 20px; color: #666;">Chủ đề này chưa có từ vựng nào.</div>';
+                        currentCategoryWords = [];
+                        addAllBtn.style.display = 'none';
+                        return;
+                    }
+                    
+                    currentCategoryWords = [];
+                    wordsContainer.innerHTML = '';
+                    
+                    snapshot.forEach(function(doc) {
+                        const card = doc.data();
+                        card.id = doc.id;
+                        card.categoryId = categoryId;
+                        card.categoryName = categoryName;
+                        currentCategoryWords.push(card);
+                        
+                        const wordItem = document.createElement('div');
+                        wordItem.className = 'ai-word-item';
+                        
+                        let html = '';
+                        html += '<div class="ai-word-content">';
+                        html += '<strong>' + escapeHtml(card.word) + '</strong>';
+                        if (card.pronunciation) {
+                            html += ' <span style="font-size: 0.85em; color: #666;">/' + escapeHtml(card.pronunciation) + '/</span>';
+                        }
+                        html += '<br>';
+                        html += '<span style="color: #2196F3;">' + escapeHtml(card.meaning) + '</span><br>';
+                        if (card.example) {
+                            html += '<small><em>' + escapeHtml(card.example) + '</em></small><br>';
+                        }
+                        if (card.exampleTranslation) {
+                            html += '<small style="color: #4CAF50;">→ ' + escapeHtml(card.exampleTranslation) + '</small>';
+                        }
+                        html += '</div>';
+                        html += '<div class="ai-word-actions">';
+                        html += '<button class="ai-add-btn add-single-word" data-word-id="' + doc.id + '">➕ Thêm</button>';
+                        html += '</div>';
+                        
+                        wordItem.innerHTML = html;
+                        wordsContainer.appendChild(wordItem);
+                    });
+                    
+                    addAllBtn.style.display = 'block';
+                    
+                    // Gắn sự kiện cho từng nút thêm
+                    const singleAddButtons = document.querySelectorAll('.add-single-word');
+                    for (let i = 0; i < singleAddButtons.length; i++) {
+                        const btn = singleAddButtons[i];
+                        btn.addEventListener('click', function(e) {
+                            const wordId = e.target.getAttribute('data-word-id');
+                            const wordData = currentCategoryWords.find(function(w) { return w.id === wordId; });
+                            if (wordData) {
+                                addSingleWordToUserCollection(wordData, categoryName);
+                            }
+                        });
+                    }
+                })
+                .catch(function(error) {
+                    console.error('Error loading category words:', error);
+                    wordsContainer.innerHTML = '<div style="text-align: center; padding: 20px; color: red;">Có lỗi khi tải từ vựng!</div>';
+                });
+        }
+        
+        // ============================================================
+        // THÊM MỘT TỪ VÀO BỘ SƯU TẬP CỦA NGƯỜI DÙNG
+        // ============================================================
+        function addSingleWordToUserCollection(wordData, categoryName) {
             const user = auth.currentUser;
             if (!user) {
+                showAlert('Vui lòng đăng nhập để thêm từ!');
                 return;
             }
             
-            db.collection('categories').doc(categoryId).get().then(function(categoryDoc) {
-                if (!categoryDoc.exists) {
-                    return;
-                }
-                
-                const category = categoryDoc.data();
-                
-                db.collection('systemCards')
-                  .where('categoryId', '==', categoryId)
-                  .get()
-                  .then(function(snapshot) {
-                      let addedCount = 0;
-                      const totalToAdd = snapshot.size;
-                      
-                      if (totalToAdd === 0) {
-                          showAlert('Chủ đề "' + category.name + '" không có từ nào.');
-                          return;
-                      }
-                      
-                      snapshot.forEach(function(doc) {
-                          const card = doc.data();
-                          
-                          db.collection('users').doc(user.uid).collection('cards')
+            const cardData = {
+                word: wordData.word,
+                meaning: wordData.meaning,
+                example: wordData.example || '',
+                pronunciation: wordData.pronunciation || '',
+                exampleTranslation: wordData.exampleTranslation || '',
+                category: categoryName,
+                status: 'learning',
+                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+            };
+            
+            db.collection('users').doc(user.uid).collection('cards')
+                .where('word', '==', wordData.word)
+                .get()
+                .then(function(existingCards) {
+                    if (existingCards.empty) {
+                        return db.collection('users').doc(user.uid).collection('cards').add(cardData);
+                    } else {
+                        throw new Error('Từ này đã tồn tại trong bộ thẻ của bạn!');
+                    }
+                })
+                .then(function() {
+                    showAlert('Đã thêm từ "' + wordData.word + '" vào bộ thẻ của bạn!');
+                })
+                .catch(function(error) {
+                    if (error.message === 'Từ này đã tồn tại trong bộ thẻ của bạn!') {
+                        showAlert(error.message);
+                    } else {
+                        console.error('Error adding word:', error);
+                        showAlert('Có lỗi xảy ra khi thêm từ!');
+                    }
+                });
+        }
+
+        // ============================================================
+        // THÊM TOÀN BỘ CHỦ ĐỀ VÀO BỘ THẺ CỦA NGƯỜI DÙNG
+        // ============================================================
+        function addCategoryToMyCards(categoryId, categoryName) {
+            const user = auth.currentUser;
+            if (!user) {
+                showAlert('Vui lòng đăng nhập để thêm từ!');
+                return;
+            }
+            
+            showLoading('Đang thêm từ vựng từ chủ đề "' + categoryName + '"...');
+            
+            db.collection('systemCards').where('categoryId', '==', categoryId).get()
+                .then(function(snapshot) {
+                    if (snapshot.empty) {
+                        hideLoading();
+                        showAlert('Chủ đề "' + categoryName + '" không có từ nào.');
+                        return;
+                    }
+                    
+                    let addedCount = 0;
+                    let skippedCount = 0;
+                    const totalToAdd = snapshot.size;
+                    
+                    const promises = [];
+                    
+                    snapshot.forEach(function(doc) {
+                        const card = doc.data();
+                        const promise = db.collection('users').doc(user.uid).collection('cards')
                             .where('word', '==', card.word)
                             .get()
                             .then(function(existingCards) {
                                 if (existingCards.empty) {
-                                    db.collection('users').doc(user.uid).collection('cards').add({
+                                    return db.collection('users').doc(user.uid).collection('cards').add({
                                         word: card.word,
                                         meaning: card.meaning,
                                         example: card.example || '',
                                         pronunciation: card.pronunciation || '',
                                         exampleTranslation: card.exampleTranslation || '',
-                                        category: category.name,
+                                        category: categoryName,
                                         status: 'learning',
                                         createdAt: firebase.firestore.FieldValue.serverTimestamp()
                                     }).then(function() {
                                         addedCount++;
-                                        if (addedCount === totalToAdd) {
-                                            showAlert('Đã thêm ' + addedCount + ' từ từ chủ đề "' + category.name + '" vào bộ thẻ của bạn!');
-                                        }
                                     });
                                 } else {
-                                    addedCount++;
-                                    if (addedCount === totalToAdd) {
-                                        showAlert('Đã thêm ' + addedCount + ' từ từ chủ đề "' + category.name + '" vào bộ thẻ của bạn!');
-                                    }
+                                    skippedCount++;
+                                    return Promise.resolve();
                                 }
                             });
-                      });
-                  });
+                        promises.push(promise);
+                    });
+                    
+                    Promise.all(promises).then(function() {
+                        hideLoading();
+                        if (addedCount > 0) {
+                            showAlert('Đã thêm ' + addedCount + ' từ từ chủ đề "' + categoryName + '" vào bộ thẻ của bạn!' + (skippedCount > 0 ? ' (' + skippedCount + ' từ đã tồn tại)' : ''));
+                        } else {
+                            showAlert('Tất cả các từ trong chủ đề "' + categoryName + '" đã có trong bộ thẻ của bạn!');
+                        }
+                    });
+                })
+                .catch(function(error) {
+                    console.error('Error adding category:', error);
+                    hideLoading();
+                    showAlert('Có lỗi xảy ra khi thêm chủ đề!');
+                });
+        }
+        
+        // ============================================================
+        // THÊM TẤT CẢ TỪ TRONG CHI TIẾT CHỦ ĐỀ
+        // ============================================================
+        function addAllCurrentCategoryWords() {
+            const user = auth.currentUser;
+            if (!user) {
+                showAlert('Vui lòng đăng nhập để thêm từ!');
+                return;
+            }
+            
+            if (!currentCategoryWords || currentCategoryWords.length === 0) {
+                showAlert('Không có từ nào để thêm!');
+                return;
+            }
+            
+            showLoading('Đang thêm tất cả từ vựng...');
+            
+            let addedCount = 0;
+            let skippedCount = 0;
+            const totalToAdd = currentCategoryWords.length;
+            const categoryName = currentCategoryWords[0]?.categoryName || 'Chủ đề';
+            
+            const promises = [];
+            
+            for (let i = 0; i < currentCategoryWords.length; i++) {
+                const card = currentCategoryWords[i];
+                const promise = db.collection('users').doc(user.uid).collection('cards')
+                    .where('word', '==', card.word)
+                    .get()
+                    .then(function(existingCards) {
+                        if (existingCards.empty) {
+                            return db.collection('users').doc(user.uid).collection('cards').add({
+                                word: card.word,
+                                meaning: card.meaning,
+                                example: card.example || '',
+                                pronunciation: card.pronunciation || '',
+                                exampleTranslation: card.exampleTranslation || '',
+                                category: categoryName,
+                                status: 'learning',
+                                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                            }).then(function() {
+                                addedCount++;
+                            });
+                        } else {
+                            skippedCount++;
+                            return Promise.resolve();
+                        }
+                    });
+                promises.push(promise);
+            }
+            
+            Promise.all(promises).then(function() {
+                hideLoading();
+                if (addedCount > 0) {
+                    showAlert('Đã thêm ' + addedCount + ' từ vào bộ thẻ của bạn!' + (skippedCount > 0 ? ' (' + skippedCount + ' từ đã tồn tại)' : ''));
+                    // Đóng modal sau khi thêm
+                    const modal = document.getElementById('category-detail-menu');
+                    if (modal) modal.classList.remove('active');
+                } else {
+                    showAlert('Tất cả các từ đã có trong bộ thẻ của bạn!');
+                }
+            }).catch(function(error) {
+                console.error('Error adding all words:', error);
+                hideLoading();
+                showAlert('Có lỗi xảy ra khi thêm từ!');
             });
         }
 
@@ -1574,13 +1837,16 @@
         // ============================================================
         function showCard() {
             if (currentCardIndex >= cardsToLearn.length) {
-                document.getElementById('learn-menu').classList.remove('active');
-                alert('Chúc mừng! Bạn đã học xong tất cả các thẻ!');
+                const learnMenu = document.getElementById('learn-menu');
+                if (learnMenu) learnMenu.classList.remove('active');
+                showAlert('Chúc mừng! Bạn đã học xong tất cả các thẻ!');
                 return;
             }
             
             const card = cardsToLearn[currentCardIndex];
             const flashcard = document.getElementById('flashcard');
+            
+            if (!flashcard) return;
             
             flashcard.classList.remove('flipped');
             
@@ -1589,8 +1855,10 @@
             wordContainer.className = 'word-with-voice';
             wordContainer.innerHTML = '<h1>' + escapeHtml(card.word) + '</h1>';
             wordContainer.appendChild(createVoiceButton(card.word));
-            front.innerHTML = '';
-            front.appendChild(wordContainer);
+            if (front) {
+                front.innerHTML = '';
+                front.appendChild(wordContainer);
+            }
             
             const back = flashcard.querySelector('.back');
             
@@ -1618,10 +1886,10 @@
             backHtml += '<p id="right">Đã nhớ</p>';
             backHtml += '</div>';
             
-            back.innerHTML = backHtml;
+            if (back) back.innerHTML = backHtml;
             
             if (card.example) {
-                const exampleContainer = back.querySelector('.example-with-voice');
+                const exampleContainer = back ? back.querySelector('.example-with-voice') : null;
                 if (exampleContainer) {
                     const exampleVoiceBtn = createVoiceButton(card.example);
                     exampleVoiceBtn.style.marginLeft = '0';
@@ -1630,26 +1898,30 @@
                 }
             }
             
-            const rightBtn = back.querySelector('#right');
-            rightBtn.addEventListener('click', function() {
-                const user = auth.currentUser;
-                if (!user) {
-                    return;
-                }
-                saveLearningHistory('learned', card.word);
-                db.collection('users').doc(user.uid).collection('cards').doc(card.id).update({
-                    status: 'known'
-                }).then(function() {
-                    currentCardIndex++;
+            const rightBtn = back ? back.querySelector('#right') : null;
+            if (rightBtn) {
+                rightBtn.addEventListener('click', function() {
+                    const user = auth.currentUser;
+                    if (!user) {
+                        return;
+                    }
+                    saveLearningHistory('learned', card.word);
+                    db.collection('users').doc(user.uid).collection('cards').doc(card.id).update({
+                        status: 'known'
+                    }).then(function() {
+                        currentCardIndex++;
+                        showCard();
+                    });
+                });
+            }
+            
+            const wrongBtn = back ? back.querySelector('#wrong') : null;
+            if (wrongBtn) {
+                wrongBtn.addEventListener('click', function() {
+                    cardsToLearn.push(cardsToLearn.splice(currentCardIndex, 1)[0]);
                     showCard();
                 });
-            });
-            
-            const wrongBtn = back.querySelector('#wrong');
-            wrongBtn.addEventListener('click', function() {
-                cardsToLearn.push(cardsToLearn.splice(currentCardIndex, 1)[0]);
-                showCard();
-            });
+            }
         }
 
         // ============================================================
@@ -1657,13 +1929,16 @@
         // ============================================================
         function showReviewCard() {
             if (currentCardIndex >= cardsToReview.length) {
-                document.getElementById('review-menu').classList.remove('active');
-                alert('Chúc mừng! Bạn đã ôn tập xong tất cả các thẻ!');
+                const reviewMenu = document.getElementById('review-menu');
+                if (reviewMenu) reviewMenu.classList.remove('active');
+                showAlert('Chúc mừng! Bạn đã ôn tập xong tất cả các thẻ!');
                 return;
             }
             
             const card = cardsToReview[currentCardIndex];
             const flashcard = document.getElementById('review-flashcard');
+            
+            if (!flashcard) return;
             
             flashcard.classList.remove('flipped');
             
@@ -1672,8 +1947,10 @@
             wordContainer.className = 'word-with-voice';
             wordContainer.innerHTML = '<h1>' + escapeHtml(card.word) + '</h1>';
             wordContainer.appendChild(createVoiceButton(card.word));
-            front.innerHTML = '';
-            front.appendChild(wordContainer);
+            if (front) {
+                front.innerHTML = '';
+                front.appendChild(wordContainer);
+            }
             
             const back = flashcard.querySelector('.back');
             
@@ -1701,10 +1978,10 @@
             backHtml += '<p id="review-right">Đã thuộc</p>';
             backHtml += '</div>';
             
-            back.innerHTML = backHtml;
+            if (back) back.innerHTML = backHtml;
             
             if (card.example) {
-                const exampleContainer = back.querySelector('.example-with-voice');
+                const exampleContainer = back ? back.querySelector('.example-with-voice') : null;
                 if (exampleContainer) {
                     const exampleVoiceBtn = createVoiceButton(card.example);
                     exampleVoiceBtn.style.marginLeft = '0';
@@ -1713,26 +1990,30 @@
                 }
             }
             
-            const rightBtn = back.querySelector('#review-right');
-            rightBtn.addEventListener('click', function() {
-                const user = auth.currentUser;
-                if (!user) {
-                    return;
-                }
-                saveLearningHistory('mastered', card.word);
-                db.collection('users').doc(user.uid).collection('cards').doc(card.id).update({
-                    status: 'mastered'
-                }).then(function() {
-                    currentCardIndex++;
+            const rightBtn = back ? back.querySelector('#review-right') : null;
+            if (rightBtn) {
+                rightBtn.addEventListener('click', function() {
+                    const user = auth.currentUser;
+                    if (!user) {
+                        return;
+                    }
+                    saveLearningHistory('mastered', card.word);
+                    db.collection('users').doc(user.uid).collection('cards').doc(card.id).update({
+                        status: 'mastered'
+                    }).then(function() {
+                        currentCardIndex++;
+                        showReviewCard();
+                    });
+                });
+            }
+            
+            const wrongBtn = back ? back.querySelector('#review-wrong') : null;
+            if (wrongBtn) {
+                wrongBtn.addEventListener('click', function() {
+                    cardsToReview.push(cardsToReview.splice(currentCardIndex, 1)[0]);
                     showReviewCard();
                 });
-            });
-            
-            const wrongBtn = back.querySelector('#review-wrong');
-            wrongBtn.addEventListener('click', function() {
-                cardsToReview.push(cardsToReview.splice(currentCardIndex, 1)[0]);
-                showReviewCard();
-            });
+            }
         }
 
         // ============================================================
@@ -1740,6 +2021,8 @@
         // ============================================================
         function displayAIWords(words) {
             const container = document.getElementById('ai-words-container');
+            if (!container) return;
+            
             container.innerHTML = '';
             
             for (let i = 0; i < words.length; i++) {
@@ -1786,10 +2069,12 @@
             const user = auth.currentUser;
             
             if (!user) {
+                showAlert('Vui lòng đăng nhập để thêm từ!');
                 return;
             }
             
-            const topic = document.getElementById('ai-topic').value;
+            const topic = document.getElementById('ai-topic');
+            const topicValue = topic ? topic.value : '';
             
             const cardData = {
                 word: wordData.english,
@@ -1797,7 +2082,7 @@
                 example: wordData.example || '',
                 pronunciation: wordData.pronunciation || '',
                 exampleTranslation: wordData.exampleTranslation || '',
-                category: topic,
+                category: topicValue,
                 status: 'learning',
                 createdAt: firebase.firestore.FieldValue.serverTimestamp()
             };
@@ -1823,10 +2108,10 @@
                 })
                 .catch(function(error) {
                     if (error.message === 'Từ này đã tồn tại trong bộ thẻ của bạn!') {
-                        alert(error.message);
+                        showAlert(error.message);
                     } else {
                         console.error('Error adding word:', error);
-                        alert('Có lỗi xảy ra khi thêm từ!');
+                        showAlert('Có lỗi xảy ra khi thêm từ!');
                     }
                 });
         }
@@ -1837,50 +2122,65 @@
         function addAllAIWords() {
             const user = auth.currentUser;
             if (!user) {
+                showAlert('Vui lòng đăng nhập để thêm từ!');
                 return;
             }
             
             let addedCount = 0;
+            let skippedCount = 0;
             const totalWords = aiGeneratedWords.length;
-            const topic = document.getElementById('ai-topic').value;
+            const topic = document.getElementById('ai-topic');
+            const topicValue = topic ? topic.value : '';
             
             for (let i = 0; i < aiGeneratedWords.length; i++) {
                 const wordData = aiGeneratedWords[i];
-                
-                const cardData = {
-                    word: wordData.english,
-                    meaning: wordData.vietnamese,
-                    example: wordData.example || '',
-                    pronunciation: wordData.pronunciation || '',
-                    exampleTranslation: wordData.exampleTranslation || '',
-                    category: topic,
-                    status: 'learning',
-                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
-                };
                 
                 db.collection('users').doc(user.uid).collection('cards')
                     .where('word', '==', wordData.english)
                     .get()
                     .then(function(existingCards) {
                         if (existingCards.empty) {
-                            return db.collection('users').doc(user.uid).collection('cards').add(cardData);
-                        }
-                        return Promise.resolve();
-                    })
-                    .then(function() {
-                        addedCount++;
-                        const addBtn = document.querySelector('.ai-add-btn[data-index="' + i + '"]');
-                        if (addBtn) {
-                            addBtn.textContent = 'Đã thêm';
-                            addBtn.classList.add('added');
-                            addBtn.disabled = true;
-                        }
-                        if (addedCount === totalWords) {
-                            showAlert('Đã thêm ' + addedCount + ' từ vào bộ thẻ!');
+                            return db.collection('users').doc(user.uid).collection('cards').add({
+                                word: wordData.english,
+                                meaning: wordData.vietnamese,
+                                example: wordData.example || '',
+                                pronunciation: wordData.pronunciation || '',
+                                exampleTranslation: wordData.exampleTranslation || '',
+                                category: topicValue,
+                                status: 'learning',
+                                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                            }).then(function() {
+                                addedCount++;
+                                const addBtn = document.querySelector('.ai-add-btn[data-index="' + i + '"]');
+                                if (addBtn) {
+                                    addBtn.textContent = 'Đã thêm';
+                                    addBtn.classList.add('added');
+                                    addBtn.disabled = true;
+                                }
+                                if (addedCount + skippedCount === totalWords) {
+                                    showAlert('Đã thêm ' + addedCount + ' từ vào bộ thẻ!' + (skippedCount > 0 ? ' (' + skippedCount + ' từ đã tồn tại)' : ''));
+                                }
+                            });
+                        } else {
+                            skippedCount++;
+                            const addBtn = document.querySelector('.ai-add-btn[data-index="' + i + '"]');
+                            if (addBtn) {
+                                addBtn.textContent = 'Đã có';
+                                addBtn.classList.add('added');
+                                addBtn.disabled = true;
+                            }
+                            if (addedCount + skippedCount === totalWords) {
+                                showAlert('Đã thêm ' + addedCount + ' từ vào bộ thẻ!' + (skippedCount > 0 ? ' (' + skippedCount + ' từ đã tồn tại)' : ''));
+                            }
+                            return Promise.resolve();
                         }
                     })
                     .catch(function(error) {
                         console.error('Error adding word:', error);
+                        skippedCount++;
+                        if (addedCount + skippedCount === totalWords) {
+                            showAlert('Đã thêm ' + addedCount + ' từ vào bộ thẻ!' + (skippedCount > 0 ? ' (' + skippedCount + ' từ lỗi hoặc đã tồn tại)' : ''));
+                        }
                     });
             }
         }
@@ -1931,19 +2231,21 @@
                 updateProgressChart(labels, learnedData, masteredData);
                 
                 const summaryDiv = document.getElementById('analytics-summary');
-                let totalLearned = 0;
-                let totalMastered = 0;
-                
-                for (let i = 0; i < learnedData.length; i++) {
-                    totalLearned += learnedData[i];
-                    totalMastered += masteredData[i];
+                if (summaryDiv) {
+                    let totalLearned = 0;
+                    let totalMastered = 0;
+                    
+                    for (let i = 0; i < learnedData.length; i++) {
+                        totalLearned += learnedData[i];
+                        totalMastered += masteredData[i];
+                    }
+                    
+                    summaryDiv.innerHTML = '';
+                    summaryDiv.innerHTML = '<div style="text-align: center;">';
+                    summaryDiv.innerHTML += '<p><strong>Tổng số từ đã học trong 7 ngày:</strong> ' + totalLearned + '</p>';
+                    summaryDiv.innerHTML += '<p><strong>Tổng số từ đã thuộc trong 7 ngày:</strong> ' + totalMastered + '</p>';
+                    summaryDiv.innerHTML += '</div>';
                 }
-                
-                summaryDiv.innerHTML = '';
-                summaryDiv.innerHTML = '<div style="text-align: center;">';
-                summaryDiv.innerHTML += '<p><strong>Tổng số từ đã học trong 7 ngày:</strong> ' + totalLearned + '</p>';
-                summaryDiv.innerHTML += '<p><strong>Tổng số từ đã thuộc trong 7 ngày:</strong> ' + totalMastered + '</p>';
-                summaryDiv.innerHTML += '</div>';
             });
         }
 
@@ -1951,13 +2253,16 @@
         // CẬP NHẬT BIỂU ĐỒ
         // ============================================================
         function updateProgressChart(labels, learnedData, masteredData) {
-            const ctx = document.getElementById('progress-chart').getContext('2d');
+            const ctx = document.getElementById('progress-chart');
+            if (!ctx) return;
+            
+            const context = ctx.getContext('2d');
             
             if (progressChart) {
                 progressChart.destroy();
             }
             
-            progressChart = new Chart(ctx, {
+            progressChart = new Chart(context, {
                 type: 'line',
                 data: {
                     labels: labels,
@@ -2004,11 +2309,17 @@
         // RESET POPUP AI
         // ============================================================
         function resetAIPopup() {
-            document.getElementById('ai-topic').value = '';
-            document.getElementById('ai-level').selectedIndex = 0;
-            document.getElementById('ai-count').value = '5';
-            document.getElementById('ai-results').style.display = 'none';
-            document.getElementById('ai-words-container').innerHTML = '';
+            const aiTopic = document.getElementById('ai-topic');
+            const aiLevel = document.getElementById('ai-level');
+            const aiCount = document.getElementById('ai-count');
+            const aiResults = document.getElementById('ai-results');
+            const aiWordsContainer = document.getElementById('ai-words-container');
+            
+            if (aiTopic) aiTopic.value = '';
+            if (aiLevel) aiLevel.selectedIndex = 0;
+            if (aiCount) aiCount.value = '5';
+            if (aiResults) aiResults.style.display = 'none';
+            if (aiWordsContainer) aiWordsContainer.innerHTML = '';
             aiGeneratedWords = [];
         }
 
@@ -2032,115 +2343,139 @@
             
             // Nút đăng nhập
             const loginBtn = document.getElementById('login-btn');
-            loginBtn.addEventListener('click', function() {
-                window.location.href = 'login.html';
-            });
+            if (loginBtn) {
+                loginBtn.addEventListener('click', function() {
+                    window.location.href = 'login.html';
+                });
+            }
             
             // Nút Thêm từ
             const addBtn = document.getElementById('add');
-            addBtn.addEventListener('click', function() {
-                document.getElementById('add-menu').classList.add('active');
-            });
+            if (addBtn) {
+                addBtn.addEventListener('click', function() {
+                    const addMenu = document.getElementById('add-menu');
+                    if (addMenu) addMenu.classList.add('active');
+                });
+            }
             
             // Nút Thêm từ bằng AI
             const aiAddBtn = document.getElementById('ai-add');
-            aiAddBtn.addEventListener('click', function() {
-                resetAIPopup();
-                document.getElementById('ai-add-menu').classList.add('active');
-            });
+            if (aiAddBtn) {
+                aiAddBtn.addEventListener('click', function() {
+                    resetAIPopup();
+                    const aiAddMenu = document.getElementById('ai-add-menu');
+                    if (aiAddMenu) aiAddMenu.classList.add('active');
+                });
+            }
             
             // Nút Danh sách
             const listBtn = document.getElementById('list');
-            listBtn.addEventListener('click', function() {
-                document.getElementById('card-list-menu').classList.add('active');
-            });
+            if (listBtn) {
+                listBtn.addEventListener('click', function() {
+                    const cardListMenu = document.getElementById('card-list-menu');
+                    if (cardListMenu) cardListMenu.classList.add('active');
+                });
+            }
             
             // Nút Thư viện
             const libraryBtn = document.getElementById('library');
-            libraryBtn.addEventListener('click', function() {
-                document.getElementById('library-menu').classList.add('active');
-            });
+            if (libraryBtn) {
+                libraryBtn.addEventListener('click', function() {
+                    loadLibraryCategories();
+                    const libraryMenu = document.getElementById('library-menu');
+                    if (libraryMenu) libraryMenu.classList.add('active');
+                });
+            }
             
             // Nút Thống kê
             const analyticsBtn = document.getElementById('analytics');
-            analyticsBtn.addEventListener('click', function() {
-                document.getElementById('analytics-menu').classList.add('active');
-                loadAnalyticsData();
-            });
+            if (analyticsBtn) {
+                analyticsBtn.addEventListener('click', function() {
+                    const analyticsMenu = document.getElementById('analytics-menu');
+                    if (analyticsMenu) analyticsMenu.classList.add('active');
+                    loadAnalyticsData();
+                });
+            }
             
             // Nút Lớp học
             const classroomBtn = document.getElementById('classroom');
-            classroomBtn.addEventListener('click', function() {
-                window.open('thi.html', '_blank');
-            });
+            if (classroomBtn) {
+                classroomBtn.addEventListener('click', function() {
+                    window.open('thi.html', '_blank');
+                });
+            }
             
             // Nút Bắt đầu học
             const startBtn = document.getElementById('start');
-            startBtn.addEventListener('click', function() {
-                if (userCards.length === 0) {
-                    alert('Bạn chưa có thẻ nào để học! Hãy thêm một số thẻ trước.');
-                    return;
-                }
-                
-                cardsToLearn = [];
-                for (let i = 0; i < userCards.length; i++) {
-                    const card = userCards[i];
-                    if (card.status === 'learning' || !card.status) {
-                        cardsToLearn.push(card);
+            if (startBtn) {
+                startBtn.addEventListener('click', function() {
+                    if (userCards.length === 0) {
+                        showAlert('Bạn chưa có thẻ nào để học! Hãy thêm một số thẻ trước.');
+                        return;
                     }
-                }
-                
-                if (cardsToLearn.length === 0) {
-                    alert('Tất cả các thẻ của bạn đã được học!');
-                    return;
-                }
-                
-                // Xáo trộn mảng
-                for (let i = cardsToLearn.length - 1; i > 0; i--) {
-                    const j = Math.floor(Math.random() * (i + 1));
-                    const temp = cardsToLearn[i];
-                    cardsToLearn[i] = cardsToLearn[j];
-                    cardsToLearn[j] = temp;
-                }
-                
-                currentCardIndex = 0;
-                showCard();
-                document.getElementById('learn-menu').classList.add('active');
-            });
+                    
+                    cardsToLearn = [];
+                    for (let i = 0; i < userCards.length; i++) {
+                        const card = userCards[i];
+                        if (card.status === 'learning' || !card.status) {
+                            cardsToLearn.push(card);
+                        }
+                    }
+                    
+                    if (cardsToLearn.length === 0) {
+                        showAlert('Tất cả các thẻ của bạn đã được học!');
+                        return;
+                    }
+                    
+                    for (let i = cardsToLearn.length - 1; i > 0; i--) {
+                        const j = Math.floor(Math.random() * (i + 1));
+                        const temp = cardsToLearn[i];
+                        cardsToLearn[i] = cardsToLearn[j];
+                        cardsToLearn[j] = temp;
+                    }
+                    
+                    currentCardIndex = 0;
+                    showCard();
+                    const learnMenu = document.getElementById('learn-menu');
+                    if (learnMenu) learnMenu.classList.add('active');
+                });
+            }
             
             // Nút Ôn tập
             const reviewBtn = document.getElementById('review');
-            reviewBtn.addEventListener('click', function() {
-                if (userCards.length === 0) {
-                    alert('Bạn chưa có thẻ nào để ôn tập!');
-                    return;
-                }
-                
-                cardsToReview = [];
-                for (let i = 0; i < userCards.length; i++) {
-                    const card = userCards[i];
-                    if (card.status === 'known') {
-                        cardsToReview.push(card);
+            if (reviewBtn) {
+                reviewBtn.addEventListener('click', function() {
+                    if (userCards.length === 0) {
+                        showAlert('Bạn chưa có thẻ nào để ôn tập!');
+                        return;
                     }
-                }
-                
-                if (cardsToReview.length === 0) {
-                    alert('Bạn chưa có từ nào để ôn tập! Hãy học một số từ trước.');
-                    return;
-                }
-                
-                // Xáo trộn mảng
-                for (let i = cardsToReview.length - 1; i > 0; i--) {
-                    const j = Math.floor(Math.random() * (i + 1));
-                    const temp = cardsToReview[i];
-                    cardsToReview[i] = cardsToReview[j];
-                    cardsToReview[j] = temp;
-                }
-                
-                currentCardIndex = 0;
-                showReviewCard();
-                document.getElementById('review-menu').classList.add('active');
-            });
+                    
+                    cardsToReview = [];
+                    for (let i = 0; i < userCards.length; i++) {
+                        const card = userCards[i];
+                        if (card.status === 'known') {
+                            cardsToReview.push(card);
+                        }
+                    }
+                    
+                    if (cardsToReview.length === 0) {
+                        showAlert('Bạn chưa có từ nào để ôn tập! Hãy học một số từ trước.');
+                        return;
+                    }
+                    
+                    for (let i = cardsToReview.length - 1; i > 0; i--) {
+                        const j = Math.floor(Math.random() * (i + 1));
+                        const temp = cardsToReview[i];
+                        cardsToReview[i] = cardsToReview[j];
+                        cardsToReview[j] = temp;
+                    }
+                    
+                    currentCardIndex = 0;
+                    showReviewCard();
+                    const reviewMenu = document.getElementById('review-menu');
+                    if (reviewMenu) reviewMenu.classList.add('active');
+                });
+            }
             
             // Nút đóng popup (dấu X)
             const closeButtons = document.querySelectorAll('.close');
@@ -2148,10 +2483,24 @@
                 const btn = closeButtons[i];
                 btn.addEventListener('click', function() {
                     const popup = this.closest('.pop-up');
-                    popup.classList.remove('active');
-                    if (popup && popup.id === 'ai-add-menu') {
-                        resetAIPopup();
+                    if (popup) {
+                        popup.classList.remove('active');
+                        if (popup.id === 'ai-add-menu') {
+                            resetAIPopup();
+                        }
+                        if (popup.id === 'category-detail-menu') {
+                            currentCategoryWords = [];
+                            currentCategoryInfo = null;
+                        }
                     }
+                });
+            }
+            
+            // Nút thêm tất cả từ trong chi tiết chủ đề
+            const addAllCategoryWordsBtn = document.getElementById('add-all-category-words');
+            if (addAllCategoryWordsBtn) {
+                addAllCategoryWordsBtn.addEventListener('click', function() {
+                    addAllCurrentCategoryWords();
                 });
             }
             
@@ -2161,134 +2510,154 @@
             const cardListDiv = document.getElementById('card-list');
             const masteredListDiv = document.getElementById('mastered-list');
             
-            tabLearning.addEventListener('click', function() {
-                tabLearning.classList.add('active');
-                tabMastered.classList.remove('active');
-                cardListDiv.style.display = 'block';
-                masteredListDiv.style.display = 'none';
-            });
-            
-            tabMastered.addEventListener('click', function() {
-                tabMastered.classList.add('active');
-                tabLearning.classList.remove('active');
-                cardListDiv.style.display = 'none';
-                masteredListDiv.style.display = 'block';
-            });
+            if (tabLearning && tabMastered && cardListDiv && masteredListDiv) {
+                tabLearning.addEventListener('click', function() {
+                    tabLearning.classList.add('active');
+                    tabMastered.classList.remove('active');
+                    cardListDiv.style.display = 'block';
+                    masteredListDiv.style.display = 'none';
+                });
+                
+                tabMastered.addEventListener('click', function() {
+                    tabMastered.classList.add('active');
+                    tabLearning.classList.remove('active');
+                    cardListDiv.style.display = 'none';
+                    masteredListDiv.style.display = 'block';
+                });
+            }
             
             // Nút thêm từ chính (có loading overlay)
             const submitBtn = document.getElementById('submit');
-            submitBtn.addEventListener('click', async function() {
-                const wordInput = document.getElementById('word');
-                const word = wordInput.value.trim();
-                
-                if (!word) {
-                    alert('Vui lòng nhập từ tiếng Anh!');
-                    return;
-                }
-                
-                const user = auth.currentUser;
-                if (!user) {
-                    return;
-                }
-                
-                showLoading('AI đang tạo từ "' + word + '"...');
-                
-                const wordData = await getFullWordDataFromAI(word);
-                
-                const finalMeaning = wordData.meaning || word;
-                const finalExample = wordData.example || '';
-                const finalPronunciation = wordData.pronunciation || '';
-                const finalExampleTranslation = wordData.exampleTranslation || '';
-                
-                db.collection('users').doc(user.uid).collection('cards').add({
-                    word: word,
-                    meaning: finalMeaning,
-                    example: finalExample,
-                    pronunciation: finalPronunciation,
-                    exampleTranslation: finalExampleTranslation,
-                    status: 'learning',
-                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
-                })
-                .then(function() {
-                    wordInput.value = '';
-                    document.getElementById('add-menu').classList.remove('active');
-                    showAlert('Đã thêm từ "' + word + '" thành công!');
-                    hideLoading();
-                })
-                .catch(function(error) {
-                    console.error('Error adding card: ', error);
-                    alert('Có lỗi xảy ra khi thêm từ!');
-                    hideLoading();
-                });
-            });
-            
-            // Nút tạo từ vựng bằng AI (có loading overlay toàn màn hình)
-            const generateBtn = document.getElementById('generate-words');
-            generateBtn.addEventListener('click', async function() {
-                const topic = document.getElementById('ai-topic').value.trim();
-                const level = document.getElementById('ai-level').value;
-                const count = parseInt(document.getElementById('ai-count').value);
-                
-                if (!topic) {
-                    alert('Vui lòng nhập chủ đề từ vựng!');
-                    return;
-                }
-                
-                if (count < 1 || count > 30) {
-                    alert('Số lượng từ phải từ 1 đến 30!');
-                    return;
-                }
-                
-                const originalHTML = generateBtn.innerHTML;
-                generateBtn.disabled = true;
-                generateBtn.innerHTML = 'Đang tạo...';
-                
-                showLoading('AI đang tạo ' + count + ' từ vựng về chủ đề "' + topic + '"...');
-                
-                try {
-                    const result = await generateVocabularyWithAI(topic, level, count);
-                    aiGeneratedWords = result.words || [];
+            if (submitBtn) {
+                submitBtn.addEventListener('click', async function() {
+                    const wordInput = document.getElementById('word');
+                    const word = wordInput ? wordInput.value.trim() : '';
                     
-                    if (aiGeneratedWords.length === 0) {
-                        throw new Error('Không tạo được từ vựng');
+                    if (!word) {
+                        showAlert('Vui lòng nhập từ tiếng Anh!');
+                        return;
                     }
                     
-                    displayAIWords(aiGeneratedWords);
-                    document.getElementById('ai-results').style.display = 'block';
-                    hideLoading();
-                } catch (error) {
-                    console.error('Error:', error);
-                    hideLoading();
-                    alert('Có lỗi xảy ra khi tạo từ vựng: ' + error.message);
-                } finally {
-                    generateBtn.innerHTML = originalHTML;
-                    generateBtn.disabled = false;
-                }
-            });
+                    const user = auth.currentUser;
+                    if (!user) {
+                        showAlert('Vui lòng đăng nhập để thêm từ!');
+                        return;
+                    }
+                    
+                    showLoading('AI đang tạo từ "' + word + '"...');
+                    
+                    const wordData = await getFullWordDataFromAI(word);
+                    
+                    const finalMeaning = wordData.meaning || word;
+                    const finalExample = wordData.example || '';
+                    const finalPronunciation = wordData.pronunciation || '';
+                    const finalExampleTranslation = wordData.exampleTranslation || '';
+                    
+                    db.collection('users').doc(user.uid).collection('cards').add({
+                        word: word,
+                        meaning: finalMeaning,
+                        example: finalExample,
+                        pronunciation: finalPronunciation,
+                        exampleTranslation: finalExampleTranslation,
+                        status: 'learning',
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                    })
+                    .then(function() {
+                        if (wordInput) wordInput.value = '';
+                        const addMenu = document.getElementById('add-menu');
+                        if (addMenu) addMenu.classList.remove('active');
+                        showAlert('Đã thêm từ "' + word + '" thành công!');
+                        hideLoading();
+                    })
+                    .catch(function(error) {
+                        console.error('Error adding card: ', error);
+                        showAlert('Có lỗi xảy ra khi thêm từ!');
+                        hideLoading();
+                    });
+                });
+            }
+            
+            // Nút tạo từ vựng bằng AI
+            const generateBtn = document.getElementById('generate-words');
+            if (generateBtn) {
+                generateBtn.addEventListener('click', async function() {
+                    const topicInput = document.getElementById('ai-topic');
+                    const levelSelect = document.getElementById('ai-level');
+                    const countInput = document.getElementById('ai-count');
+                    
+                    const topic = topicInput ? topicInput.value.trim() : '';
+                    const level = levelSelect ? levelSelect.value : 'cơ bản';
+                    const count = countInput ? parseInt(countInput.value) : 5;
+                    
+                    if (!topic) {
+                        showAlert('Vui lòng nhập chủ đề từ vựng!');
+                        return;
+                    }
+                    
+                    if (count < 1 || count > 30) {
+                        showAlert('Số lượng từ phải từ 1 đến 30!');
+                        return;
+                    }
+                    
+                    const originalHTML = generateBtn.innerHTML;
+                    generateBtn.disabled = true;
+                    generateBtn.innerHTML = 'Đang tạo...';
+                    
+                    showLoading('AI đang tạo ' + count + ' từ vựng về chủ đề "' + topic + '"...');
+                    
+                    try {
+                        const result = await generateVocabularyWithAI(topic, level, count);
+                        aiGeneratedWords = result.words || [];
+                        
+                        if (aiGeneratedWords.length === 0) {
+                            throw new Error('Không tạo được từ vựng');
+                        }
+                        
+                        displayAIWords(aiGeneratedWords);
+                        const aiResults = document.getElementById('ai-results');
+                        if (aiResults) aiResults.style.display = 'block';
+                        hideLoading();
+                    } catch (error) {
+                        console.error('Error:', error);
+                        hideLoading();
+                        showAlert('Có lỗi xảy ra khi tạo từ vựng: ' + error.message);
+                    } finally {
+                        generateBtn.innerHTML = originalHTML;
+                        generateBtn.disabled = false;
+                    }
+                });
+            }
             
             // Nút thêm tất cả từ AI
             const addAllBtn = document.getElementById('add-all-words');
-            addAllBtn.addEventListener('click', function() {
-                if (aiGeneratedWords.length === 0) {
-                    return;
-                }
-                addAllAIWords();
-            });
+            if (addAllBtn) {
+                addAllBtn.addEventListener('click', function() {
+                    if (aiGeneratedWords.length === 0) {
+                        showAlert('Chưa có từ vựng nào được tạo!');
+                        return;
+                    }
+                    addAllAIWords();
+                });
+            }
             
             // Lật thẻ
             const flashcard = document.getElementById('flashcard');
-            flashcard.addEventListener('click', function(e) {
-                if (!e.target.closest('.back-actions')) {
-                    flashcard.classList.toggle('flipped');
-                }
-            });
+            if (flashcard) {
+                flashcard.addEventListener('click', function(e) {
+                    if (!e.target.closest('.back-actions')) {
+                        flashcard.classList.toggle('flipped');
+                    }
+                });
+            }
             
             const reviewFlashcard = document.getElementById('review-flashcard');
-            reviewFlashcard.addEventListener('click', function(e) {
-                if (!e.target.closest('.back-actions')) {
-                    reviewFlashcard.classList.toggle('flipped');
-                }
-            });
+            if (reviewFlashcard) {
+                reviewFlashcard.addEventListener('click', function(e) {
+                    if (!e.target.closest('.back-actions')) {
+                        reviewFlashcard.classList.toggle('flipped');
+                    }
+                });
+            }
         }
 
         // ============================================================
@@ -2296,15 +2665,15 @@
         // ============================================================
         auth.onAuthStateChanged(function(user) {
             if (user) {
+                console.log('User logged in:', user.uid);
                 loadUserCards();
-                loadLibraryCategories();
             } else {
                 auth.signInAnonymously()
                     .then(function() {
-                        console.log('Đã đăng nhập ẩn danh');
+                        console.log('Anonymous login successful');
                     })
                     .catch(function(error) {
-                        console.error('Lỗi đăng nhập ẩn danh:', error);
+                        console.error('Anonymous login error:', error);
                     });
             }
         });
