@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quản trị - BeeEnglish</title>
-    <link rel="icon" type="image/svg+xml" href="https://learnenglishwithaurora.github.io/aurora.svg" />
+    <link rel="icon" type="image/svg+xml" href="https://beeenglish.s3.amazonaws.com/bee-logo.svg" />
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
@@ -49,7 +49,6 @@
 
         .logo img {
             height: 40px;
-            filter: brightness(0) invert(1);
         }
 
         .logo h1 {
@@ -690,7 +689,7 @@
     <div id="app">
         <div id="top-bar">
             <div class="logo">
-                <img src="https://learnenglishwithaurora.github.io/aurora.svg" alt="BeeEnglish">
+                <img src="https://cdn-icons-png.flaticon.com/512/2922/2922561.png" alt="BeeEnglish">
                 <h1>BeeEnglish - Quản trị</h1>
             </div>
             <div class="user-info">
@@ -1288,7 +1287,8 @@ Chỉ trả về JSON, không thêm bất kỳ văn bản nào khác.`;
                     `;
                 });
                 
-                tableHTML += `</tbody></table>`;
+                tableHTML += `</tbody>
+                </table>`;
                 bodyEl.innerHTML = tableHTML;
             }).catch(error => {
                 console.error('Error loading category vocabulary:', error);
