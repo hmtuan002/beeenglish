@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Đăng ký - bee-english</title>
-    <link rel="icon" type="image/svg+xml" href="https://learnenglishwithaurora.github.io/aurora.svg" />
+    <title>Đăng ký - BeeEnglish</title>
+    <link rel="icon" type="image/svg+xml" href="https://cdn-icons-png.flaticon.com/512/2922/2922561.png" />
     <style>
         * {
             margin: 0;
@@ -39,7 +39,6 @@
             position: relative;
         }
 
-        /* Lớp phụ trợ tăng độ tương phản nếu cần, nhưng gradient đã đủ */
         .register-container {
             background-color: rgba(255, 255, 255, 0.96);
             border-radius: 28px;
@@ -195,7 +194,6 @@
             margin-left: 6px;
         }
 
-        /* Responsive tinh tế */
         @media (max-width: 520px) {
             .register-container {
                 margin: 20px;
@@ -216,7 +214,6 @@
             }
         }
 
-        /* Hiệu ứng loading cho button */
         button:disabled {
             opacity: 0.8;
             cursor: not-allowed;
@@ -227,8 +224,8 @@
 <body>
     <div class="register-container">
         <div class="logo">
-            <img src="https://learnenglishwithaurora.github.io/aurora.svg" alt="Niceng Logo">
-            <h1>bee-english</h1>
+            <img src="https://cdn-icons-png.flaticon.com/512/2922/2922561.png" alt="BeeEnglish Logo">
+            <h1>BeeEnglish</h1>
             <div class="welcome-text">
                 🌟 Bắt đầu hành trình học tiếng Anh của bạn ngay hôm nay 🌟
             </div>
@@ -260,13 +257,11 @@
         <div id="errorMessage" class="error"></div>
     </div>
 
-    <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
     
     <script>
-        // Firebase configuration (giữ nguyên thông tin từ code gốc)
         const firebaseConfig = {
             apiKey: "AIzaSyBc55gGulDbOCgGp2USL_HXeVLwqqXFTTU",
             authDomain: "niceng-c235d.firebaseapp.com",
@@ -277,16 +272,14 @@
             measurementId: "G-PDZ20PLN86"
         };
 
-        // Initialize Firebase
         if (!firebase.apps.length) {
             firebase.initializeApp(firebaseConfig);
         } else {
-            firebase.app(); // sử dụng app đã khởi tạo
+            firebase.app();
         }
         const auth = firebase.auth();
         const db = firebase.firestore();
 
-        // DOM elements
         const registerForm = document.getElementById('registerForm');
         const nameInput = document.getElementById('name');
         const emailInput = document.getElementById('email');
@@ -295,19 +288,16 @@
         const errorDiv = document.getElementById('errorMessage');
         const submitBtn = document.getElementById('submitBtn');
 
-        // Helper: xóa thông báo lỗi cũ khi người dùng nhập lại
         const clearError = () => {
             errorDiv.textContent = '';
         };
 
-        // Thêm sự kiện focus để xóa lỗi mềm mại
         const inputs = [nameInput, emailInput, passwordInput, confirmInput];
         inputs.forEach(inp => {
             inp.addEventListener('focus', clearError);
             inp.addEventListener('input', clearError);
         });
 
-        // Xử lý submit form đăng ký
         registerForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             clearError();
@@ -317,7 +307,6 @@
             const password = passwordInput.value;
             const confirmPassword = confirmInput.value;
 
-            // Validate cơ bản
             if (!name) {
                 errorDiv.textContent = "❌ Vui lòng nhập họ và tên.";
                 nameInput.focus();
@@ -339,17 +328,14 @@
                 return;
             }
 
-            // Hiệu ứng loading
             const originalBtnText = submitBtn.innerHTML;
             submitBtn.innerHTML = '⏳ Đang xử lý đăng ký...';
             submitBtn.disabled = true;
 
             try {
-                // Tạo user với email + password
                 const userCredential = await auth.createUserWithEmailAndPassword(email, password);
                 const user = userCredential.user;
 
-                // Lưu thông tin vào Firestore
                 await db.collection('users').doc(user.uid).set({
                     name: name,
                     email: email,
@@ -359,11 +345,9 @@
                     lastActive: new Date()
                 });
 
-                // Chuyển hướng sang main.html (trang chính sau đăng ký)
                 window.location.href = 'main.html';
                 
             } catch (error) {
-                // Hiển thị lỗi chi tiết từ Firebase (dễ hiểu hơn)
                 let friendlyMsg = '';
                 switch (error.code) {
                     case 'auth/email-already-in-use':
