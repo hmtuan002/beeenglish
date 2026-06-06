@@ -58,6 +58,7 @@
             flex-direction: column;
         }
 
+        /* Nút home luôn hiển thị ở góc trái màn hình - CẢ HAI TRANG */
         .home-button {
             position: fixed;
             top: 20px;
@@ -1629,8 +1630,9 @@
 </head>
 <body>
     <div id="app">
-        <a href="main.html" class="home-button hidden" id="homeButton">
-            <i class="fas fa-home"></i>
+        <!-- Nút home luôn hiển thị - CẢ HAI TRANG (homePage và roomPage) -->
+        <a href="main.html" class="home-button" id="homeButton">
+            <i class="fas fa-home"></i> Về trang chính
         </a>
 
         <div class="main-content">
@@ -2137,7 +2139,7 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
     
-    <script type="module">
+    <script>
         const firebaseConfig = {
             apiKey: "AIzaSyBc55gGulDbOCgGp2USL_HXeVLwqqXFTTU",
             authDomain: "niceng-c235d.firebaseapp.com",
@@ -2521,13 +2523,11 @@
         function showRoomPage() {
             document.getElementById('homePage').classList.add('hidden');
             document.getElementById('roomPage').classList.remove('hidden');
-            document.getElementById('homeButton').classList.remove('hidden');
         }
         
         function showHomePage() {
             document.getElementById('homePage').classList.remove('hidden');
             document.getElementById('roomPage').classList.add('hidden');
-            document.getElementById('homeButton').classList.add('hidden');
             cleanupRoom();
         }
         
@@ -3868,8 +3868,6 @@
             showNotification(`Đã tạo và lưu ${savedCount} ${contentType} bằng AI!`, 'success');
             closeAiGenerateModal();
         }
-        
-        // ============= NGÂN HÀNG ĐỀ THI (QUESTION BANK) =============
         
         function openHomeBankManagerModal() {
             if (!currentUserId) {
