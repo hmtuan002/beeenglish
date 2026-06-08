@@ -966,7 +966,7 @@
         const itemsPerPage = 20;
         let totalVocabItems = 0;
         let allVocabItems = [];
-        let allUsers = {};
+        let allUsers = {}; // Store user info by ID: { id: { name, email, ... } }
         let analyticsData = {};
         let overallProgressChart = null;
         let userDistributionChart = null;
@@ -1302,8 +1302,7 @@ Chỉ trả về JSON, không thêm bất kỳ văn bản nào khác.`;
                 loadDashboard();
                 loadCategories();
                 loadCards();
-                loadRealUsers();
-                loadUserVocabulary();
+                loadAllUsersAndData(); // Load users first then other data
                 loadCategoryDropdowns();
             } else {
                 window.location.href = 'login.html';
@@ -1610,156 +1609,179 @@ Chỉ trả về JSON, không thêm bất kỳ văn bản nào khác.`;
                 });
         }
 
+        // --- Function to load all users first, then other data ---
+        async function loadAllUsersAndData() {
+            try {
+                // Clear old data
+                allUsers = {};
+                const usersSnapshot = await db.collection('users').get();
+                const userPromises = [];
+                
+                usersSnapshot.forEach(doc => {
+                    const userData = doc.data();
+                    allUsers[doc.id] = {
+                        id: doc.id,
+                        name: userData.name || 'Không có tên',
+                        email: userData.email,
+                        role: userData.role || 'user',
+                        banned: userData.banned === true,
+                        createdAt: userData.createdAt
+                    };
+                });
+                
+                // Wait for all promises to resolve conceptually, then render
+                // Note: loadRealUsers, loadUserVocabulary, loadAnalyticsData depend on allUsers
+                // We call them after the main user object is populated
+                await Promise.all(userPromises);
+                
+                // Now render the UI components that depend on allUsers
+                loadRealUsers();
+                loadUserVocabulary();
+                loadAnalyticsData();
+            } catch (error) {
+                console.error("Error loading initial data:", error);
+                showAlert("Có lỗi khi tải dữ liệu người dùng.", "error");
+            }
+        }
+        
         function loadRealUsers() {
             const usersList = document.getElementById('users-list');
             usersList.innerHTML = '<div class="card"><p>Đang tải danh sách người dùng...</p></div>';
             
-            db.collection('users').get().then(snapshot => {
-                if (snapshot.empty) {
-                    usersList.innerHTML = '<div class="card"><p>Chưa có người dùng nào.</p></div>';
-                    return;
-                }
+            if (Object.keys(allUsers).length === 0) {
+                usersList.innerHTML = '<div class="card"><p>Chưa có người dùng nào.</p></div>';
+                return;
+            }
+            
+            usersList.innerHTML = '';
+            
+            for (const userId in allUsers) {
+                const user = allUsers[userId];
+                const isBanned = user.banned === true;
+                const isAdmin = user.role === 'admin';
+                const isCurrentUser = userId === currentAdminId;
                 
-                usersList.innerHTML = '';
+                const userElement = document.createElement('div');
+                userElement.className = `item-card user-card ${isBanned ? 'user-banned' : ''}`;
                 
-                snapshot.forEach(doc => {
-                    const user = doc.data();
-                    const userId = doc.id;
-                    const isBanned = user.banned === true;
-                    const isAdmin = user.role === 'admin';
-                    const isCurrentUser = userId === currentAdminId;
-                    
-                    allUsers[userId] = user;
-                    
-                    const userElement = document.createElement('div');
-                    userElement.className = `item-card user-card ${isBanned ? 'user-banned' : ''}`;
-                    
-                    let joinDateText = 'Không rõ';
-                    if (user.createdAt) {
-                        if (user.createdAt.toDate) {
-                            joinDateText = user.createdAt.toDate().toLocaleDateString('vi-VN');
-                        } else if (user.createdAt instanceof Date) {
-                            joinDateText = user.createdAt.toLocaleDateString('vi-VN');
-                        }
+                let joinDateText = 'Không rõ';
+                if (user.createdAt) {
+                    if (user.createdAt.toDate) {
+                        joinDateText = user.createdAt.toDate().toLocaleDateString('vi-VN');
+                    } else if (user.createdAt instanceof Date) {
+                        joinDateText = user.createdAt.toLocaleDateString('vi-VN');
                     }
-                    
-                    userElement.innerHTML = `
-                        <h3>👤 ${escapeHtml(user.name || 'Không có tên')} 
-                            ${isAdmin ? '<span class="admin-badge">ADMIN</span>' : ''}
-                            ${isBanned ? '<span class="banned-badge">ĐÃ KHÓA</span>' : ''}
-                        </h3>
-                        <p><strong>Email:</strong> ${escapeHtml(user.email)}</p>
-                        <p><strong>Vai trò:</strong> ${isAdmin ? 'Quản trị viên' : 'Người dùng'}</p>
-                        <p><strong>Ngày tham gia:</strong> ${joinDateText}</p>
-                        <div class="card-actions">
-                            ${!isAdmin ? 
-                                `<button class="btn-success make-admin" data-id="${userId}">👑 Thành admin</button>` : 
-                                (!isCurrentUser ? `<button class="btn-danger remove-admin" data-id="${userId}" data-name="${escapeHtml(user.name)}">⬇️ Bỏ admin</button>` : '<button class="btn-warning" disabled>👑 Bạn đang đăng nhập</button>')
-                            }
-                            ${!isCurrentUser ? 
-                                (!isBanned ? 
-                                    `<button class="btn-danger ban-user" data-id="${userId}" data-email="${escapeHtml(user.email)}">🔒 Khóa tài khoản</button>` :
-                                    `<button class="btn-success unban-user" data-id="${userId}" data-email="${escapeHtml(user.email)}">🔓 Mở khóa</button>`
-                                ) : ''
-                            }
-                            <button class="btn-info view-vocab" data-id="${userId}" data-name="${escapeHtml(user.name)}">📚 Xem từ vựng</button>
-                        </div>
-                    `;
-                    usersList.appendChild(userElement);
+                }
+                
+                userElement.innerHTML = `
+                    <h3>👤 ${escapeHtml(user.name)} 
+                        ${isAdmin ? '<span class="admin-badge">ADMIN</span>' : ''}
+                        ${isBanned ? '<span class="banned-badge">ĐÃ KHÓA</span>' : ''}
+                    </h3>
+                    <p><strong>Email:</strong> ${escapeHtml(user.email)}</p>
+                    <p><strong>Vai trò:</strong> ${isAdmin ? 'Quản trị viên' : 'Người dùng'}</p>
+                    <p><strong>Ngày tham gia:</strong> ${joinDateText}</p>
+                    <div class="card-actions">
+                        ${!isAdmin ? 
+                            `<button class="btn-success make-admin" data-id="${userId}">👑 Thành admin</button>` : 
+                            (!isCurrentUser ? `<button class="btn-danger remove-admin" data-id="${userId}" data-name="${escapeHtml(user.name)}">⬇️ Bỏ admin</button>` : '<button class="btn-warning" disabled>👑 Bạn đang đăng nhập</button>')
+                        }
+                        ${!isCurrentUser ? 
+                            (!isBanned ? 
+                                `<button class="btn-danger ban-user" data-id="${userId}" data-email="${escapeHtml(user.email)}">🔒 Khóa tài khoản</button>` :
+                                `<button class="btn-success unban-user" data-id="${userId}" data-email="${escapeHtml(user.email)}">🔓 Mở khóa</button>`
+                            ) : ''
+                        }
+                        <button class="btn-info view-vocab" data-id="${userId}" data-name="${escapeHtml(user.name)}">📚 Xem từ vựng</button>
+                    </div>
+                `;
+                usersList.appendChild(userElement);
+            }
+            
+            // Add event listeners after rendering
+            document.querySelectorAll('.make-admin').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    const userId = e.target.getAttribute('data-id');
+                    if (confirm('Bạn có chắc chắn muốn cấp quyền admin cho người dùng này?')) {
+                        updateUserRole(userId, 'admin');
+                    }
                 });
-                
-                const makeAdminBtns = document.querySelectorAll('.make-admin');
-                for (let i = 0; i < makeAdminBtns.length; i++) {
-                    const btn = makeAdminBtns[i];
-                    btn.addEventListener('click', function(e) {
-                        const userId = e.target.getAttribute('data-id');
-                        if (confirm('Bạn có chắc chắn muốn cấp quyền admin cho người dùng này?')) {
-                            updateUserRole(userId, 'admin');
-                        }
-                    });
-                }
-                
-                const removeAdminBtns = document.querySelectorAll('.remove-admin');
-                for (let i = 0; i < removeAdminBtns.length; i++) {
-                    const btn = removeAdminBtns[i];
-                    btn.addEventListener('click', function(e) {
-                        const userId = e.target.getAttribute('data-id');
-                        const userName = e.target.getAttribute('data-name');
-                        if (confirm(`Bạn có chắc chắn muốn BỎ quyền admin của ${userName}?`)) {
-                            updateUserRole(userId, 'user');
-                        }
-                    });
-                }
-                
-                const banBtns = document.querySelectorAll('.ban-user');
-                for (let i = 0; i < banBtns.length; i++) {
-                    const btn = banBtns[i];
-                    btn.addEventListener('click', function(e) {
-                        const userId = e.target.getAttribute('data-id');
-                        const userEmail = e.target.getAttribute('data-email');
-                        if (confirm(`Bạn có chắc chắn muốn KHÓA tài khoản ${userEmail}?`)) {
-                            banUser(userId, true);
-                        }
-                    });
-                }
-                
-                const unbanBtns = document.querySelectorAll('.unban-user');
-                for (let i = 0; i < unbanBtns.length; i++) {
-                    const btn = unbanBtns[i];
-                    btn.addEventListener('click', function(e) {
-                        const userId = e.target.getAttribute('data-id');
-                        const userEmail = e.target.getAttribute('data-email');
-                        if (confirm(`Bạn có chắc chắn muốn MỞ KHÓA tài khoản ${userEmail}?`)) {
-                            banUser(userId, false);
-                        }
-                    });
-                }
-                
-                const viewVocabBtns = document.querySelectorAll('.view-vocab');
-                for (let i = 0; i < viewVocabBtns.length; i++) {
-                    const btn = viewVocabBtns[i];
-                    btn.addEventListener('click', function(e) {
-                        const userId = e.target.getAttribute('data-id');
-                        const userName = e.target.getAttribute('data-name');
-                        document.querySelector('[data-tab="vocabulary"]').click();
-                        document.getElementById('vocab-user-filter').value = userId;
-                        loadUserVocabulary(userId);
-                        showAlert(`Đang hiển thị từ vựng của: ${userName}`, 'success');
-                    });
-                }
-                
-                const userFilter = document.getElementById('vocab-user-filter');
-                if (userFilter) {
-                    userFilter.innerHTML = '<option value="">-- Tất cả người dùng --</option>';
-                    snapshot.forEach(doc => {
-                        const user = doc.data();
-                        const option = document.createElement('option');
-                        option.value = doc.id;
-                        option.textContent = `${user.name || 'Không tên'} (${user.email})`;
-                        userFilter.appendChild(option);
-                    });
-                }
-                
-                const analyticsUserFilter = document.getElementById('analytics-user-filter');
-                if (analyticsUserFilter) {
-                    analyticsUserFilter.innerHTML = '<option value="">-- Tất cả người dùng --</option>';
-                    analyticsUserFilter.innerHTML += '<option value="top-10">🏆 Top 10 người dùng tích cực</option>';
-                    snapshot.forEach(doc => {
-                        const user = doc.data();
-                        if (!user.banned) {
-                            const option = document.createElement('option');
-                            option.value = doc.id;
-                            option.textContent = `${user.name || 'Không tên'} (${user.email})`;
-                            analyticsUserFilter.appendChild(option);
-                        }
-                    });
-                }
             });
+            
+            document.querySelectorAll('.remove-admin').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    const userId = e.target.getAttribute('data-id');
+                    const userName = e.target.getAttribute('data-name');
+                    if (confirm(`Bạn có chắc chắn muốn BỎ quyền admin của ${userName}?`)) {
+                        updateUserRole(userId, 'user');
+                    }
+                });
+            });
+            
+            document.querySelectorAll('.ban-user').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    const userId = e.target.getAttribute('data-id');
+                    const userEmail = e.target.getAttribute('data-email');
+                    if (confirm(`Bạn có chắc chắn muốn KHÓA tài khoản ${userEmail}?`)) {
+                        banUser(userId, true);
+                    }
+                });
+            });
+            
+            document.querySelectorAll('.unban-user').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    const userId = e.target.getAttribute('data-id');
+                    const userEmail = e.target.getAttribute('data-email');
+                    if (confirm(`Bạn có chắc chắn muốn MỞ KHÓA tài khoản ${userEmail}?`)) {
+                        banUser(userId, false);
+                    }
+                });
+            });
+            
+            document.querySelectorAll('.view-vocab').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    const userId = e.target.getAttribute('data-id');
+                    const userName = e.target.getAttribute('data-name');
+                    document.querySelector('[data-tab="vocabulary"]').click();
+                    document.getElementById('vocab-user-filter').value = userId;
+                    loadUserVocabulary(userId);
+                    showAlert(`Đang hiển thị từ vựng của: ${userName}`, 'success');
+                });
+            });
+            
+            // Update filters dropdowns
+            const userFilter = document.getElementById('vocab-user-filter');
+            if (userFilter) {
+                userFilter.innerHTML = '<option value="">-- Tất cả người dùng --</option>';
+                for (const userId in allUsers) {
+                    const user = allUsers[userId];
+                    const option = document.createElement('option');
+                    option.value = userId;
+                    option.textContent = `${user.name} (${user.email})`;
+                    userFilter.appendChild(option);
+                }
+            }
+            
+            const analyticsUserFilter = document.getElementById('analytics-user-filter');
+            if (analyticsUserFilter) {
+                analyticsUserFilter.innerHTML = '<option value="">-- Tất cả người dùng --</option>';
+                analyticsUserFilter.innerHTML += '<option value="top-10">🏆 Top 10 người dùng tích cực</option>';
+                for (const userId in allUsers) {
+                    const user = allUsers[userId];
+                    if (!user.banned) {
+                        const option = document.createElement('option');
+                        option.value = userId;
+                        option.textContent = `${user.name} (${user.email})`;
+                        analyticsUserFilter.appendChild(option);
+                    }
+                }
+            }
         }
 
         function updateUserRole(userId, role) {
             db.collection('users').doc(userId).update({ role: role })
                 .then(() => {
+                    if (allUsers[userId]) allUsers[userId].role = role;
                     loadRealUsers();
                     showAlert(`Đã cập nhật vai trò người dùng!`, 'success');
                 })
@@ -1775,6 +1797,7 @@ Chỉ trả về JSON, không thêm bất kỳ văn bản nào khác.`;
                 bannedAt: ban ? firebase.firestore.FieldValue.serverTimestamp() : null
             })
             .then(() => {
+                if (allUsers[userId]) allUsers[userId].banned = ban;
                 loadRealUsers();
                 loadDashboard();
                 showAlert(ban ? 'Đã khóa tài khoản người dùng!' : 'Đã mở khóa tài khoản người dùng!', 'success');
@@ -1785,6 +1808,7 @@ Chỉ trả về JSON, không thêm bất kỳ văn bản nào khác.`;
             });
         }
 
+        // --- Fixed Vocabulary Loading Logic ---
         function loadUserVocabulary(userId = null) {
             const vocabList = document.getElementById('vocabulary-list');
             const statsContainer = document.getElementById('vocab-stats-container');
@@ -1818,20 +1842,18 @@ Chỉ trả về JSON, không thêm bất kỳ văn bản nào khác.`;
                     applyFiltersAndDisplay();
                 });
             } else {
-                db.collection('users').get().then(usersSnapshot => {
-                    const promises = [];
-                    usersSnapshot.forEach(userDoc => {
-                        promises.push(loadUserVocab(userDoc.id));
-                    });
-                    
-                    Promise.all(promises).then(() => {
-                        totalVocabItems = allVocabItems.length;
-                        if (totalVocabItems === 0) {
-                            document.getElementById('vocabulary-list').innerHTML = '<div class="card"><p>Không có từ vựng nào trong hệ thống.</p></div>';
-                            return;
-                        }
-                        applyFiltersAndDisplay();
-                    });
+                const promises = [];
+                for (const uid in allUsers) {
+                    promises.push(loadUserVocab(uid));
+                }
+                
+                Promise.all(promises).then(() => {
+                    totalVocabItems = allVocabItems.length;
+                    if (totalVocabItems === 0) {
+                        document.getElementById('vocabulary-list').innerHTML = '<div class="card"><p>Không có từ vựng nào trong hệ thống.</p></div>';
+                        return;
+                    }
+                    applyFiltersAndDisplay();
                 });
             }
         }
@@ -1911,6 +1933,9 @@ Chỉ trả về JSON, không thêm bất kỳ văn bản nào khác.`;
             
             for (let i = 0; i < pageItems.length; i++) {
                 const item = pageItems[i];
+                const user = allUsers[item.userId];
+                // FIX 2: Display user name instead of ID
+                const userName = user ? (user.name || user.email) : item.userId;
                 const status = item.status || 'learning';
                 const statusText = { 'learning': 'Đang học', 'known': 'Đã biết', 'mastered': 'Đã thuộc' }[status] || status;
                 const statusClass = { 'learning': 'status-learning', 'known': 'status-known', 'mastered': 'status-mastered' }[status] || '';
@@ -1918,7 +1943,7 @@ Chỉ trả về JSON, không thêm bất kỳ văn bản nào khác.`;
                 
                 tableHTML += `
                     <tr>
-                        <td>${escapeHtml(item.userId)}</td>
+                        <td>${escapeHtml(userName)}</td>
                         <td><strong>${escapeHtml(item.word || 'Không có')}</strong></td>
                         <td>${escapeHtml(item.meaning || 'Không có')}</td>
                         <td><span class="status-badge ${statusClass}">${statusText}</span></td>
@@ -2009,6 +2034,7 @@ Chỉ trả về JSON, không thêm bất kỳ văn bản nào khác.`;
             });
             if (!item) return;
             
+            const user = allUsers[userId];
             const modal = document.getElementById('vocab-modal');
             const modalBody = document.getElementById('modal-body');
             
@@ -2021,7 +2047,7 @@ Chỉ trả về JSON, không thêm bất kỳ văn bản nào khác.`;
                 <div class="card">
                     <h3>📖 ${escapeHtml(item.word || 'Không có')} - ${escapeHtml(item.meaning || 'Không có')}</h3>
                     ${item.pronunciation ? '<p><strong>Phiên âm:</strong> /' + escapeHtml(item.pronunciation) + '/</p>' : ''}
-                    <p><strong>👤 Người dùng ID:</strong> ${escapeHtml(userId)}</p>
+                    <p><strong>👤 Người dùng:</strong> ${user ? escapeHtml(user.name) : userId}</p>
                     <p><strong>📊 Trạng thái:</strong> <span class="status-badge ${statusClass}">${statusText}</span></p>
                     <p><strong>📅 Ngày tạo:</strong> ${createdAt}</p>
                     ${item.example ? '<p><strong>💬 Ví dụ:</strong> ' + escapeHtml(item.example) + '</p>' : ''}
@@ -2032,73 +2058,55 @@ Chỉ trả về JSON, không thêm bất kỳ văn bản nào khác.`;
             modal.style.display = 'block';
         }
 
+        // --- Fixed Analytics Logic (Chart Area) ---
         function loadAnalyticsData(userId = null) {
             document.getElementById('user-details-list').innerHTML = '<div class="card"><p>Đang tải dữ liệu...</p></div>';
             
             analyticsData = {};
+            analyticsData.users = [];
+            analyticsData.totalUsers = 0;
+            analyticsData.activeUsers = 0;
+            analyticsData.totalLearned = 0;
+            analyticsData.totalMastered = 0;
+            analyticsData.userStats = {};
+            analyticsData.userGroups = { beginner: 0, intermediate: 0, advanced: 0, expert: 0 };
             
-            db.collection('users').get().then(function(usersSnapshot) {
-                const users = [];
-                usersSnapshot.forEach(function(doc) {
-                    const userData = doc.data();
-                    if (!userData.banned) {
-                        users.push({ id: doc.id, ...userData });
-                    }
-                });
-                
-                analyticsData.users = users;
-                analyticsData.totalUsers = users.length;
-                analyticsData.activeUsers = 0;
-                analyticsData.totalLearned = 0;
-                analyticsData.totalMastered = 0;
-                analyticsData.userStats = {};
-                analyticsData.userGroups = { beginner: 0, intermediate: 0, advanced: 0, expert: 0 };
-                
-                const last30DaysLabels = [];
-                const learnedData = new Array(30).fill(0);
-                const masteredData = new Array(30).fill(0);
-                for (let i = 29; i >= 0; i--) {
-                    const date = new Date();
-                    date.setDate(date.getDate() - i);
-                    last30DaysLabels.push(date.getDate() + '/' + (date.getMonth() + 1));
-                }
-                analyticsData.dailyData = { labels: last30DaysLabels, learnedData: learnedData, masteredData: masteredData };
-                
-                if (users.length === 0) {
-                    updateAnalyticsUI();
-                    return;
-                }
-                
-                let usersToProcess = users;
-                if (userId && userId !== 'top-10') {
-                    usersToProcess = users.filter(function(u) {
-                        return u.id === userId;
-                    });
-                }
-                
-                loadUserVocabForAnalytics(usersToProcess, userId);
-            }).catch(function(error) {
-                console.error('Error loading users for analytics:', error);
-                document.getElementById('user-details-list').innerHTML = '<div class="card error"><p>Có lỗi khi tải dữ liệu người dùng!</p></div>';
-            });
-        }
-
-        function loadUserVocabForAnalytics(usersToProcess, filterType) {
-            if (!usersToProcess || usersToProcess.length === 0) {
+            // FIX 1: Prepare simple data for the area chart using overall stats
+            // We will create an area chart that shows cumulative progress or just a simple representation
+            // For simplicity and to match the old program's spirit, we'll show a chart based on user groups or overall learned/mastered.
+            // Since the old program didn't have daily data, we'll create a summary chart.
+            
+            if (Object.keys(allUsers).length === 0) {
+                updateAnalyticsUI();
+                return;
+            }
+            
+            let usersToProcessIds = [];
+            if (userId && userId !== 'top-10') {
+                usersToProcessIds = [userId];
+            } else {
+                usersToProcessIds = Object.keys(allUsers);
+            }
+            
+            // Filter out banned users for analytics
+            usersToProcessIds = usersToProcessIds.filter(uid => !allUsers[uid]?.banned);
+            
+            if (usersToProcessIds.length === 0) {
                 updateAnalyticsUI();
                 return;
             }
             
             let completedCount = 0;
             
-            for (let u = 0; u < usersToProcess.length; u++) {
-                const user = usersToProcess[u];
+            for (let i = 0; i < usersToProcessIds.length; i++) {
+                const uid = usersToProcessIds[i];
+                const userInfo = allUsers[uid];
                 
-                db.collection('users').doc(user.id).collection('cards').get()
-                    .then(function(snapshot) {
-                        const userVocab = { total: 0, learning: 0, known: 0, mastered: 0, words: [] };
+                db.collection('users').doc(uid).collection('cards').get()
+                    .then(snapshot => {
+                        const userVocab = { total: 0, learning: 0, known: 0, mastered: 0 };
                         
-                        snapshot.forEach(function(doc) {
+                        snapshot.forEach(doc => {
                             const card = doc.data();
                             userVocab.total++;
                             const status = card.status || 'learning';
@@ -2107,24 +2115,23 @@ Chỉ trả về JSON, không thêm bất kỳ văn bản nào khác.`;
                             else if (status === 'mastered') userVocab.mastered++;
                         });
                         
-                        let activityLevel = 'Không hoạt động';
-                        if (userVocab.total === 0) activityLevel = 'Không hoạt động';
-                        else if (userVocab.total >= 200) activityLevel = 'Xuất sắc';
-                        else if (userVocab.total >= 50) activityLevel = 'Tích cực';
-                        else if (userVocab.total >= 10) activityLevel = 'Trung bình';
-                        else activityLevel = 'Bắt đầu';
+                        const learnedTotal = userVocab.known + userVocab.mastered;
+                        const masteredTotal = userVocab.mastered;
                         
-                        analyticsData.userStats[user.id] = {
-                            userInfo: user,
+                        analyticsData.userStats[uid] = {
+                            userInfo: userInfo,
                             vocab: userVocab,
-                            learnedTotal: userVocab.known + userVocab.mastered,
-                            masteredTotal: userVocab.mastered,
-                            activityLevel: activityLevel
+                            learnedTotal: learnedTotal,
+                            masteredTotal: masteredTotal,
+                            activityLevel: userVocab.total === 0 ? 'Không hoạt động' : 
+                                          (userVocab.total >= 200 ? 'Xuất sắc' : 
+                                          (userVocab.total >= 50 ? 'Tích cực' : 
+                                          (userVocab.total >= 10 ? 'Trung bình' : 'Bắt đầu')))
                         };
                         
                         if (userVocab.total > 0) analyticsData.activeUsers++;
-                        analyticsData.totalLearned += userVocab.known + userVocab.mastered;
-                        analyticsData.totalMastered += userVocab.mastered;
+                        analyticsData.totalLearned += learnedTotal;
+                        analyticsData.totalMastered += masteredTotal;
                         
                         if (userVocab.total <= 10) analyticsData.userGroups.beginner++;
                         else if (userVocab.total <= 50) analyticsData.userGroups.intermediate++;
@@ -2132,20 +2139,18 @@ Chỉ trả về JSON, không thêm bất kỳ văn bản nào khác.`;
                         else analyticsData.userGroups.expert++;
                         
                         completedCount++;
-                        if (completedCount === usersToProcess.length) {
-                            if (filterType === 'top-10') {
+                        if (completedCount === usersToProcessIds.length) {
+                            if (userId === 'top-10') {
                                 filterTop10Users();
                             }
-                            setTimeout(function() {
-                                updateAnalyticsUI();
-                            }, 500);
+                            updateAnalyticsUI();
                         }
                     })
-                    .catch(function(error) {
-                        console.error('Error loading vocab for user ' + user.id + ':', error);
+                    .catch(error => {
+                        console.error(`Error loading vocab for user ${uid}:`, error);
                         completedCount++;
-                        if (completedCount === usersToProcess.length) {
-                            if (filterType === 'top-10') {
+                        if (completedCount === usersToProcessIds.length) {
+                            if (userId === 'top-10') {
                                 filterTop10Users();
                             }
                             updateAnalyticsUI();
@@ -2194,8 +2199,8 @@ Chỉ trả về JSON, không thêm bất kỳ văn bản nào khác.`;
                 if (newUserStats.hasOwnProperty(id)) {
                     const userStat = newUserStats[id];
                     if (userStat.vocab.total > 0) analyticsData.activeUsers++;
-                    analyticsData.totalLearned += userStat.vocab.known + userStat.vocab.mastered;
-                    analyticsData.totalMastered += userStat.vocab.mastered;
+                    analyticsData.totalLearned += userStat.learnedTotal;
+                    analyticsData.totalMastered += userStat.masteredTotal;
                     if (userStat.vocab.total <= 10) analyticsData.userGroups.beginner++;
                     else if (userStat.vocab.total <= 50) analyticsData.userGroups.intermediate++;
                     else if (userStat.vocab.total <= 200) analyticsData.userGroups.advanced++;
@@ -2220,6 +2225,7 @@ Chỉ trả về JSON, không thêm bất kỳ văn bản nào khác.`;
             createUserRankingTable();
             createUserDetailsList();
             evaluateOverallProgress();
+            // FIX 1: Create the charts based on the aggregated data
             createCharts();
         }
 
@@ -2361,6 +2367,7 @@ Chỉ trả về JSON, không thêm bất kỳ văn bản nào khác.`;
             }
         }
 
+        // FIX 1: Create an Area Chart based on current aggregated stats (User Groups)
         function createCharts() {
             if (overallProgressChart) {
                 overallProgressChart.destroy();
@@ -2369,37 +2376,77 @@ Chỉ trả về JSON, không thêm bất kỳ văn bản nào khác.`;
                 userDistributionChart.destroy();
             }
             
+            // Area Chart: Represents the distribution of learned words across user groups
             const overallCtx = document.getElementById('overall-progress-chart');
             if (overallCtx) {
+                // Data points representing cumulative knowledge
+                const groupLevels = ['Bắt đầu', 'Trung bình', 'Tích cực', 'Xuất sắc'];
+                const userCounts = [
+                    analyticsData.userGroups?.beginner || 0,
+                    analyticsData.userGroups?.intermediate || 0,
+                    analyticsData.userGroups?.advanced || 0,
+                    analyticsData.userGroups?.expert || 0
+                ];
+                
+                // Calculate cumulative sum for area effect
+                let cumulative = 0;
+                const areaData = userCounts.map(count => {
+                    cumulative += count;
+                    return cumulative;
+                });
+                
                 overallProgressChart = new Chart(overallCtx.getContext('2d'), {
                     type: 'line',
                     data: {
-                        labels: analyticsData.dailyData?.labels || [],
+                        labels: groupLevels,
                         datasets: [
                             {
-                                label: 'Từ đã học',
-                                data: analyticsData.dailyData?.learnedData || [],
-                                borderColor: '#2196F3',
-                                backgroundColor: 'rgba(33, 150, 243, 0.1)',
+                                label: 'Số lượng người dùng tích lũy',
+                                data: areaData,
+                                borderColor: '#FFA500',
+                                backgroundColor: 'rgba(255, 165, 0, 0.2)',
                                 fill: true,
-                                tension: 0.3
-                            },
-                            {
-                                label: 'Từ đã thuộc',
-                                data: analyticsData.dailyData?.masteredData || [],
-                                borderColor: '#4CAF50',
-                                backgroundColor: 'rgba(76, 175, 80, 0.1)',
-                                fill: true,
-                                tension: 0.3
+                                tension: 0.3,
+                                pointBackgroundColor: '#FFA500',
+                                pointBorderColor: '#fff',
+                                pointBorderWidth: 2,
+                                pointRadius: 5,
+                                pointHoverRadius: 7
                             }
                         ]
                     },
                     options: {
                         responsive: true,
                         maintainAspectRatio: false,
+                        plugins: {
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        let label = context.dataset.label || '';
+                                        if (label) {
+                                            label += ': ';
+                                        }
+                                        if (context.parsed.y !== null) {
+                                            label += context.parsed.y + ' người dùng';
+                                        }
+                                        return label;
+                                    }
+                                }
+                            }
+                        },
                         scales: {
                             y: {
-                                beginAtZero: true
+                                beginAtZero: true,
+                                title: {
+                                    display: true,
+                                    text: 'Số lượng người dùng'
+                                }
+                            },
+                            x: {
+                                title: {
+                                    display: true,
+                                    text: 'Trình độ người dùng'
+                                }
                             }
                         }
                     }
@@ -2439,6 +2486,7 @@ Chỉ trả về JSON, không thêm bất kỳ văn bản nào khác.`;
             }
         }
 
+        // Event Listeners for modals and filters
         const closeCategoryModal = document.getElementById('close-category-modal');
         if (closeCategoryModal) {
             closeCategoryModal.addEventListener('click', function() {
