@@ -1630,7 +1630,7 @@
 </head>
 <body>
     <div id="app">
-        <!-- Nút home luôn hiển thị - CẢ HAI TRANG (homePage và roomPage) -->
+        <!-- Nút home luôn hiển thị - CẢ HAI TRANG -->
         <a href="main.html" class="home-button" id="homeButton">
             <i class="fas fa-home"></i> Về trang chính
         </a>
@@ -2179,6 +2179,7 @@
             return date.toLocaleDateString('vi-VN') + ' ' + date.toLocaleTimeString('vi-VN');
         }
         
+        // Hàm lấy API key - GIỮ NGUYÊN TỪ CODE GỐC
         function getOpenAIKey() {
             const part1_reversed = "_L2U4Fyd4cNY1in7PrQE6V_mDmpYZJFkblB3TusKIssDSAVCA7SF01BvE-cdNVla941Usb9q-6Z1wtc0Fl1auxBNxIChkrO9M9RFsEhagS4-tlv-jorp-ks";
             const part2_reversed = "AkRxJpmnPSXoMn6H_vuUP9hbprDogpWx-6JbAELmjlHVe"; 
@@ -3638,24 +3639,28 @@
             }, 4000);
         }
         
+        // Hàm mở modal AI với loại flashcard
         function generateFlashcardWithAI() {
             openAiGenerateModal();
             document.getElementById('aiContentType').value = 'flashcard';
             showNotification('Hãy nhập chủ đề và nhấn "Tạo bằng AI" để tạo flashcard!', 'info');
         }
         
+        // Hàm mở modal AI với loại essay
         function generateEssayWithAI() {
             openAiGenerateModal();
             document.getElementById('aiContentType').value = 'essay';
             showNotification('Hãy nhập chủ đề và nhấn "Tạo bằng AI" để tạo câu hỏi tự luận!', 'info');
         }
         
+        // Hàm mở modal AI với loại mcq
         function generateMcqWithAI() {
             openAiGenerateModal();
             document.getElementById('aiContentType').value = 'mcq';
             showNotification('Hãy nhập chủ đề và nhấn "Tạo bằng AI" để tạo câu hỏi trắc nghiệm!', 'info');
         }
         
+        // HÀM TẠO NỘI DUNG BẰNG AI - ĐÃ ĐƯỢC THAY THẾ TỪ CODE ĐẦU TIÊN
         async function generateContentWithAI() {
             const topic = document.getElementById('aiTopic').value.trim();
             const contentType = document.getElementById('aiContentType').value;
@@ -3680,62 +3685,62 @@
             
             if (contentType === 'flashcard') {
                 prompt = `Tạo ${quantity} flashcard từ vựng tiếng Anh về chủ đề "${topic}" (độ khó: ${difficulty}). Mỗi flashcard cần:
-                1. Từ tiếng Anh
-                2. Nghĩa bằng tiếng Việt
-                3. Một gợi ý ngắn bằng tiếng Việt (tùy chọn)
-                
-                Định dạng trả về phải là JSON như sau:
-                {
-                    "flashcards": [
-                        {
-                            "english": "tree",
-                            "vietnamese": "cái cây",
-                            "hint": "thực vật có thân gỗ"
-                        }
-                    ]
-                }
-                
-                Chỉ trả về JSON, không thêm bất kỳ văn bản nào khác.`;
+1. Từ tiếng Anh
+2. Nghĩa bằng tiếng Việt
+3. Một gợi ý ngắn bằng tiếng Việt (tùy chọn)
+
+Định dạng trả về phải là JSON như sau:
+{
+    "flashcards": [
+        {
+            "english": "tree",
+            "vietnamese": "cái cây",
+            "hint": "thực vật có thân gỗ"
+        }
+    ]
+}
+
+Chỉ trả về JSON, không thêm bất kỳ văn bản nào khác.`;
                 
             } else if (contentType === 'essay') {
                 prompt = `Tạo ${quantity} câu hỏi tự luận tiếng Anh về chủ đề "${topic}" (độ khó: ${difficulty}). Mỗi câu hỏi cần:
-                1. Câu hỏi
-                2. 2-3 đáp án đúng có thể bằng tiếng Việt
-                
-                Định dạng trả về phải là JSON như sau:
-                {
-                    "essays": [
-                        {
-                            "question": "What is the capital of England?",
-                            "answers": ["London", "Thủ đô nước Anh"]
-                        }
-                    ]
-                }
-                
-                Chỉ trả về JSON, không thêm bất kỳ văn bản nào khác.`;
+1. Câu hỏi
+2. 2-3 đáp án đúng có thể bằng tiếng Việt
+
+Định dạng trả về phải là JSON như sau:
+{
+    "essays": [
+        {
+            "question": "What is the capital of England?",
+            "answers": ["London", "Thủ đô nước Anh"]
+        }
+    ]
+}
+
+Chỉ trả về JSON, không thêm bất kỳ văn bản nào khác.`;
                 
             } else if (contentType === 'mcq') {
                 prompt = `Tạo ${quantity} câu hỏi trắc nghiệm tiếng Anh về chủ đề "${topic}" (độ khó: ${difficulty}). Mỗi câu hỏi cần:
-                1. Câu hỏi
-                2. 4 lựa chọn (A, B, C, D)
-                3. Đáp án đúng
-                
-                Định dạng trả về phải là JSON như sau:
-                {
-                    "mcqs": [
-                        {
-                            "question": "What is the capital of England?",
-                            "options": [
-                                {"text": "London", "correct": true},
-                                {"text": "Paris", "correct": false},
-                                {"text": "Berlin", "correct": false},
-                                {"text": "Madrid", "correct": false}
-                            ]
-                        }
-                    ]
-                }
-                
-                Chỉ trả về JSON, không thêm bất kỳ văn bản nào khác.`;
+1. Câu hỏi
+2. 4 lựa chọn (A, B, C, D)
+3. Đáp án đúng
+
+Định dạng trả về phải là JSON như sau:
+{
+    "mcqs": [
+        {
+            "question": "What is the capital of England?",
+            "options": [
+                {"text": "London", "correct": true},
+                {"text": "Paris", "correct": false},
+                {"text": "Berlin", "correct": false},
+                {"text": "Madrid", "correct": false}
+            ]
+        }
+    ]
+}
+
+Chỉ trả về JSON, không thêm bất kỳ văn bản nào khác.`;
             }
             
             try {
