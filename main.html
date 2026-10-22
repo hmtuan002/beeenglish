@@ -296,7 +296,7 @@
             position: relative;
         }
 
-        input, select {
+        input, select, textarea {
             width: 100%;
             padding: 15px;
             border: 2px solid #FFD700;
@@ -304,9 +304,10 @@
             font-size: 16px;
             transition: all 0.3s ease;
             background-color: white;
+            font-family: inherit;
         }
 
-        input:focus, select:focus {
+        input:focus, select:focus, textarea:focus {
             outline: none;
             border-color: #FFA500;
             box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.2);
@@ -778,129 +779,26 @@
             }
         }
 
-        /* ===== CHATBOT AI + VOICE TRANSLATE ===== */
+        /* ===== DỊCH GIỌNG NÓI ===== */
+        .translate-btn {
+            background: linear-gradient(135deg, #4CAF50 0%, #2E7D32 100%) !important;
+            color: white !important;
+        }
         .chatbot-btn {
             background: linear-gradient(135deg, #9C27B0 0%, #673AB7 100%) !important;
             color: white !important;
         }
-        .chat-container {
-            display: flex;
-            flex-direction: column;
-            height: 62vh;
-            max-height: 560px;
-            border: 1px solid #e8e0f0;
-            border-radius: 16px;
-            overflow: hidden;
-            background: #faf8ff;
-            box-shadow: 0 4px 20px rgba(156, 39, 176, 0.08);
-        }
-        .chat-messages {
-            flex: 1;
-            overflow-y: auto;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            gap: 14px;
-        }
-        .chat-bubble {
-            max-width: 88%;
-            padding: 14px 18px;
-            border-radius: 18px;
-            font-size: 1rem;
-            line-height: 1.55;
-            word-break: break-word;
-            position: relative;
-            white-space: pre-wrap;
-        }
-        .chat-bubble.user {
-            align-self: flex-end;
-            background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
-            color: white;
-            border-bottom-right-radius: 4px;
-            box-shadow: 0 3px 12px rgba(255, 165, 0, 0.25);
-        }
-        .chat-bubble.ai {
-            align-self: flex-start;
-            background: white;
-            color: #333;
-            border: 1px solid #eee;
-            border-bottom-left-radius: 4px;
-            box-shadow: 0 3px 12px rgba(0,0,0,0.06);
-        }
-        .chat-bubble .bubble-meta {
-            font-size: 0.72rem;
-            opacity: 0.65;
-            margin-top: 8px;
-        }
-        .chat-input-area {
-            display: flex;
-            gap: 10px;
-            padding: 14px 16px;
-            background: white;
-            border-top: 1px solid #eee;
-            align-items: center;
-        }
-        .chat-input-area input {
-            flex: 1;
-            padding: 13px 16px;
-            border: 2px solid #e8e0f0;
-            border-radius: 28px;
-            font-size: 1rem;
-            outline: none;
-            transition: border-color 0.2s;
-        }
-        .chat-input-area input:focus {
-            border-color: #9C27B0;
-            box-shadow: 0 0 0 3px rgba(156, 39, 176, 0.12);
-        }
-        .chat-send-btn, .chat-voice-btn, .chat-clear-btn {
-            width: 48px;
-            height: 48px;
-            border-radius: 50%;
-            border: none;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 22px;
-            transition: all 0.2s;
-            flex-shrink: 0;
-        }
-        .chat-send-btn {
-            background: linear-gradient(135deg, #9C27B0 0%, #673AB7 100%);
-            color: white;
-            box-shadow: 0 3px 10px rgba(156, 39, 176, 0.3);
-        }
-        .chat-send-btn:hover { transform: scale(1.08); }
-        .chat-voice-btn {
-            background: linear-gradient(135deg, #4CAF50 0%, #2E7D32 100%);
-            color: white;
-            box-shadow: 0 3px 10px rgba(76, 175, 80, 0.25);
-        }
-        .chat-voice-btn.recording {
-            background: linear-gradient(135deg, #f44336 0%, #c62828 100%);
-            animation: pulse-rec 1s infinite;
-        }
-        @keyframes pulse-rec {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.12); }
-        }
-        .chat-clear-btn {
-            background: #f5f5f5;
-            color: #666;
-        }
-        .chat-clear-btn:hover { background: #eee; }
         .voice-translate-panel {
-            background: linear-gradient(135deg, #f8f0ff 0%, #f0e6ff 100%);
+            background: linear-gradient(135deg, #f0fff4 0%, #e8f5e9 100%);
             border-radius: 16px;
             padding: 18px 20px;
             margin-bottom: 16px;
-            border: 1px solid #e0d0f5;
-            box-shadow: 0 3px 15px rgba(156, 39, 176, 0.08);
+            border: 1px solid #c8e6c9;
+            box-shadow: 0 3px 15px rgba(76, 175, 80, 0.08);
         }
         .voice-translate-panel h4 {
             margin: 0 0 14px;
-            color: #6A1B9A;
+            color: #1B5E20;
             font-size: 1.05rem;
             display: flex;
             align-items: center;
@@ -927,17 +825,17 @@
             font-weight: 500;
         }
         .voice-direction label:hover {
-            border-color: #ce93d8;
+            border-color: #81c784;
         }
         .voice-direction input {
             display: none;
         }
         .voice-direction label:has(input:checked) {
-            border-color: #9C27B0;
-            background: linear-gradient(135deg, #f3e5f5, #e1bee7);
-            color: #6A1B9A;
+            border-color: #4CAF50;
+            background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
+            color: #1B5E20;
             font-weight: 700;
-            box-shadow: 0 2px 8px rgba(156, 39, 176, 0.15);
+            box-shadow: 0 2px 8px rgba(76, 175, 80, 0.15);
         }
         .voice-result-box {
             background: white;
@@ -970,27 +868,97 @@
             margin-top: 10px;
             text-align: center;
         }
-        .chat-welcome {
-            text-align: center;
-            color: #888;
-            padding: 40px 20px;
-            font-size: 1rem;
-            line-height: 1.6;
-        }
-        .chat-welcome .material-symbols-outlined {
-            font-size: 3rem;
-            color: #9C27B0;
-            margin-bottom: 12px;
-            display: block;
-        }
-        #chatbot-menu .pop-up-content {
-            max-width: 640px !important;
-            max-height: 92vh;
-        }
         #start-voice-btn {
             font-size: 1rem;
             padding: 14px 20px;
             border-radius: 12px;
+        }
+        .translate-text-area {
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px dashed #c8e6c9;
+        }
+        .translate-text-area h5 {
+            margin: 0 0 10px;
+            color: #2E7D32;
+            font-size: 0.95rem;
+            font-weight: 600;
+        }
+        .translate-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+        .translate-action-btn {
+            flex: 1;
+            min-width: 100px;
+            padding: 10px 12px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            transition: all 0.2s;
+        }
+        .translate-action-btn.speak {
+            background: #2196F3;
+            color: white;
+        }
+        .translate-action-btn.speak:hover {
+            background: #1976D2;
+        }
+        .translate-action-btn.copy {
+            background: #FF9800;
+            color: white;
+        }
+        .translate-action-btn.copy:hover {
+            background: #F57C00;
+        }
+        .translate-action-btn.clear {
+            background: #f5f5f5;
+            color: #666;
+        }
+        .translate-action-btn.clear:hover {
+            background: #eee;
+        }
+        #translate-menu .pop-up-content {
+            max-width: 560px !important;
+            max-height: 90vh;
+        }
+        .translate-history {
+            margin-top: 16px;
+            max-height: 180px;
+            overflow-y: auto;
+            border: 1px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 8px;
+            background: #fafafa;
+        }
+        .translate-history-item {
+            padding: 8px 10px;
+            border-bottom: 1px solid #eee;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .translate-history-item:last-child {
+            border-bottom: none;
+        }
+        .translate-history-item:hover {
+            background: #e8f5e9;
+        }
+        .translate-history-item .hist-original {
+            color: #555;
+            font-size: 0.85rem;
+        }
+        .translate-history-item .hist-translated {
+            color: #1B5E20;
+            font-weight: 600;
         }
     </style>
 </head>
@@ -1118,11 +1086,11 @@
             </div>
         </div>
 
-        <!-- Popup Chatbot AI + Ghi âm dịch -->
-        <div class="pop-up" id="chatbot-menu">
-            <div class="pop-up-content" style="max-width: 640px;">
-                <span id="close-chatbot-menu" class="material-symbols-outlined close">close</span>
-                <h2 style="margin-bottom: 12px;"><span class="material-symbols-outlined" style="vertical-align: middle; color: #9C27B0;">smart_toy</span> Chat với AI BeeEnglish</h2>
+        <!-- Popup Dịch giọng nói / Văn bản (đã tách khỏi Chatbot) -->
+        <div class="pop-up" id="translate-menu">
+            <div class="pop-up-content" style="max-width: 560px;">
+                <span id="close-translate-menu" class="material-symbols-outlined close">close</span>
+                <h2 style="margin-bottom: 12px;"><span class="material-symbols-outlined" style="vertical-align: middle; color: #4CAF50;">translate</span> Dịch giọng nói & Văn bản</h2>
 
                 <!-- Panel ghi âm + dịch -->
                 <div class="voice-translate-panel">
@@ -1145,30 +1113,43 @@
                     <div class="voice-result-box" id="voice-result">
                         <div class="original" id="voice-original"></div>
                         <div class="translated" id="voice-translated"></div>
+                        <div class="translate-actions" id="voice-result-actions" style="display: none; margin-top: 12px;">
+                            <button type="button" class="translate-action-btn speak" id="speak-original-btn" title="Đọc bản gốc">
+                                <span class="material-symbols-outlined" style="font-size: 18px;">volume_up</span> Đọc gốc
+                            </button>
+                            <button type="button" class="translate-action-btn speak" id="speak-translated-btn" title="Đọc bản dịch">
+                                <span class="material-symbols-outlined" style="font-size: 18px;">volume_up</span> Đọc dịch
+                            </button>
+                            <button type="button" class="translate-action-btn copy" id="copy-translated-btn" title="Sao chép bản dịch">
+                                <span class="material-symbols-outlined" style="font-size: 18px;">content_copy</span> Sao chép
+                            </button>
+                            <button type="button" class="translate-action-btn clear" id="clear-result-btn" title="Xóa kết quả">
+                                <span class="material-symbols-outlined" style="font-size: 18px;">delete</span> Xóa
+                            </button>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Khung chat -->
-                <div class="chat-container">
-                    <div class="chat-messages" id="chat-messages">
-                        <div class="chat-welcome" id="chat-welcome">
-                            <span class="material-symbols-outlined">forum</span>
-                            Xin chào! Tôi là trợ lý AI của BeeEnglish.<br>
-                            Bạn có thể hỏi về từ vựng, ngữ pháp, cách dùng từ,<br>
-                            hoặc chỉ cần trò chuyện bằng tiếng Anh / tiếng Việt.
-                        </div>
+                <!-- Dịch bằng văn bản (hỗ trợ thêm) -->
+                <div class="voice-translate-panel translate-text-area" style="background: linear-gradient(135deg, #e3f2fd 0%, #e8eaf6 100%); border-color: #90caf9;">
+                    <h4 style="color: #1565C0;"><span class="material-symbols-outlined" style="font-size: 20px;">edit_note</span> Dịch bằng văn bản</h4>
+                    <div class="form-group" style="margin-bottom: 10px;">
+                        <textarea id="text-to-translate" rows="3" placeholder="Nhập văn bản cần dịch..." style="resize: vertical; min-height: 70px;"></textarea>
                     </div>
-                    <div class="chat-input-area">
-                        <button type="button" class="chat-clear-btn" id="chat-clear-btn" title="Xóa lịch sử chat">
-                            <span class="material-symbols-outlined">delete</span>
-                        </button>
-                        <input type="text" id="chat-input" placeholder="Nhập tin nhắn..." autocomplete="off">
-                        <button type="button" class="chat-voice-btn" id="chat-voice-btn" title="Ghi âm gửi tin nhắn">
-                            <span class="material-symbols-outlined">mic</span>
-                        </button>
-                        <button type="button" class="chat-send-btn" id="chat-send-btn" title="Gửi">
-                            <span class="material-symbols-outlined">send</span>
-                        </button>
+                    <button type="button" id="translate-text-btn" class="btn" style="background: linear-gradient(135deg, #2196F3, #1565C0);">
+                        <span class="material-symbols-outlined" style="vertical-align: middle; font-size: 20px;">translate</span>
+                        Dịch ngay
+                    </button>
+                    <div class="voice-status-text" id="text-translate-status" style="display: none;"></div>
+                </div>
+
+                <!-- Lịch sử dịch gần đây -->
+                <div style="margin-top: 12px;">
+                    <h4 style="margin: 0 0 8px; font-size: 0.95rem; color: #555; display: flex; align-items: center; gap: 6px;">
+                        <span class="material-symbols-outlined" style="font-size: 18px;">history</span> Lịch sử dịch gần đây
+                    </h4>
+                    <div class="translate-history" id="translate-history">
+                        <div style="text-align: center; color: #999; padding: 12px; font-size: 0.9rem;">Chưa có lịch sử dịch.</div>
                     </div>
                 </div>
             </div>
@@ -1230,6 +1211,10 @@
                     <button class="action-btn classroom" id="classroom">
                         <span class="material-symbols-outlined">school</span>
                         Lớp học
+                    </button>
+                    <button class="action-btn translate-btn" id="translate">
+                        <span class="material-symbols-outlined">translate</span>
+                        Dịch
                     </button>
                     <button class="action-btn chatbot-btn" id="chatbot">
                         <span class="material-symbols-outlined">smart_toy</span>
@@ -1441,9 +1426,10 @@
         // ============================================================
         // HÀM PHÁT ÂM
         // ============================================================
-        function speakText(text, rate, pitch) {
+        function speakText(text, rate, pitch, lang) {
             if (rate === undefined) rate = 0.8;
             if (pitch === undefined) pitch = 1;
+            if (lang === undefined) lang = 'en-US';
             
             if (!('speechSynthesis' in window)) {
                 alert('Trình duyệt của bạn không hỗ trợ chức năng đọc văn bản.');
@@ -1452,7 +1438,7 @@
 
             window.speechSynthesis.cancel();
             const utterance = new SpeechSynthesisUtterance(text);
-            utterance.lang = 'en-US';
+            utterance.lang = lang;
             utterance.rate = rate;
             utterance.pitch = pitch;
             utterance.volume = 1;
@@ -2647,108 +2633,85 @@
         }
 
         // ============================================================
-        // CHATBOT AI + GHI ÂM DỊCH
+        // DỊCH GIỌNG NÓI + VĂN BẢN (ĐÃ TÁCH KHỎI CHATBOT)
         // ============================================================
-        let chatHistory = [];
         let isVoiceRecording = false;
         let currentRecognition = null;
-        let isChatVoiceRecording = false;
+        let lastOriginalText = '';
+        let lastTranslatedText = '';
+        let lastDirection = 'vi-en';
+        let translateHistory = [];
 
-        function appendChatBubble(role, text) {
-            const messagesEl = document.getElementById('chat-messages');
-            const welcome = document.getElementById('chat-welcome');
-            if (welcome) welcome.style.display = 'none';
-
-            const bubble = document.createElement('div');
-            bubble.className = 'chat-bubble ' + (role === 'user' ? 'user' : 'ai');
-            const timeStr = new Date().toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
-            bubble.innerHTML = escapeHtml(text) + '<div class="bubble-meta">' + (role === 'user' ? 'Bạn' : 'AI BeeEnglish') + ' • ' + timeStr + '</div>';
-            messagesEl.appendChild(bubble);
-            messagesEl.scrollTop = messagesEl.scrollHeight;
-        }
-
-        async function sendChatMessage(userText) {
-            if (!userText || !userText.trim()) return;
-            const text = userText.trim();
-            appendChatBubble('user', text);
-            chatHistory.push({ role: 'user', content: text });
-
-            const input = document.getElementById('chat-input');
-            if (input) input.value = '';
-
-            const sendBtn = document.getElementById('chat-send-btn');
-            if (sendBtn) sendBtn.disabled = true;
-
-            // Typing indicator
-            const messagesEl = document.getElementById('chat-messages');
-            const typing = document.createElement('div');
-            typing.className = 'chat-bubble ai';
-            typing.id = 'typing-indicator';
-            typing.innerHTML = '<em>AI đang suy nghĩ...</em>';
-            messagesEl.appendChild(typing);
-            messagesEl.scrollTop = messagesEl.scrollHeight;
-
+        function loadTranslateHistory() {
             try {
-                const API_KEY = getAPIKey();
-                const systemPrompt = 'Bạn là trợ lý AI thân thiện của ứng dụng học từ vựng BeeEnglish. Bạn giúp người học tiếng Anh (học sinh Việt Nam) về từ vựng, ngữ pháp, cách dùng từ, phát âm, và trò chuyện tự nhiên. Có thể trả lời bằng tiếng Việt hoặc tiếng Anh tùy theo ngôn ngữ người dùng dùng. Nếu người dùng hỏi từ vựng, hãy đưa phiên âm IPA, nghĩa, ví dụ và bản dịch nếu phù hợp. QUY TẮC BẮT BUỘC: 1) Không dùng các ký tự đặc biệt như dấu sao (*), dấu gạch chéo (/), dấu thăng (#), dấu gạch dưới (_), dấu ngoặc vuông, dấu ngoặc nhọn trong câu trả lời. 2) Viết rõ ràng, dễ đọc, mỗi ý một dòng hoặc cách đoạn hợp lý, không viết một mạch dài không xuống dòng. 3) Trả lời ngắn gọn nhưng đầy đủ, khuyến khích người học.';
-
-                const messages = [
-                    { role: 'system', content: systemPrompt }
-                ];
-                // Giữ tối đa 12 tin nhắn gần nhất để context không quá dài
-                const recent = chatHistory.slice(-12);
-                for (let i = 0; i < recent.length; i++) {
-                    messages.push(recent[i]);
+                const saved = localStorage.getItem('beeenglish_translate_history');
+                if (saved) {
+                    translateHistory = JSON.parse(saved);
+                    if (!Array.isArray(translateHistory)) translateHistory = [];
                 }
+            } catch (e) {
+                translateHistory = [];
+            }
+            renderTranslateHistory();
+        }
 
-                const response = await fetch(API_URL, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': 'Bearer ' + API_KEY
-                    },
-                    body: JSON.stringify({
-                        model: 'gpt-5.4-nano',
-                        messages: messages,
-                        max_tokens: 800,
-                        temperature: 0.7
-                    })
+        function saveTranslateHistory() {
+            try {
+                localStorage.setItem('beeenglish_translate_history', JSON.stringify(translateHistory.slice(0, 20)));
+            } catch (e) {}
+        }
+
+        function addToTranslateHistory(original, translated, direction) {
+            translateHistory.unshift({
+                original: original,
+                translated: translated,
+                direction: direction,
+                time: new Date().toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })
+            });
+            if (translateHistory.length > 20) {
+                translateHistory = translateHistory.slice(0, 20);
+            }
+            saveTranslateHistory();
+            renderTranslateHistory();
+        }
+
+        function renderTranslateHistory() {
+            const container = document.getElementById('translate-history');
+            if (!container) return;
+            if (translateHistory.length === 0) {
+                container.innerHTML = '<div style="text-align: center; color: #999; padding: 12px; font-size: 0.9rem;">Chưa có lịch sử dịch.</div>';
+                return;
+            }
+            container.innerHTML = '';
+            for (let i = 0; i < translateHistory.length; i++) {
+                const item = translateHistory[i];
+                const div = document.createElement('div');
+                div.className = 'translate-history-item';
+                div.innerHTML = '<div class="hist-original">' + escapeHtml(item.original) + '</div>' +
+                    '<div class="hist-translated">' + escapeHtml(item.translated) + '</div>' +
+                    '<div style="font-size: 0.75rem; color: #999; margin-top: 2px;">' + (item.direction === 'vi-en' ? 'VI→EN' : 'EN→VI') + ' • ' + item.time + '</div>';
+                div.addEventListener('click', function() {
+                    lastOriginalText = item.original;
+                    lastTranslatedText = item.translated;
+                    lastDirection = item.direction;
+                    showTranslateResult(item.original, item.translated, item.direction);
                 });
-
-                if (!response.ok) {
-                    throw new Error('API error ' + response.status);
-                }
-
-                const data = await response.json();
-                let reply = data.choices[0].message.content || 'Xin lỗi, tôi không thể trả lời lúc này.';
-                reply = reply.trim();
-
-                chatHistory.push({ role: 'assistant', content: reply });
-                const typingEl = document.getElementById('typing-indicator');
-                if (typingEl) typingEl.remove();
-                appendChatBubble('ai', reply);
-            } catch (err) {
-                console.error('Chat error:', err);
-                const typingEl = document.getElementById('typing-indicator');
-                if (typingEl) typingEl.remove();
-                appendChatBubble('ai', 'Xin lỗi, có lỗi xảy ra khi kết nối AI. Vui lòng thử lại sau.');
-            } finally {
-                if (sendBtn) sendBtn.disabled = false;
+                container.appendChild(div);
             }
         }
 
-        function clearChatHistory() {
-            chatHistory = [];
-            const messagesEl = document.getElementById('chat-messages');
-            if (messagesEl) {
-                messagesEl.innerHTML = `
-                    <div class="chat-welcome" id="chat-welcome">
-                        <span class="material-symbols-outlined">forum</span>
-                        Xin chào! Tôi là trợ lý AI của BeeEnglish.<br>
-                        Bạn có thể hỏi về từ vựng, ngữ pháp, cách dùng từ,<br>
-                        hoặc chỉ cần trò chuyện bằng tiếng Anh / tiếng Việt.
-                    </div>`;
+        function showTranslateResult(original, translated, direction) {
+            const resultBox = document.getElementById('voice-result');
+            const actions = document.getElementById('voice-result-actions');
+            if (resultBox) {
+                document.getElementById('voice-original').innerHTML = '<strong>Bạn nói / Nhập:</strong> ' + escapeHtml(original);
+                document.getElementById('voice-translated').innerHTML = '<strong>Bản dịch:</strong> ' + escapeHtml(translated);
+                resultBox.classList.add('show');
             }
+            if (actions) actions.style.display = 'flex';
+            lastOriginalText = original;
+            lastTranslatedText = translated;
+            lastDirection = direction || getSelectedVoiceDirection();
         }
 
         async function translateTextWithAI(text, direction) {
@@ -2825,6 +2788,7 @@
             const statusEl = document.getElementById('voice-status');
             const resultBox = document.getElementById('voice-result');
             const startBtn = document.getElementById('start-voice-btn');
+            const actions = document.getElementById('voice-result-actions');
 
             currentRecognition.onstart = function() {
                 isVoiceRecording = true;
@@ -2834,6 +2798,7 @@
                     startBtn.style.background = 'linear-gradient(135deg, #f44336, #c62828)';
                 }
                 if (resultBox) resultBox.classList.remove('show');
+                if (actions) actions.style.display = 'none';
             };
 
             currentRecognition.onresult = async function(event) {
@@ -2847,16 +2812,12 @@
 
                 try {
                     const translated = await translateTextWithAI(transcript, direction);
-                    if (resultBox) {
-                        document.getElementById('voice-translated').innerHTML = '<strong>Bản dịch:</strong> ' + escapeHtml(translated);
-                    }
+                    showTranslateResult(transcript, translated, direction);
+                    addToTranslateHistory(transcript, translated, direction);
                     if (statusEl) statusEl.textContent = '✓ Dịch xong! Bản dịch đã được đọc to.';
                     // Đọc to bản dịch
                     const speakLang = direction === 'vi-en' ? 'en-US' : 'vi-VN';
-                    speakText(translated, 0.9, 1);
-                    // Tự động đưa vào ô chat input nếu muốn
-                    const chatInput = document.getElementById('chat-input');
-                    if (chatInput) chatInput.value = translated;
+                    speakText(translated, 0.9, 1, speakLang);
                 } catch (err) {
                     console.error(err);
                     if (statusEl) statusEl.textContent = 'Lỗi dịch: ' + err.message;
@@ -2900,46 +2861,36 @@
             }
         }
 
-        // Ghi âm để gửi tin nhắn chat (dùng recognition luôn)
-        function startChatVoiceInput() {
-            if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
-                showAlert('Trình duyệt không hỗ trợ nhận diện giọng nói.');
+        async function translateTypedText() {
+            const textarea = document.getElementById('text-to-translate');
+            const statusEl = document.getElementById('text-translate-status');
+            const text = textarea ? textarea.value.trim() : '';
+            if (!text) {
+                showAlert('Vui lòng nhập văn bản cần dịch!');
                 return;
             }
-            if (isChatVoiceRecording) {
-                if (currentRecognition) try { currentRecognition.stop(); } catch(e) {}
-                isChatVoiceRecording = false;
-                const btn = document.getElementById('chat-voice-btn');
-                if (btn) btn.classList.remove('recording');
-                return;
+            const direction = getSelectedVoiceDirection();
+            if (statusEl) {
+                statusEl.style.display = 'block';
+                statusEl.textContent = 'Đang dịch...';
             }
+            const btn = document.getElementById('translate-text-btn');
+            if (btn) btn.disabled = true;
 
-            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-            currentRecognition = new SpeechRecognition();
-            currentRecognition.lang = 'vi-VN';
-            currentRecognition.continuous = false;
-            currentRecognition.interimResults = false;
-
-            const btn = document.getElementById('chat-voice-btn');
-            currentRecognition.onstart = function() {
-                isChatVoiceRecording = true;
-                if (btn) btn.classList.add('recording');
-            };
-            currentRecognition.onresult = function(event) {
-                const transcript = event.results[0][0].transcript;
-                const input = document.getElementById('chat-input');
-                if (input) input.value = transcript;
-                sendChatMessage(transcript);
-            };
-            currentRecognition.onerror = function() {
-                isChatVoiceRecording = false;
-                if (btn) btn.classList.remove('recording');
-            };
-            currentRecognition.onend = function() {
-                isChatVoiceRecording = false;
-                if (btn) btn.classList.remove('recording');
-            };
-            currentRecognition.start();
+            try {
+                const translated = await translateTextWithAI(text, direction);
+                showTranslateResult(text, translated, direction);
+                addToTranslateHistory(text, translated, direction);
+                if (statusEl) statusEl.textContent = '✓ Dịch xong!';
+                const speakLang = direction === 'vi-en' ? 'en-US' : 'vi-VN';
+                speakText(translated, 0.9, 1, speakLang);
+            } catch (err) {
+                console.error(err);
+                if (statusEl) statusEl.textContent = 'Lỗi: ' + err.message;
+                showAlert('Không dịch được. Vui lòng thử lại.');
+            } finally {
+                if (btn) btn.disabled = false;
+            }
         }
 
         // ============================================================
@@ -2954,6 +2905,9 @@
                         popup.classList.remove('active');
                         if (popup.id === 'ai-add-menu') {
                             resetAIPopup();
+                        }
+                        if (popup.id === 'translate-menu') {
+                            stopVoiceRecognition();
                         }
                     }
                 });
@@ -3016,48 +2970,22 @@
                 });
             }
 
-            // ===== CHATBOT AI =====
-            const chatbotBtn = document.getElementById('chatbot');
-            if (chatbotBtn) {
-                chatbotBtn.addEventListener('click', function() {
-                    const menu = document.getElementById('chatbot-menu');
+            // ===== NÚT DỊCH (chỉ dịch, không còn chat) =====
+            const translateBtn = document.getElementById('translate');
+            if (translateBtn) {
+                translateBtn.addEventListener('click', function() {
+                    const menu = document.getElementById('translate-menu');
                     if (menu) menu.classList.add('active');
+                    loadTranslateHistory();
                 });
             }
 
-            const closeChatbotBtn = document.getElementById('close-chatbot-menu');
-            if (closeChatbotBtn) {
-                closeChatbotBtn.addEventListener('click', function() {
-                    const menu = document.getElementById('chatbot-menu');
+            const closeTranslateBtn = document.getElementById('close-translate-menu');
+            if (closeTranslateBtn) {
+                closeTranslateBtn.addEventListener('click', function() {
+                    const menu = document.getElementById('translate-menu');
                     if (menu) menu.classList.remove('active');
                     stopVoiceRecognition();
-                });
-            }
-
-            const chatSendBtn = document.getElementById('chat-send-btn');
-            if (chatSendBtn) {
-                chatSendBtn.addEventListener('click', function() {
-                    const input = document.getElementById('chat-input');
-                    if (input) sendChatMessage(input.value);
-                });
-            }
-
-            const chatInput = document.getElementById('chat-input');
-            if (chatInput) {
-                chatInput.addEventListener('keydown', function(e) {
-                    if (e.key === 'Enter') {
-                        e.preventDefault();
-                        sendChatMessage(chatInput.value);
-                    }
-                });
-            }
-
-            const chatClearBtn = document.getElementById('chat-clear-btn');
-            if (chatClearBtn) {
-                chatClearBtn.addEventListener('click', function() {
-                    if (confirm('Xóa toàn bộ lịch sử chat?')) {
-                        clearChatHistory();
-                    }
                 });
             }
 
@@ -3068,10 +2996,87 @@
                 });
             }
 
-            const chatVoiceBtn = document.getElementById('chat-voice-btn');
-            if (chatVoiceBtn) {
-                chatVoiceBtn.addEventListener('click', function() {
-                    startChatVoiceInput();
+            const translateTextBtn = document.getElementById('translate-text-btn');
+            if (translateTextBtn) {
+                translateTextBtn.addEventListener('click', function() {
+                    translateTypedText();
+                });
+            }
+
+            // Các nút hỗ trợ kết quả dịch
+            const speakOriginalBtn = document.getElementById('speak-original-btn');
+            if (speakOriginalBtn) {
+                speakOriginalBtn.addEventListener('click', function() {
+                    if (!lastOriginalText) return;
+                    const lang = lastDirection === 'vi-en' ? 'vi-VN' : 'en-US';
+                    speakText(lastOriginalText, 0.9, 1, lang);
+                });
+            }
+
+            const speakTranslatedBtn = document.getElementById('speak-translated-btn');
+            if (speakTranslatedBtn) {
+                speakTranslatedBtn.addEventListener('click', function() {
+                    if (!lastTranslatedText) return;
+                    const lang = lastDirection === 'vi-en' ? 'en-US' : 'vi-VN';
+                    speakText(lastTranslatedText, 0.9, 1, lang);
+                });
+            }
+
+            const copyTranslatedBtn = document.getElementById('copy-translated-btn');
+            if (copyTranslatedBtn) {
+                copyTranslatedBtn.addEventListener('click', function() {
+                    if (!lastTranslatedText) return;
+                    if (navigator.clipboard && navigator.clipboard.writeText) {
+                        navigator.clipboard.writeText(lastTranslatedText).then(function() {
+                            showAlert('Đã sao chép bản dịch!');
+                        }).catch(function() {
+                            fallbackCopy(lastTranslatedText);
+                        });
+                    } else {
+                        fallbackCopy(lastTranslatedText);
+                    }
+                });
+            }
+
+            function fallbackCopy(text) {
+                const ta = document.createElement('textarea');
+                ta.value = text;
+                ta.style.position = 'fixed';
+                ta.style.left = '-9999px';
+                document.body.appendChild(ta);
+                ta.select();
+                try {
+                    document.execCommand('copy');
+                    showAlert('Đã sao chép bản dịch!');
+                } catch (e) {
+                    showAlert('Không thể sao chép. Hãy chọn và copy thủ công.');
+                }
+                document.body.removeChild(ta);
+            }
+
+            const clearResultBtn = document.getElementById('clear-result-btn');
+            if (clearResultBtn) {
+                clearResultBtn.addEventListener('click', function() {
+                    const resultBox = document.getElementById('voice-result');
+                    const actions = document.getElementById('voice-result-actions');
+                    const statusEl = document.getElementById('voice-status');
+                    if (resultBox) {
+                        resultBox.classList.remove('show');
+                        document.getElementById('voice-original').innerHTML = '';
+                        document.getElementById('voice-translated').innerHTML = '';
+                    }
+                    if (actions) actions.style.display = 'none';
+                    if (statusEl) statusEl.textContent = 'Nhấn nút và nói rõ ràng...';
+                    lastOriginalText = '';
+                    lastTranslatedText = '';
+                });
+            }
+
+            // ===== NÚT CHAT AI (mở link ngoài) =====
+            const chatbotBtn = document.getElementById('chatbot');
+            if (chatbotBtn) {
+                chatbotBtn.addEventListener('click', function() {
+                    window.open('https://hmtuan002.github.io/beeenglish/chat', '_blank');
                 });
             }
             
@@ -3158,6 +3163,9 @@
                         if (popup.id === 'category-detail-menu') {
                             currentCategoryWords = [];
                             currentCategoryInfo = null;
+                        }
+                        if (popup.id === 'translate-menu') {
+                            stopVoiceRecognition();
                         }
                     }
                 });
@@ -3344,6 +3352,7 @@
         // KHỞI CHẠY
         // ============================================================
         initEventListeners();
+        loadTranslateHistory();
     </script>
 </body>
 </html>
