@@ -2752,34 +2752,47 @@
         }
 
         async function translateTextWithAI(text, direction) {
-            const API_KEY = getAPIKey();
-            let prompt = '';
-            if (direction === 'vi-en') {
-                prompt = 'Dịch đoạn văn bản tiếng Việt sau sang tiếng Anh tự nhiên, chính xác. Chỉ trả về bản dịch tiếng Anh, không thêm giải thích:\n\n' + text;
-            } else {
-                prompt = 'Dịch đoạn văn bản tiếng Anh sau sang tiếng Việt tự nhiên, chính xác. Chỉ trả về bản dịch tiếng Việt, không thêm giải thích:\n\n' + text;
+            // Dịch bằng code thuần (API dịch miễn phí), KHÔNG dùng AI → nhanh hơn nhiều
+            const sourceLang = direction === 'vi-en' ? 'vi' : 'en';
+            const targetLang = direction === 'vi-en' ? 'en' : 'vi';
+            const encoded = encodeURIComponent(text);
+
+            // Cách 1: Google Translate (endpoint miễn phí, rất nhanh)
+            try {
+                const url = 'https://translate.googleapis.com/translate_a/single?client=gtx&sl=' + sourceLang + '&tl=' + targetLang + '&dt=t&q=' + encoded;
+                const response = await fetch(url);
+                if (response.ok) {
+                    const data = await response.json();
+                    // data[0] là mảng các đoạn [[translated, original], ...]
+                    if (data && data[0]) {
+                        let result = '';
+                        for (let i = 0; i < data[0].length; i++) {
+                            if (data[0][i] && data[0][i][0]) {
+                                result += data[0][i][0];
+                            }
+                        }
+                        if (result.trim()) return result.trim();
+                    }
+                }
+            } catch (e) {
+                console.warn('Google Translate fallback:', e);
             }
 
-            const response = await fetch(API_URL, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': 'Bearer ' + API_KEY
-                },
-                body: JSON.stringify({
-                    model: 'gpt-5.4-nano',
-                    messages: [
-                        { role: 'system', content: 'Bạn là chuyên gia dịch thuật Việt-Anh. Chỉ trả về bản dịch, không thêm text thừa.' },
-                        { role: 'user', content: prompt }
-                    ],
-                    max_tokens: 500,
-                    temperature: 0.3
-                })
-            });
+            // Cách 2: MyMemory (dự phòng nếu Google lỗi)
+            try {
+                const url2 = 'https://api.mymemory.translated.net/get?q=' + encoded + '&langpair=' + sourceLang + '|' + targetLang;
+                const response2 = await fetch(url2);
+                if (response2.ok) {
+                    const data2 = await response2.json();
+                    if (data2 && data2.responseData && data2.responseData.translatedText) {
+                        return data2.responseData.translatedText.trim();
+                    }
+                }
+            } catch (e2) {
+                console.warn('MyMemory fallback error:', e2);
+            }
 
-            if (!response.ok) throw new Error('Translate API error ' + response.status);
-            const data = await response.json();
-            return (data.choices[0].message.content || '').trim();
+            throw new Error('Không thể dịch được. Kiểm tra kết nối mạng.');
         }
 
         function getSelectedVoiceDirection() {
@@ -3333,4 +3346,4 @@
         initEventListeners();
     </script>
 </body>
-</html
+</html>
