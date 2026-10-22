@@ -1,0 +1,1228 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat AI - BeeEnglish</title>
+    <link rel="icon" type="image/svg+xml" href="https://cdn-icons-png.flaticon.com/512/2922/2922561.png" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600&display=swap');
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Quicksand', system-ui, Avenir, Helvetica, Arial, sans-serif;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            color: #333;
+            position: relative;
+            overflow-x: hidden;
+            background-color: #f8f9fa;
+        }
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('https://i.postimg.cc/pV8cRV0q/z7661851515824-697191548b7f61fce0f4c0a12536ee69.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            filter: blur(0px);
+            z-index: -1;
+        }
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.45);
+            z-index: -1;
+        }
+        #home-menu {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            text-align: center;
+            margin: 20px;
+            flex-grow: 1;
+        }
+        #home-menu h1 {
+            color: #FFA500;
+            margin-bottom: 30px;
+            font-size: 2.4em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.15);
+            background: linear-gradient(135deg, rgba(255,255,255,0.97) 0%, rgba(255,248,225,0.97) 100%);
+            padding: 25px 40px;
+            border-radius: 18px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.18);
+            border: 2px solid rgba(255, 215, 0, 0.5);
+        }
+        #home-menu .logo-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 14px;
+            margin-bottom: 10px;
+        }
+        #home-menu .logo-row img {
+            height: 52px;
+        }
+        .start-chat-btn {
+            background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+            color: white;
+            border: none;
+            border-radius: 16px;
+            padding: 22px 40px;
+            font-size: 1.5em;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 22px rgba(255, 165, 0, 0.35);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            min-width: 260px;
+            min-height: 120px;
+            border: 2px solid rgba(255, 255, 255, 0.45);
+        }
+        .start-chat-btn i,
+        .start-chat-btn .material-symbols-outlined {
+            font-size: 2.8em;
+            margin-bottom: 12px;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+        }
+        .start-chat-btn:hover {
+            transform: translateY(-6px) scale(1.03);
+            box-shadow: 0 14px 28px rgba(255, 165, 0, 0.45);
+            background: linear-gradient(135deg, #FFC107 0%, #FF8F00 100%);
+        }
+        #contact-info {
+            margin-top: 30px;
+            padding: 18px 22px;
+            background-color: rgba(255, 255, 255, 0.96);
+            border-radius: 14px;
+            box-shadow: 0 5px 18px rgba(0,0,0,0.12);
+            width: 70%;
+            max-width: 720px;
+            border: 2px solid rgba(255, 215, 0, 0.45);
+            text-align: center;
+        }
+        #contact-info h3 {
+            color: #FFA500;
+            margin-top: 0;
+            margin-bottom: 12px;
+            font-size: 1.25em;
+        }
+        .contact-item {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 8px;
+            font-size: 1em;
+            color: #333;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+        .contact-item i {
+            color: #FFA500;
+            margin-right: 6px;
+            font-size: 1.05em;
+            width: 20px;
+            text-align: center;
+        }
+        .contact-name {
+            font-weight: 700;
+            color: #E65100;
+            margin-right: 6px;
+        }
+        .contact-divider {
+            margin: 0 8px;
+            color: #ccc;
+        }
+        footer {
+            background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+            color: white;
+            padding: 14px 0;
+            text-align: center;
+            width: 100%;
+            margin-top: auto;
+            border-top: 3px solid #E65100;
+            backdrop-filter: blur(8px);
+        }
+        .footer-line {
+            height: 3px;
+            background: linear-gradient(90deg, transparent, #ffffff, transparent);
+            width: 100%;
+            margin-bottom: 10px;
+        }
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+        .footer-content p {
+            margin: 4px 0;
+            font-size: 0.9em;
+        }
+        .footer-content i {
+            margin-right: 8px;
+            color: #FFF8E1;
+        }
+        #chatbot-container {
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+            background-color: rgba(255, 255, 255, 0.97);
+            box-shadow: 0 6px 25px rgba(0,0,0,0.15);
+            border-radius: 16px;
+            margin: 15px;
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 215, 0, 0.35);
+            flex-grow: 1;
+            min-height: 0;
+            max-width: 960px;
+            width: calc(100% - 30px);
+            align-self: center;
+        }
+        .chat-header {
+            background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+            color: white;
+            padding: 14px 18px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-radius: 16px 16px 0 0;
+            flex-shrink: 0;
+        }
+        .chat-header .header-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .chat-header img {
+            height: 36px;
+        }
+        .chat-header h2 {
+            margin: 0;
+            font-size: 1.25em;
+            font-weight: 700;
+        }
+        .chat-header .header-actions {
+            display: flex;
+            gap: 8px;
+        }
+        .chat-header-btn {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            transition: background 0.2s;
+        }
+        .chat-header-btn:hover {
+            background: rgba(255,255,255,0.35);
+        }
+        .chat-area {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            min-height: 0;
+        }
+        #khung-tro-chuyen {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: 18px;
+            border-bottom: 1px solid #ffe0b2;
+            background-color: rgba(255, 252, 245, 0.92);
+            box-shadow: inset 0 2px 6px rgba(0,0,0,0.04);
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .tin-nhan {
+            margin-bottom: 12px;
+            padding: 12px 16px;
+            border-radius: 18px;
+            max-width: 82%;
+            position: relative;
+            word-wrap: break-word;
+            line-height: 1.5;
+            font-size: 1rem;
+        }
+        .tin-nhan-nguoi-dung {
+            background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+            color: white;
+            margin-left: auto;
+            text-align: left;
+            border-bottom-right-radius: 5px;
+            box-shadow: 0 3px 12px rgba(255, 165, 0, 0.25);
+        }
+        .tin-nhan-bot {
+            background: white;
+            color: #212121;
+            margin-right: auto;
+            text-align: left;
+            border-bottom-left-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            border: 1px solid #eee;
+        }
+        .tin-nhan .bubble-meta {
+            font-size: 0.72rem;
+            opacity: 0.7;
+            margin-top: 6px;
+        }
+        .tin-nhan-nguoi-dung .bubble-meta {
+            color: rgba(255,255,255,0.85);
+        }
+        #khu-vuc-nhap {
+            display: flex;
+            padding: 14px 16px;
+            background-color: rgba(255, 255, 255, 0.96);
+            border-top: 1px solid #ffe0b2;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+            align-items: center;
+            gap: 10px;
+            flex-shrink: 0;
+        }
+        #o-nhap-tin-nhan-container {
+            position: relative;
+            flex-grow: 1;
+            min-height: 48px;
+            max-width: calc(100% - 70px);
+        }
+        #o-nhap-tin-nhan {
+            width: 100%;
+            background: transparent;
+            position: relative;
+            z-index: 1;
+            color: transparent;
+            caret-color: #333;
+            padding: 12px 18px;
+            border: 2px solid #FFD700;
+            border-radius: 25px;
+            outline: none;
+            font-size: 16px;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+            min-height: 48px;
+            resize: none;
+            overflow: hidden;
+            background-color: rgba(255, 255, 255, 0.95);
+            box-sizing: border-box;
+            font-family: inherit;
+        }
+        #o-nhap-tin-nhan:focus {
+            border-color: #FFA500;
+            box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.25);
+        }
+        #o-nhap-tin-nhan-preview {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            min-height: 48px;
+            padding: 12px 18px;
+            pointer-events: none;
+            z-index: 2;
+            white-space: pre-wrap;
+            overflow: hidden;
+            color: #333;
+            border: 2px solid transparent;
+            border-radius: 25px;
+            font-size: 16px;
+            line-height: 1.4;
+            box-sizing: border-box;
+            font-family: inherit;
+        }
+        #nut-gui {
+            background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 48px;
+            height: 48px;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 22px;
+            box-shadow: 0 3px 10px rgba(255, 165, 0, 0.35);
+            transition: all 0.25s ease;
+            flex-shrink: 0;
+        }
+        #nut-gui:hover {
+            transform: scale(1.08);
+            box-shadow: 0 5px 14px rgba(255, 165, 0, 0.45);
+        }
+        #nut-gui:active {
+            transform: scale(0.98);
+        }
+        #nut-gui:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        .fraction {
+            display: inline-block;
+            text-align: center;
+            vertical-align: middle;
+            margin: 0 2px;
+        }
+        
+        .fraction span {
+            display: block;
+        }
+        
+        .fraction .numerator {
+            border-bottom: 1px solid #000;
+            padding: 0 3px;
+        }
+        
+        .fraction .denominator {
+            padding: 0 3px;
+        }
+        .mixed-number {
+            display: inline-flex;
+            align-items: center;
+            vertical-align: middle;
+            margin: 0 2px;
+        }
+        
+        .mixed-number .whole-part {
+            padding-right: 2px;
+        }
+        
+        .mixed-number .fraction {
+            display: inline-block;
+        }
+        #visit-counter {
+            position: fixed;
+            bottom: 80px;
+            left: 10px;
+            background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+            z-index: 1000;
+            display: block;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        #question-counter {
+            position: fixed;
+            bottom: 125px;
+            left: 10px;
+            background: linear-gradient(135deg, #4CAF50 0%, #2E7D32 100%);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+            z-index: 1000;
+            display: block;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        #stats-button {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, #9C27B0 0%, #673AB7 100%);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(156, 39, 176, 0.4);
+            z-index: 1000;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(5px);
+            border: 2px solid rgba(255, 255, 255, 0.35);
+        }
+        #stats-button:hover {
+            background: linear-gradient(135deg, #7B1FA2 0%, #512DA8 100%);
+            transform: scale(1.1);
+        }
+        #stats-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            padding: 15px;
+        }
+        #stats-content {
+            background-color: white;
+            padding: 28px;
+            border-radius: 18px;
+            width: 90%;
+            max-width: 800px;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 12px 35px rgba(0,0,0,0.3);
+        }
+        #stats-content h2 {
+            color: #FFA500;
+            margin-top: 0;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        #stats-content h3 {
+            color: #4CAF50;
+            margin-top: 22px;
+            margin-bottom: 12px;
+        }
+        .month-stats {
+            background-color: #fffaf0;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 14px;
+            border-left: 4px solid #FFA500;
+        }
+        .month-stats h4 {
+            color: #333;
+            margin-top: 0;
+            margin-bottom: 10px;
+        }
+        .stats-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #eee;
+        }
+        .stats-label {
+            font-weight: 600;
+            color: #555;
+        }
+        .stats-value {
+            color: #E65100;
+            font-weight: 700;
+        }
+        #close-stats {
+            background: linear-gradient(135deg, #f44336 0%, #c62828 100%);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            margin-top: 18px;
+            width: 100%;
+            transition: all 0.25s ease;
+        }
+        #close-stats:hover {
+            background: linear-gradient(135deg, #d32f2f 0%, #b71c1c 100%);
+            transform: translateY(-1px);
+        }
+        #home-button {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 22px;
+            cursor: pointer;
+            box-shadow: 0 3px 10px rgba(255, 165, 0, 0.35);
+            z-index: 100;
+            transition: all 0.25s ease;
+        }
+        #home-button:hover {
+            background: linear-gradient(135deg, #FFC107 0%, #FF8F00 100%);
+            transform: scale(1.05);
+        }
+        .chat-welcome {
+            text-align: center;
+            color: #888;
+            padding: 40px 20px;
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+        .chat-welcome .material-symbols-outlined {
+            font-size: 3rem;
+            color: #9C27B0;
+            margin-bottom: 12px;
+            display: block;
+        }
+        .typing-indicator {
+            background: white;
+            color: #666;
+            margin-right: auto;
+            padding: 12px 18px;
+            border-radius: 18px;
+            border-bottom-left-radius: 5px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            border: 1px solid #eee;
+            font-style: italic;
+            max-width: 70%;
+        }
+        @media (max-width: 768px) {
+            #home-menu h1 {
+                font-size: 1.7em;
+                margin-bottom: 25px;
+                padding: 18px 22px;
+            }
+            .start-chat-btn {
+                padding: 18px 28px;
+                font-size: 1.25em;
+                min-width: 220px;
+                min-height: 100px;
+            }
+            .start-chat-btn i,
+            .start-chat-btn .material-symbols-outlined {
+                font-size: 2.2em;
+                margin-bottom: 8px;
+            }
+            #contact-info {
+                width: 95%;
+                margin-top: 20px;
+                padding: 14px;
+                max-width: none;
+            }
+            
+            #contact-info h3 {
+                font-size: 1.1em;
+            }
+            
+            .contact-item {
+                font-size: 0.9em;
+                flex-direction: column;
+                text-align: center;
+                margin-bottom: 10px;
+            }
+            
+            .contact-item i {
+                margin-right: 0;
+                margin-bottom: 4px;
+            }
+            
+            .contact-divider {
+                display: none;
+            }
+            footer {
+                padding: 12px 0;
+            }
+            .footer-content p {
+                font-size: 0.85em;
+            }
+            #chatbot-container {
+                margin: 8px;
+                border-radius: 12px;
+                width: calc(100% - 16px);
+            }
+            .chat-header {
+                padding: 12px 14px;
+                border-radius: 12px 12px 0 0;
+            }
+            .chat-header h2 {
+                font-size: 1.1em;
+            }
+            .chat-header img {
+                height: 30px;
+            }
+            #khung-tro-chuyen {
+                padding: 12px;
+            }
+            .tin-nhan {
+                max-width: 88%;
+                padding: 10px 14px;
+                font-size: 0.95em;
+            }
+            #khu-vuc-nhap {
+                padding: 10px 12px;
+            }
+            #o-nhap-tin-nhan-container {
+                min-height: 42px;
+                max-width: calc(100% - 55px);
+            }
+            #o-nhap-tin-nhan, #o-nhap-tin-nhan-preview {
+                padding: 10px 14px;
+                font-size: 15px;
+                min-height: 42px;
+            }
+            #nut-gui {
+                width: 42px;
+                height: 42px;
+                font-size: 18px;
+            }
+            #visit-counter {
+                bottom: 70px;
+                left: 5px;
+                padding: 6px 12px;
+                font-size: 12px;
+            }
+            #question-counter {
+                bottom: 110px;
+                left: 5px;
+                padding: 6px 12px;
+                font-size: 12px;
+            }
+            #stats-button {
+                bottom: 15px;
+                right: 15px;
+                width: 52px;
+                height: 52px;
+                font-size: 20px;
+            }
+            #stats-content {
+                padding: 18px;
+                width: 95%;
+            }
+            #home-button {
+                width: 44px;
+                height: 44px;
+                font-size: 18px;
+                top: 10px;
+                left: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <button id="home-button" style="display: none;">
+        <i class="fas fa-home"></i>
+    </button>
+    <div id="question-counter">
+        <i class="fas fa-question-circle"></i> <span id="question-count">0</span> câu hỏi
+    </div>
+    <div id="visit-counter">
+        <i class="fas fa-eye"></i> <span id="visit-count">0</span> lượt truy cập
+    </div>
+    <button id="stats-button">
+        <i class="fas fa-chart-bar"></i>
+    </button>
+    <div id="stats-modal">
+        <div id="stats-content">
+            <h2><i class="fas fa-chart-pie"></i> Thống Kê Sử Dụng Chatbot BeeEnglish</h2>
+            
+            <div id="monthly-stats-container">
+            </div>
+            
+            <button id="close-stats">Đóng</button>
+        </div>
+    </div>
+    <div id="home-menu">
+        <div class="logo-row">
+            <img src="https://cdn-icons-png.flaticon.com/512/2922/2922561.png" alt="BeeEnglish">
+        </div>
+        <h1>Chat AI BeeEnglish</h1>
+        <p style="color: white; background: rgba(0,0,0,0.35); padding: 10px 18px; border-radius: 12px; margin-bottom: 28px; max-width: 520px; line-height: 1.5;">
+            Trợ lý AI giúp bạn học từ vựng, ngữ pháp, cách dùng từ và trò chuyện tiếng Anh một cách tự nhiên.
+        </p>
+        <button class="start-chat-btn" id="start-chat-btn">
+            <span class="material-symbols-outlined">smart_toy</span>
+            Bắt đầu Chat AI
+        </button>
+        
+        <div id="contact-info">
+            <h3><i class="fas fa-address-card"></i> BeeEnglish</h3>
+            <div class="contact-item">
+                <i class="fas fa-graduation-cap"></i>
+                <span class="contact-name">Ứng dụng học từ vựng tiếng Anh</span>
+            </div>
+            <div class="contact-item">
+                <i class="fas fa-comments"></i>
+                Hỏi từ vựng • Ngữ pháp • Phát âm • Ví dụ • Trò chuyện
+            </div>
+        </div>
+    </div>
+    <div id="chatbot-container">
+        <div class="chat-header">
+            <div class="header-left">
+                <img src="https://cdn-icons-png.flaticon.com/512/2922/2922561.png" alt="BeeEnglish">
+                <h2>Chat AI BeeEnglish</h2>
+            </div>
+            <div class="header-actions">
+                <button class="chat-header-btn" id="clear-chat-btn" title="Xóa lịch sử chat">
+                    <i class="fas fa-trash-alt"></i>
+                </button>
+                <button class="chat-header-btn" id="header-home-btn" title="Về trang chủ">
+                    <i class="fas fa-home"></i>
+                </button>
+            </div>
+        </div>
+        <div class="chat-area">
+            <div id="khung-tro-chuyen">
+            </div>
+            <div id="khu-vuc-nhap">
+                <div id="o-nhap-tin-nhan-container">
+                    <textarea id="o-nhap-tin-nhan" placeholder="Nhập câu hỏi của bạn về tiếng Anh..." rows="1"></textarea>
+                    <div id="o-nhap-tin-nhan-preview"></div>
+                </div>
+                <button id="nut-gui">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+    <footer id="main-footer">
+        <div class="footer-line"></div>
+        <div class="footer-content">
+            <p><i class="fas fa-bee"></i> BeeEnglish – Học từ vựng tiếng Anh thông minh</p>
+        </div>
+    </footer>
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyCyhGASygL5BVBB-0pJJNwoyTZ61pAzP7c",
+            authDomain: "tieuhoc-a7f57.firebaseapp.com",
+            projectId: "tieuhoc-a7f57",
+            storageBucket: "tieuhoc-a7f57.appspot.com",
+            messagingSenderId: "736631398515",
+            appId: "1:736631398515:web:a41bbabeeb98c3df42ca06"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        function getAPIKey() {
+            const originalKey = "v6xGqEar3C7yKR9K2GmO5dTZx2OLCg258qLWdF5o7kt5ImQu-ks";
+            const reversedKey = originalKey.split('').reverse().join('');
+            return reversedKey;
+        }
+        const API_BASE_URL = "https://api.shopaikey.com/v1";
+        const API_CHAT_ENDPOINT = "/chat/completions";
+        const API_URL = API_BASE_URL + API_CHAT_ENDPOINT;
+
+        const homeMenu = document.getElementById('home-menu');
+        const chatbotContainer = document.getElementById('chatbot-container');
+        const khungTroChuyen = document.getElementById('khung-tro-chuyen');
+        const oNhapTinNhan = document.getElementById('o-nhap-tin-nhan');
+        const oNhapTinNhanPreview = document.getElementById('o-nhap-tin-nhan-preview');
+        const nutGui = document.getElementById('nut-gui');
+        const visitCounter = document.getElementById('visit-counter');
+        const visitCountSpan = document.getElementById('visit-count');
+        const homeButton = document.getElementById('home-button');
+        const mainFooter = document.getElementById('main-footer');
+        const questionCounter = document.getElementById('question-counter');
+        const questionCountSpan = document.getElementById('question-count');
+        const statsButton = document.getElementById('stats-button');
+        const statsModal = document.getElementById('stats-modal');
+        const monthlyStatsContainer = document.getElementById('monthly-stats-container');
+        const closeStats = document.getElementById('close-stats');
+        const startChatBtn = document.getElementById('start-chat-btn');
+        const clearChatBtn = document.getElementById('clear-chat-btn');
+        const headerHomeBtn = document.getElementById('header-home-btn');
+        let totalVisits = 0;
+        let totalQuestions = 0;
+        let chatHistory = [];
+
+        async function saveQuestion(questionText) {
+            try {
+                const questionData = {
+                    question: questionText,
+                    subject: "tieng-anh",
+                    subjectName: "Tiếng Anh (BeeEnglish)",
+                    app: "BeeEnglish",
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                    monthYear: getCurrentMonthYear()
+                };
+                
+                await db.collection('questions').add(questionData);
+                
+            } catch (error) {
+                console.error("Lỗi khi lưu câu hỏi:", error);
+            }
+        }
+
+        async function getTotalQuestions() {
+            try {
+                const questionsSnapshot = await db.collection('questions').get();
+                totalQuestions = questionsSnapshot.size;
+                questionCountSpan.textContent = totalQuestions.toLocaleString();
+                if (homeMenu.style.display !== 'none') {
+                    questionCounter.style.display = 'block';
+                }
+            } catch (error) {
+                console.error("Lỗi khi lấy số câu hỏi:", error);
+            }
+        }
+
+        async function getMonthlyStats() {
+            try {
+                const questionsSnapshot = await db.collection('questions').get();
+                const monthlyStats = {};
+                
+                questionsSnapshot.forEach(doc => {
+                    const data = doc.data();
+                    const timestamp = data.timestamp;
+                    
+                    if (timestamp) {
+                        const date = timestamp.toDate();
+                        const monthYear = `${date.getMonth() + 1}/${date.getFullYear()}`;
+                        
+                        if (!monthlyStats[monthYear]) {
+                            monthlyStats[monthYear] = {
+                                totalQuestions: 0,
+                                subjects: {}
+                            };
+                        }
+                        
+                        monthlyStats[monthYear].totalQuestions++;
+                        
+                        const subjectName = data.subjectName || data.subject || 'BeeEnglish';
+                        
+                        if (!monthlyStats[monthYear].subjects[subjectName]) {
+                            monthlyStats[monthYear].subjects[subjectName] = 0;
+                        }
+                        monthlyStats[monthYear].subjects[subjectName]++;
+                    } else if (data.monthYear) {
+                        const monthYear = data.monthYear;
+                        
+                        if (!monthlyStats[monthYear]) {
+                            monthlyStats[monthYear] = {
+                                totalQuestions: 0,
+                                subjects: {}
+                            };
+                        }
+                        
+                        monthlyStats[monthYear].totalQuestions++;
+                        
+                        const subjectName = data.subjectName || data.subject || 'BeeEnglish';
+                        
+                        if (!monthlyStats[monthYear].subjects[subjectName]) {
+                            monthlyStats[monthYear].subjects[subjectName] = 0;
+                        }
+                        monthlyStats[monthYear].subjects[subjectName]++;
+                    }
+                });
+                
+                return monthlyStats;
+                
+            } catch (error) {
+                console.error("Lỗi khi lấy thống kê theo tháng:", error);
+                return {};
+            }
+        }
+
+        async function displayMonthlyStats() {
+            const monthlyStats = await getMonthlyStats();
+            monthlyStatsContainer.innerHTML = '';
+            
+            if (Object.keys(monthlyStats).length === 0) {
+                monthlyStatsContainer.innerHTML = '<p>Chưa có dữ liệu thống kê.</p>';
+                return;
+            }
+            
+            const sortedMonths = Object.keys(monthlyStats).sort((a, b) => {
+                const [monthA, yearA] = a.split('/').map(Number);
+                const [monthB, yearB] = b.split('/').map(Number);
+                
+                if (yearB !== yearA) return yearB - yearA;
+                return monthB - monthA;
+            });
+            
+            const totalStats = document.createElement('div');
+            totalStats.className = 'month-stats';
+            totalStats.innerHTML = `
+                <h4><i class="fas fa-chart-line"></i> Tổng Quan</h4>
+                <div class="stats-item">
+                    <span class="stats-label">Tổng số câu hỏi:</span>
+                    <span class="stats-value">${totalQuestions.toLocaleString()}</span>
+                </div>
+                <div class="stats-item">
+                    <span class="stats-label">Tổng lượt truy cập:</span>
+                    <span class="stats-value">${totalVisits.toLocaleString()}</span>
+                </div>
+                <div class="stats-item">
+                    <span class="stats-label">Số tháng có dữ liệu:</span>
+                    <span class="stats-value">${sortedMonths.length}</span>
+                </div>
+            `;
+            monthlyStatsContainer.appendChild(totalStats);
+            
+            sortedMonths.forEach(monthYear => {
+                const stats = monthlyStats[monthYear];
+                const monthDiv = document.createElement('div');
+                monthDiv.className = 'month-stats';
+                
+                let subjectDetails = '';
+                const sortedSubjects = Object.entries(stats.subjects).sort((a, b) => b[1] - a[1]);
+                
+                sortedSubjects.forEach(([subjectName, count]) => {
+                    subjectDetails += `
+                        <div class="stats-item">
+                            <span class="stats-label">${subjectName}:</span>
+                            <span class="stats-value">${count}</span>
+                        </div>
+                    `;
+                });
+                
+                monthDiv.innerHTML = `
+                    <h4><i class="fas fa-calendar-alt"></i> Tháng ${monthYear}</h4>
+                    <div class="stats-item">
+                        <span class="stats-label">Tổng câu hỏi:</span>
+                        <span class="stats-value">${stats.totalQuestions}</span>
+                    </div>
+                    ${sortedSubjects.length > 0 ? `
+                    <h5 style="margin-top: 15px; margin-bottom: 10px; color: #666;">Phân bổ theo chủ đề:</h5>
+                    ${subjectDetails}
+                    ` : '<p style="color: #666; margin-top: 10px;">Không có dữ liệu phân bổ</p>'}
+                `;
+                
+                monthlyStatsContainer.appendChild(monthDiv);
+            });
+        }
+
+        function getCurrentMonthYear() {
+            const now = new Date();
+            return `${now.getMonth() + 1}/${now.getFullYear()}`;
+        }
+
+        async function trackVisit() {
+            try {
+                const visitData = {
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                    userAgent: navigator.userAgent,
+                    screenResolution: `${window.screen.width}x${window.screen.height}`,
+                    language: navigator.language,
+                    platform: navigator.platform,
+                    app: "BeeEnglish"
+                };
+                
+                await db.collection('visits').add(visitData);
+                
+            } catch (error) {
+                console.error("Lỗi khi lưu lượt truy cập:", error);
+            }
+        }
+        async function getTotalVisits() {
+            try {
+                const visitsSnapshot = await db.collection('visits').get();
+                totalVisits = visitsSnapshot.size;
+                visitCountSpan.textContent = totalVisits.toLocaleString();
+                if (homeMenu.style.display !== 'none') {
+                    visitCounter.style.display = 'block';
+                }
+            } catch (error) {
+                console.error("Lỗi khi lấy số lượt truy cập:", error);
+            }
+        }
+
+        function initApp() {
+            startChatBtn.addEventListener('click', openChat);
+            homeButton.addEventListener('click', backToHome);
+            headerHomeBtn.addEventListener('click', backToHome);
+            nutGui.addEventListener('click', guiTinNhan);
+            
+            oNhapTinNhan.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    guiTinNhan individ;
+                }
+            });
+            oNhapTinNhan.addEventListener('input', function() {
+                updateInputPreview();
+                adjustTextareaHeight();
+            });
+            clearChatBtn.addEventListener('click', function() {
+                if (confirm('Xóa toàn bộ lịch sử chat?')) {
+                    clearChatHistory();
+                }
+            });
+            statsButton.addEventListener('click', () => {
+                statsModal.style.display = 'flex';
+                displayMonthlyStats();
+            });
+            closeStats.addEventListener('click', () => {
+                statsModal.style.display = 'none';
+            });
+            statsModal.addEventListener('click', (e) => {
+                if (e.target === statsModal) {
+                    statsModal.style.display = 'none';
+                }
+            });
+            trackVisit();
+            getTotalVisits();
+            getTotalQuestions();
+            
+            setInterval(() => {
+                getTotalVisits();
+                getTotalQuestions();
+            }, 30000);
+        }
+        function backToHome() {
+            homeMenu.style.display = 'flex';
+            chatbotContainer.style.display = 'none';
+            homeButton.style.display = 'none';
+            statsButton.style.display = 'flex';
+            visitCounter.style.display = 'block';
+            questionCounter.style.display = 'block';
+            mainFooter.style.display = 'block';
+        }
+        function openChat() {
+            homeMenu.style.display = 'none';
+            chatbotContainer.style.display = 'flex';
+            homeButton.style.display = 'flex';
+            statsButton.style.display = 'none';
+            visitCounter.style.display = 'none';
+            questionCounter.style.display = 'none';
+            mainFooter.style.display = 'none';
+            if (khungTroChuyen.children.length === 0) {
+                themTinNhanVaoGiaoDien("bot", "Xin chào! Tôi là trợ lý AI của BeeEnglish.\nBạn có thể hỏi về từ vựng, ngữ pháp, cách dùng từ, phát âm, ví dụ câu, hoặc chỉ cần trò chuyện bằng tiếng Anh / tiếng Việt.");
+            }
+        }
+        function clearChatHistory() {
+            chatHistory = [];
+            khungTroChuyen.innerHTML = '';
+            themTinNhanVaoGiaoDien("bot", "Xin chào! Tôi là trợ lý AI của BeeEnglish.\nBạn có thể hỏi về từ vựng, ngữ pháp, cách dùng từ, phát âm, ví dụ câu, hoặc chỉ cần trò chuyện bằng tiếng Anh / tiếng Việt.");
+        }
+        function adjustTextareaHeight() {
+            oNhapTinNhan.style.height = 'auto';
+            oNhapTinNhan.style.height = (oNhapTinNhan.scrollHeight) + 'px';
+            oNhapTinNhanPreview.style.height = oNhapTinNhan.style.height;
+        }
+        function updateInputPreview() {
+            const text = oNhapTinNhan.value;
+            oNhapTinNhanPreview.innerHTML = formatFractionsAndMixedNumbers(escapeHtml(text));
+        }
+        function escapeHtml(unsafe) {
+            if (!unsafe) return '';
+            return unsafe
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+        function formatFractionsAndMixedNumbers(text) {
+            const mixedNumberRegex = /(\d+)(?:\s|)(\()(\d+)\/(\d+)(\))/g;
+            let processedText = text.replace(mixedNumberRegex, (match, whole, p1, numerator, denominator, p2) => {
+                return `<span class="mixed-number"><span class="whole-part">${whole}</span><span class="fraction"><span class="numerator">${numerator}</span><span class="denominator">${denominator}</span></span></span>`;
+            });
+            
+            const fractionRegex = /([^\/\s]+)\/([^\/\s]+)/g;
+            processedText = processedText.replace(fractionRegex, (match, numerator, denominator) => {
+                if (processedText.includes(`<span class="mixed-number"><span class="whole-part">`)) {
+                    return match;
+                }
+                return `<span class="fraction"><span class="numerator">${numerator}</span><span class="denominator">${denominator}</span></span>`;
+            });
+            
+            return processedText;
+        }
+        function themTinNhanVaoGiaoDien(nguoiGui, vanBan) {
+            const divTinNhan = document.createElement('div');
+            divTinNhan.classList.add('tin-nhan', `tin-nhan-${nguoiGui === 'bot' ? 'bot' : 'nguoi-dung'}`);
+            let processedText = formatFractionsAndMixedNumbers(escapeHtml(vanBan));
+            processedText = processedText.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+            processedText = processedText.replace(/\n/g, '<br>');
+            const timeStr = new Date().toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
+            const metaLabel = nguoiGui === 'bot' ? 'AI BeeEnglish' : 'Bạn';
+            divTinNhan.innerHTML = processedText + '<div class="bubble-meta">' + metaLabel + ' • ' + timeStr + '</div>';
+            khungTroChuyen.appendChild(divTinNhan);
+            khungTroChuyen.scrollTop = khungTroChuyen.scrollHeight;
+        }
+        function showTypingIndicator() {
+            const typing = document.createElement('div');
+            typing.className = 'typing-indicator';
+            typing.id = 'typing-indicator';
+            typing.innerHTML = '<em>AI đang suy nghĩ...</em>';
+            khungTroChuyen.appendChild(typing);
+            khungTroChuyen.scrollTop = khungTroChuyen.scrollHeight;
+        }
+        function removeTypingIndicator() {
+            const el = document.getElementById('typing-indicator');
+            if (el) el.remove();
+        }
+
+        async function guiTinNhan() {
+            const tinNhanNguoiDung = oNhapTinNhan.value.trim();
+            if (!tinNhanNguoiDung) return;
+            themTinNhanVaoGiaoDien("nguoi-dung", tinNhanNguoiDung);
+            chatHistory.push({ role: 'user', content: tinNhanNguoiDung });
+            await saveQuestion(tinNhanNguoiDung);
+            await getTotalQuestions();
+            
+            oNhapTinNhan.value = '';
+            oNhapTinNhanPreview.innerHTML = '';
+            adjustTextareaHeight();
+            nutGui.disabled = true;
+            showTypingIndicator();
+            try {
+                const API_KEY = getAPIKey();
+                const systemPrompt = 'Bạn là trợ lý AI thân thiện của ứng dụng học từ vựng BeeEnglish. Bạn giúp người học tiếng Anh (học sinh Việt Nam) về từ vựng, ngữ pháp, cách dùng từ, phát âm, và trò chuyện tự nhiên. Có thể trả lời bằng tiếng Việt hoặc tiếng Anh tùy theo ngôn ngữ người dùng dùng. Nếu người dùng hỏi từ vựng, hãy đưa phiên âm IPA, nghĩa, ví dụ và bản dịch nếu phù hợp. QUY TẮC BẮT BUỘC: 1) Không dùng các ký tự đặc biệt như dấu sao (*), dấu gạch chéo (/), dấu thăng (#), dấu gạch dưới (_), dấu ngoặc vuông, dấu ngoặc nhọn trong câu trả lời. 2) Viết rõ ràng, dễ đọc, mỗi ý một dòng hoặc cách đoạn hợp lý, không viết một mạch dài không xuống dòng. 3) Trả lời ngắn gọn nhưng đầy đủ, khuyến khích người học.';
+                const messages = [
+                    { role: 'system', content: systemPrompt }
+                ];
+                const recent = chatHistory.slice(-12);
+                for (let i = 0; i < recent.length; i++) {
+                    messages.push(recent[i]);
+                }
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + API_KEY
+                    },
+                    body: JSON.stringify({
+                        model: 'gpt-5.4-nano',
+                        messages: messages,
+                        max_tokens: 800,
+                        temperature: 0.7
+                    })
+                });
+                if (!response.ok) {
+                    throw new Error('API error ' + response.status);
+                }
+                const data = await response.json();
+                let reply = data.choices[0].message.content || 'Xin lỗi, tôi không thể trả lời lúc này.';
+                reply = reply.trim();
+                chatHistory.push({ role: 'assistant', content: reply });
+                removeTypingIndicator();
+                themTinNhanVaoGiaoDien("bot", reply);
+            } catch (err) {
+                console.error('Chat error:', err);
+                removeTypingIndicator();
+                themTinNhanVaoGiaoDien("bot", "Xin lỗi, có lỗi xảy ra khi kết nối AI. Vui lòng thử lại sau.");
+            } finally {
+                nutGui.disabled = false;
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', initApp);
+    </script>
+</body>
+</html>
