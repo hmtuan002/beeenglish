@@ -52,141 +52,10 @@
             z-index: -1;
         }
         #home-menu {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-            text-align: center;
-            margin: 20px;
-            flex-grow: 1;
-        }
-        #home-menu h1 {
-            color: #FFA500;
-            margin-bottom: 30px;
-            font-size: 2.4em;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.15);
-            background: linear-gradient(135deg, rgba(255,255,255,0.97) 0%, rgba(255,248,225,0.97) 100%);
-            padding: 25px 40px;
-            border-radius: 18px;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.18);
-            border: 2px solid rgba(255, 215, 0, 0.5);
-        }
-        #home-menu .logo-row {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 14px;
-            margin-bottom: 10px;
-        }
-        #home-menu .logo-row img {
-            height: 52px;
-        }
-        .start-chat-btn {
-            background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
-            color: white;
-            border: none;
-            border-radius: 16px;
-            padding: 22px 40px;
-            font-size: 1.5em;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 8px 22px rgba(255, 165, 0, 0.35);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            min-width: 260px;
-            min-height: 120px;
-            border: 2px solid rgba(255, 255, 255, 0.45);
-        }
-        .start-chat-btn i,
-        .start-chat-btn .material-symbols-outlined {
-            font-size: 2.8em;
-            margin-bottom: 12px;
-            text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
-        }
-        .start-chat-btn:hover {
-            transform: translateY(-6px) scale(1.03);
-            box-shadow: 0 14px 28px rgba(255, 165, 0, 0.45);
-            background: linear-gradient(135deg, #FFC107 0%, #FF8F00 100%);
-        }
-        #contact-info {
-            margin-top: 30px;
-            padding: 18px 22px;
-            background-color: rgba(255, 255, 255, 0.96);
-            border-radius: 14px;
-            box-shadow: 0 5px 18px rgba(0,0,0,0.12);
-            width: 70%;
-            max-width: 720px;
-            border: 2px solid rgba(255, 215, 0, 0.45);
-            text-align: center;
-        }
-        #contact-info h3 {
-            color: #FFA500;
-            margin-top: 0;
-            margin-bottom: 12px;
-            font-size: 1.25em;
-        }
-        .contact-item {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 8px;
-            font-size: 1em;
-            color: #333;
-            flex-wrap: wrap;
-            gap: 6px;
-        }
-        .contact-item i {
-            color: #FFA500;
-            margin-right: 6px;
-            font-size: 1.05em;
-            width: 20px;
-            text-align: center;
-        }
-        .contact-name {
-            font-weight: 700;
-            color: #E65100;
-            margin-right: 6px;
-        }
-        .contact-divider {
-            margin: 0 8px;
-            color: #ccc;
-        }
-        footer {
-            background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
-            color: white;
-            padding: 14px 0;
-            text-align: center;
-            width: 100%;
-            margin-top: auto;
-            border-top: 3px solid #E65100;
-            backdrop-filter: blur(8px);
-        }
-        .footer-line {
-            height: 3px;
-            background: linear-gradient(90deg, transparent, #ffffff, transparent);
-            width: 100%;
-            margin-bottom: 10px;
-        }
-        .footer-content {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 15px;
-        }
-        .footer-content p {
-            margin: 4px 0;
-            font-size: 0.9em;
-        }
-        .footer-content i {
-            margin-right: 8px;
-            color: #FFF8E1;
+            display: none;
         }
         #chatbot-container {
-            display: none;
+            display: flex;
             flex-direction: column;
             overflow: hidden;
             background-color: rgba(255, 255, 255, 0.97);
@@ -208,7 +77,8 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            border-radius: 16px 16px 0 0;
+            border-radius: 16px 
+            16px 0 0;
             flex-shrink: 0;
         }
         .chat-header .header-left {
@@ -320,7 +190,7 @@
             position: relative;
             z-index: 1;
             color: transparent;
-            caret-color: #333;
+            caret-color: #333ures;
             padding: 12px 18px;
             border: 2px solid #FFD700;
             border-radius: 25px;
@@ -392,16 +262,13 @@
             vertical-align: middle;
             margin: 0 2px;
         }
-        
         .fraction span {
             display: block;
         }
-        
         .fraction .numerator {
             border-bottom: 1px solid #000;
             padding: 0 3px;
         }
-        
         .fraction .denominator {
             padding: 0 3px;
         }
@@ -411,11 +278,9 @@
             vertical-align: middle;
             margin: 0 2px;
         }
-        
         .mixed-number .whole-part {
             padding-right: 2px;
         }
-        
         .mixed-number .fraction {
             display: inline-block;
         }
@@ -430,7 +295,7 @@
             font-size: 14px;
             box-shadow: 0 3px 10px rgba(0,0,0,0.2);
             z-index: 1000;
-            display: block;
+            display: none;
             backdrop-filter: blur(5px);
             border: 1px solid rgba(255, 255, 255, 0.3);
         }
@@ -445,7 +310,7 @@
             font-size: 14px;
             box-shadow: 0 3px 10px rgba(0,0,0,0.2);
             z-index: 1000;
-            display: block;
+            display: none;
             backdrop-filter: blur(5px);
             border: 1px solid rgba(255, 255, 255, 0.3);
         }
@@ -553,40 +418,7 @@
             transform: translateY(-1px);
         }
         #home-button {
-            position: absolute;
-            top: 15px;
-            left: 15px;
-            background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
-            color: white;
-            border: none;
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 22px;
-            cursor: pointer;
-            box-shadow: 0 3px 10px rgba(255, 165, 0, 0.35);
-            z-index: 100;
-            transition: all 0.25s ease;
-        }
-        #home-button:hover {
-            background: linear-gradient(135deg, #FFC107 0%, #FF8F00 100%);
-            transform: scale(1.05);
-        }
-        .chat-welcome {
-            text-align: center;
-            color: #888;
-            padding: 40px 20px;
-            font-size: 1rem;
-            line-height: 1.6;
-        }
-        .chat-welcome .material-symbols-outlined {
-            font-size: 3rem;
-            color: #9C27B0;
-            margin-bottom: 12px;
-            display: block;
+            display: none;
         }
         .typing-indicator {
             background: white;
@@ -600,55 +432,10 @@
             font-style: italic;
             max-width: 70%;
         }
+        footer {
+            display: none;
+        }
         @media (max-width: 768px) {
-            #home-menu h1 {
-                font-size: 1.7em;
-                margin-bottom: 25px;
-                padding: 18px 22px;
-            }
-            .start-chat-btn {
-                padding: 18px 28px;
-                font-size: 1.25em;
-                min-width: 220px;
-                min-height: 100px;
-            }
-            .start-chat-btn i,
-            .start-chat-btn .material-symbols-outlined {
-                font-size: 2.2em;
-                margin-bottom: 8px;
-            }
-            #contact-info {
-                width: 95%;
-                margin-top: 20px;
-                padding: 14px;
-                max-width: none;
-            }
-            
-            #contact-info h3 {
-                font-size: 1.1em;
-            }
-            
-            .contact-item {
-                font-size: 0.9em;
-                flex-direction: column;
-                text-align: center;
-                margin-bottom: 10px;
-            }
-            
-            .contact-item i {
-                margin-right: 0;
-                margin-bottom: 4px;
-            }
-            
-            .contact-divider {
-                display: none;
-            }
-            footer {
-                padding: 12px 0;
-            }
-            .footer-content p {
-                font-size: 0.85em;
-            }
             #chatbot-container {
                 margin: 8px;
                 border-radius: 12px;
@@ -689,18 +476,6 @@
                 height: 42px;
                 font-size: 18px;
             }
-            #visit-counter {
-                bottom: 70px;
-                left: 5px;
-                padding: 6px 12px;
-                font-size: 12px;
-            }
-            #question-counter {
-                bottom: 110px;
-                left: 5px;
-                padding: 6px 12px;
-                font-size: 12px;
-            }
             #stats-button {
                 bottom: 15px;
                 right: 15px;
@@ -711,13 +486,6 @@
             #stats-content {
                 padding: 18px;
                 width: 95%;
-            }
-            #home-button {
-                width: 44px;
-                height: 44px;
-                font-size: 18px;
-                top: 10px;
-                left: 10px;
             }
         }
     </style>
@@ -738,37 +506,12 @@
     <div id="stats-modal">
         <div id="stats-content">
             <h2><i class="fas fa-chart-pie"></i> Thống Kê Sử Dụng Chatbot BeeEnglish</h2>
-            
             <div id="monthly-stats-container">
             </div>
-            
             <button id="close-stats">Đóng</button>
         </div>
     </div>
     <div id="home-menu">
-        <div class="logo-row">
-            <img src="https://cdn-icons-png.flaticon.com/512/2922/2922561.png" alt="BeeEnglish">
-        </div>
-        <h1>Chat AI BeeEnglish</h1>
-        <p style="color: white; background: rgba(0,0,0,0.35); padding: 10px 18px; border-radius: 12px; margin-bottom: 28px; max-width: 520px; line-height: 1.5;">
-            Trợ lý AI giúp bạn học từ vựng, ngữ pháp, cách dùng từ và trò chuyện tiếng Anh một cách tự nhiên.
-        </p>
-        <button class="start-chat-btn" id="start-chat-btn">
-            <span class="material-symbols-outlined">smart_toy</span>
-            Bắt đầu Chat AI
-        </button>
-        
-        <div id="contact-info">
-            <h3><i class="fas fa-address-card"></i> BeeEnglish</h3>
-            <div class="contact-item">
-                <i class="fas fa-graduation-cap"></i>
-                <span class="contact-name">Ứng dụng học từ vựng tiếng Anh</span>
-            </div>
-            <div class="contact-item">
-                <i class="fas fa-comments"></i>
-                Hỏi từ vựng • Ngữ pháp • Phát âm • Ví dụ • Trò chuyện
-            </div>
-        </div>
     </div>
     <div id="chatbot-container">
         <div class="chat-header">
@@ -779,9 +522,6 @@
             <div class="header-actions">
                 <button class="chat-header-btn" id="clear-chat-btn" title="Xóa lịch sử chat">
                     <i class="fas fa-trash-alt"></i>
-                </button>
-                <button class="chat-header-btn" id="header-home-btn" title="Về trang chủ">
-                    <i class="fas fa-home"></i>
                 </button>
             </div>
         </div>
@@ -842,9 +582,7 @@
         const statsModal = document.getElementById('stats-modal');
         const monthlyStatsContainer = document.getElementById('monthly-stats-container');
         const closeStats = document.getElementById('close-stats');
-        const startChatBtn = document.getElementById('start-chat-btn');
         const clearChatBtn = document.getElementById('clear-chat-btn');
-        const headerHomeBtn = document.getElementById('header-home-btn');
         let totalVisits = 0;
         let totalQuestions = 0;
         let chatHistory = [];
@@ -859,9 +597,7 @@
                     timestamp: firebase.firestore.FieldValue.serverTimestamp(),
                     monthYear: getCurrentMonthYear()
                 };
-                
                 await db.collection('questions').add(questionData);
-                
             } catch (error) {
                 console.error("Lỗi khi lưu câu hỏi:", error);
             }
@@ -872,9 +608,6 @@
                 const questionsSnapshot = await db.collection('questions').get();
                 totalQuestions = questionsSnapshot.size;
                 questionCountSpan.textContent = totalQuestions.toLocaleString();
-                if (homeMenu.style.display !== 'none') {
-                    questionCounter.style.display = 'block';
-                }
             } catch (error) {
                 console.error("Lỗi khi lấy số câu hỏi:", error);
             }
@@ -884,53 +617,41 @@
             try {
                 const questionsSnapshot = await db.collection('questions').get();
                 const monthlyStats = {};
-                
                 questionsSnapshot.forEach(doc => {
                     const data = doc.data();
                     const timestamp = data.timestamp;
-                    
                     if (timestamp) {
                         const date = timestamp.toDate();
                         const monthYear = `${date.getMonth() + 1}/${date.getFullYear()}`;
-                        
                         if (!monthlyStats[monthYear]) {
                             monthlyStats[monthYear] = {
                                 totalQuestions: 0,
                                 subjects: {}
                             };
                         }
-                        
                         monthlyStats[monthYear].totalQuestions++;
-                        
                         const subjectName = data.subjectName || data.subject || 'BeeEnglish';
-                        
                         if (!monthlyStats[monthYear].subjects[subjectName]) {
                             monthlyStats[monthYear].subjects[subjectName] = 0;
                         }
                         monthlyStats[monthYear].subjects[subjectName]++;
                     } else if (data.monthYear) {
                         const monthYear = data.monthYear;
-                        
                         if (!monthlyStats[monthYear]) {
                             monthlyStats[monthYear] = {
                                 totalQuestions: 0,
                                 subjects: {}
                             };
                         }
-                        
                         monthlyStats[monthYear].totalQuestions++;
-                        
                         const subjectName = data.subjectName || data.subject || 'BeeEnglish';
-                        
                         if (!monthlyStats[monthYear].subjects[subjectName]) {
                             monthlyStats[monthYear].subjects[subjectName] = 0;
                         }
                         monthlyStats[monthYear].subjects[subjectName]++;
                     }
                 });
-                
                 return monthlyStats;
-                
             } catch (error) {
                 console.error("Lỗi khi lấy thống kê theo tháng:", error);
                 return {};
@@ -940,20 +661,16 @@
         async function displayMonthlyStats() {
             const monthlyStats = await getMonthlyStats();
             monthlyStatsContainer.innerHTML = '';
-            
             if (Object.keys(monthlyStats).length === 0) {
                 monthlyStatsContainer.innerHTML = '<p>Chưa có dữ liệu thống kê.</p>';
                 return;
             }
-            
             const sortedMonths = Object.keys(monthlyStats).sort((a, b) => {
                 const [monthA, yearA] = a.split('/').map(Number);
                 const [monthB, yearB] = b.split('/').map(Number);
-                
                 if (yearB !== yearA) return yearB - yearA;
                 return monthB - monthA;
             });
-            
             const totalStats = document.createElement('div');
             totalStats.className = 'month-stats';
             totalStats.innerHTML = `
@@ -972,15 +689,12 @@
                 </div>
             `;
             monthlyStatsContainer.appendChild(totalStats);
-            
             sortedMonths.forEach(monthYear => {
                 const stats = monthlyStats[monthYear];
                 const monthDiv = document.createElement('div');
                 monthDiv.className = 'month-stats';
-                
                 let subjectDetails = '';
                 const sortedSubjects = Object.entries(stats.subjects).sort((a, b) => b[1] - a[1]);
-                
                 sortedSubjects.forEach(([subjectName, count]) => {
                     subjectDetails += `
                         <div class="stats-item">
@@ -989,7 +703,6 @@
                         </div>
                     `;
                 });
-                
                 monthDiv.innerHTML = `
                     <h4><i class="fas fa-calendar-alt"></i> Tháng ${monthYear}</h4>
                     <div class="stats-item">
@@ -1001,7 +714,6 @@
                     ${subjectDetails}
                     ` : '<p style="color: #666; margin-top: 10px;">Không có dữ liệu phân bổ</p>'}
                 `;
-                
                 monthlyStatsContainer.appendChild(monthDiv);
             });
         }
@@ -1021,36 +733,28 @@
                     platform: navigator.platform,
                     app: "BeeEnglish"
                 };
-                
                 await db.collection('visits').add(visitData);
-                
             } catch (error) {
                 console.error("Lỗi khi lưu lượt truy cập:", error);
             }
         }
+
         async function getTotalVisits() {
             try {
                 const visitsSnapshot = await db.collection('visits').get();
                 totalVisits = visitsSnapshot.size;
                 visitCountSpan.textContent = totalVisits.toLocaleString();
-                if (homeMenu.style.display !== 'none') {
-                    visitCounter.style.display = 'block';
-                }
             } catch (error) {
                 console.error("Lỗi khi lấy số lượt truy cập:", error);
             }
         }
 
         function initApp() {
-            startChatBtn.addEventListener('click', openChat);
-            homeButton.addEventListener('click', backToHome);
-            headerHomeBtn.addEventListener('click', backToHome);
             nutGui.addEventListener('click', guiTinNhan);
-            
             oNhapTinNhan.addEventListener('keypress', (e) => {
                 if (e.key === 'Enter' && !e.shiftKey) {
                     e.preventDefault();
-                    guiTinNhan individ;
+                    guiTinNhan();
                 }
             });
             oNhapTinNhan.addEventListener('input', function() {
@@ -1077,47 +781,32 @@
             trackVisit();
             getTotalVisits();
             getTotalQuestions();
-            
             setInterval(() => {
                 getTotalVisits();
                 getTotalQuestions();
             }, 30000);
-        }
-        function backToHome() {
-            homeMenu.style.display = 'flex';
-            chatbotContainer.style.display = 'none';
-            homeButton.style.display = 'none';
-            statsButton.style.display = 'flex';
-            visitCounter.style.display = 'block';
-            questionCounter.style.display = 'block';
-            mainFooter.style.display = 'block';
-        }
-        function openChat() {
-            homeMenu.style.display = 'none';
-            chatbotContainer.style.display = 'flex';
-            homeButton.style.display = 'flex';
-            statsButton.style.display = 'none';
-            visitCounter.style.display = 'none';
-            questionCounter.style.display = 'none';
-            mainFooter.style.display = 'none';
             if (khungTroChuyen.children.length === 0) {
                 themTinNhanVaoGiaoDien("bot", "Xin chào! Tôi là trợ lý AI của BeeEnglish.\nBạn có thể hỏi về từ vựng, ngữ pháp, cách dùng từ, phát âm, ví dụ câu, hoặc chỉ cần trò chuyện bằng tiếng Anh / tiếng Việt.");
             }
         }
+
         function clearChatHistory() {
             chatHistory = [];
             khungTroChuyen.innerHTML = '';
             themTinNhanVaoGiaoDien("bot", "Xin chào! Tôi là trợ lý AI của BeeEnglish.\nBạn có thể hỏi về từ vựng, ngữ pháp, cách dùng từ, phát âm, ví dụ câu, hoặc chỉ cần trò chuyện bằng tiếng Anh / tiếng Việt.");
         }
+
         function adjustTextareaHeight() {
             oNhapTinNhan.style.height = 'auto';
             oNhapTinNhan.style.height = (oNhapTinNhan.scrollHeight) + 'px';
             oNhapTinNhanPreview.style.height = oNhapTinNhan.style.height;
         }
+
         function updateInputPreview() {
             const text = oNhapTinNhan.value;
             oNhapTinNhanPreview.innerHTML = formatFractionsAndMixedNumbers(escapeHtml(text));
         }
+
         function escapeHtml(unsafe) {
             if (!unsafe) return '';
             return unsafe
@@ -1127,12 +816,12 @@
                 .replace(/"/g, "&quot;")
                 .replace(/'/g, "&#039;");
         }
+
         function formatFractionsAndMixedNumbers(text) {
             const mixedNumberRegex = /(\d+)(?:\s|)(\()(\d+)\/(\d+)(\))/g;
             let processedText = text.replace(mixedNumberRegex, (match, whole, p1, numerator, denominator, p2) => {
                 return `<span class="mixed-number"><span class="whole-part">${whole}</span><span class="fraction"><span class="numerator">${numerator}</span><span class="denominator">${denominator}</span></span></span>`;
             });
-            
             const fractionRegex = /([^\/\s]+)\/([^\/\s]+)/g;
             processedText = processedText.replace(fractionRegex, (match, numerator, denominator) => {
                 if (processedText.includes(`<span class="mixed-number"><span class="whole-part">`)) {
@@ -1140,9 +829,9 @@
                 }
                 return `<span class="fraction"><span class="numerator">${numerator}</span><span class="denominator">${denominator}</span></span>`;
             });
-            
             return processedText;
         }
+
         function themTinNhanVaoGiaoDien(nguoiGui, vanBan) {
             const divTinNhan = document.createElement('div');
             divTinNhan.classList.add('tin-nhan', `tin-nhan-${nguoiGui === 'bot' ? 'bot' : 'nguoi-dung'}`);
@@ -1155,6 +844,7 @@
             khungTroChuyen.appendChild(divTinNhan);
             khungTroChuyen.scrollTop = khungTroChuyen.scrollHeight;
         }
+
         function showTypingIndicator() {
             const typing = document.createElement('div');
             typing.className = 'typing-indicator';
@@ -1163,6 +853,7 @@
             khungTroChuyen.appendChild(typing);
             khungTroChuyen.scrollTop = khungTroChuyen.scrollHeight;
         }
+
         function removeTypingIndicator() {
             const el = document.getElementById('typing-indicator');
             if (el) el.remove();
@@ -1175,7 +866,6 @@
             chatHistory.push({ role: 'user', content: tinNhanNguoiDung });
             await saveQuestion(tinNhanNguoiDung);
             await getTotalQuestions();
-            
             oNhapTinNhan.value = '';
             oNhapTinNhanPreview.innerHTML = '';
             adjustTextareaHeight();
