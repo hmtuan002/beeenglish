@@ -777,6 +777,189 @@
                 grid-template-columns: 1fr;
             }
         }
+
+        /* ===== CHATBOT AI + VOICE TRANSLATE ===== */
+        .chatbot-btn {
+            background: linear-gradient(135deg, #9C27B0 0%, #673AB7 100%) !important;
+            color: white !important;
+        }
+        .chat-container {
+            display: flex;
+            flex-direction: column;
+            height: 55vh;
+            max-height: 480px;
+            border: 1px solid #eee;
+            border-radius: 12px;
+            overflow: hidden;
+            background: #fafafa;
+        }
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .chat-bubble {
+            max-width: 85%;
+            padding: 12px 16px;
+            border-radius: 16px;
+            font-size: 0.95rem;
+            line-height: 1.45;
+            word-break: break-word;
+            position: relative;
+        }
+        .chat-bubble.user {
+            align-self: flex-end;
+            background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+            color: white;
+            border-bottom-right-radius: 4px;
+        }
+        .chat-bubble.ai {
+            align-self: flex-start;
+            background: white;
+            color: #333;
+            border: 1px solid #e0e0e0;
+            border-bottom-left-radius: 4px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+        .chat-bubble .bubble-meta {
+            font-size: 0.72rem;
+            opacity: 0.7;
+            margin-top: 6px;
+        }
+        .chat-input-area {
+            display: flex;
+            gap: 8px;
+            padding: 12px;
+            background: white;
+            border-top: 1px solid #eee;
+            align-items: center;
+        }
+        .chat-input-area input {
+            flex: 1;
+            padding: 12px 14px;
+            border: 2px solid #e0e0e0;
+            border-radius: 25px;
+            font-size: 0.95rem;
+            outline: none;
+        }
+        .chat-input-area input:focus {
+            border-color: #9C27B0;
+        }
+        .chat-send-btn, .chat-voice-btn, .chat-clear-btn {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            transition: all 0.2s;
+            flex-shrink: 0;
+        }
+        .chat-send-btn {
+            background: linear-gradient(135deg, #9C27B0 0%, #673AB7 100%);
+            color: white;
+        }
+        .chat-send-btn:hover { transform: scale(1.08); }
+        .chat-voice-btn {
+            background: linear-gradient(135deg, #4CAF50 0%, #2E7D32 100%);
+            color: white;
+        }
+        .chat-voice-btn.recording {
+            background: linear-gradient(135deg, #f44336 0%, #c62828 100%);
+            animation: pulse-rec 1s infinite;
+        }
+        @keyframes pulse-rec {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.12); }
+        }
+        .chat-clear-btn {
+            background: #f0f0f0;
+            color: #666;
+        }
+        .voice-translate-panel {
+            background: #f5f0ff;
+            border-radius: 12px;
+            padding: 14px;
+            margin-bottom: 14px;
+            border: 1px solid #e1d5f5;
+        }
+        .voice-translate-panel h4 {
+            margin: 0 0 10px;
+            color: #7B1FA2;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .voice-direction {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 10px;
+            flex-wrap: wrap;
+        }
+        .voice-direction label {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.88rem;
+            cursor: pointer;
+            padding: 6px 12px;
+            background: white;
+            border-radius: 20px;
+            border: 2px solid #e0e0e0;
+            transition: all 0.2s;
+        }
+        .voice-direction input:checked + span,
+        .voice-direction label:has(input:checked) {
+            border-color: #9C27B0;
+            background: #f3e5f5;
+            color: #7B1FA2;
+            font-weight: 600;
+        }
+        .voice-result-box {
+            background: white;
+            border-radius: 10px;
+            padding: 12px;
+            margin-top: 10px;
+            min-height: 60px;
+            font-size: 0.92rem;
+            display: none;
+        }
+        .voice-result-box.show { display: block; }
+        .voice-result-box .original {
+            color: #555;
+            margin-bottom: 8px;
+            padding-bottom: 8px;
+            border-bottom: 1px dashed #ddd;
+        }
+        .voice-result-box .translated {
+            color: #2E7D32;
+            font-weight: 600;
+        }
+        .voice-status-text {
+            font-size: 0.82rem;
+            color: #666;
+            margin-top: 8px;
+            text-align: center;
+        }
+        .chat-welcome {
+            text-align: center;
+            color: #888;
+            padding: 30px 15px;
+            font-size: 0.95rem;
+        }
+        .chat-welcome i {
+            font-size: 2.5rem;
+            color: #9C27B0;
+            margin-bottom: 10px;
+            display: block;
+        }
     </style>
 </head>
 <body>
@@ -903,6 +1086,62 @@
             </div>
         </div>
 
+        <!-- Popup Chatbot AI + Ghi âm dịch -->
+        <div class="pop-up" id="chatbot-menu">
+            <div class="pop-up-content" style="max-width: 560px;">
+                <span id="close-chatbot-menu" class="material-symbols-outlined close">close</span>
+                <h2 style="margin-bottom: 12px;"><span class="material-symbols-outlined" style="vertical-align: middle; color: #9C27B0;">smart_toy</span> Chat với AI BeeEnglish</h2>
+
+                <!-- Panel ghi âm + dịch -->
+                <div class="voice-translate-panel">
+                    <h4><span class="material-symbols-outlined" style="font-size: 20px;">mic</span> Ghi âm & Dịch tự động</h4>
+                    <div class="voice-direction">
+                        <label>
+                            <input type="radio" name="voiceDir" value="vi-en" checked>
+                            <span>🇻🇳 Việt → 🇬🇧 Anh</span>
+                        </label>
+                        <label>
+                            <input type="radio" name="voiceDir" value="en-vi">
+                            <span>🇬🇧 Anh → 🇻🇳 Việt</span>
+                        </label>
+                    </div>
+                    <button type="button" id="start-voice-btn" class="btn" style="background: linear-gradient(135deg, #4CAF50, #2E7D32); margin-bottom: 0;">
+                        <span class="material-symbols-outlined" style="vertical-align: middle; font-size: 20px;">mic</span>
+                        Bắt đầu ghi âm
+                    </button>
+                    <div class="voice-status-text" id="voice-status">Nhấn nút và nói rõ ràng...</div>
+                    <div class="voice-result-box" id="voice-result">
+                        <div class="original" id="voice-original"></div>
+                        <div class="translated" id="voice-translated"></div>
+                    </div>
+                </div>
+
+                <!-- Khung chat -->
+                <div class="chat-container">
+                    <div class="chat-messages" id="chat-messages">
+                        <div class="chat-welcome" id="chat-welcome">
+                            <span class="material-symbols-outlined">forum</span>
+                            Xin chào! Tôi là trợ lý AI của BeeEnglish.<br>
+                            Bạn có thể hỏi về từ vựng, ngữ pháp, cách dùng từ,<br>
+                            hoặc chỉ cần trò chuyện bằng tiếng Anh / tiếng Việt.
+                        </div>
+                    </div>
+                    <div class="chat-input-area">
+                        <button type="button" class="chat-clear-btn" id="chat-clear-btn" title="Xóa lịch sử chat">
+                            <span class="material-symbols-outlined">delete</span>
+                        </button>
+                        <input type="text" id="chat-input" placeholder="Nhập tin nhắn..." autocomplete="off">
+                        <button type="button" class="chat-voice-btn" id="chat-voice-btn" title="Ghi âm gửi tin nhắn">
+                            <span class="material-symbols-outlined">mic</span>
+                        </button>
+                        <button type="button" class="chat-send-btn" id="chat-send-btn" title="Gửi">
+                            <span class="material-symbols-outlined">send</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- Nội dung chính -->
         <div id="content">
             <div class="dashboard">
@@ -959,6 +1198,10 @@
                     <button class="action-btn classroom" id="classroom">
                         <span class="material-symbols-outlined">school</span>
                         Lớp học
+                    </button>
+                    <button class="action-btn chatbot-btn" id="chatbot">
+                        <span class="material-symbols-outlined">smart_toy</span>
+                        Chat AI
                     </button>
                 </div>
             </div>
@@ -2372,6 +2615,289 @@
         }
 
         // ============================================================
+        // CHATBOT AI + GHI ÂM DỊCH
+        // ============================================================
+        let chatHistory = [];
+        let isVoiceRecording = false;
+        let currentRecognition = null;
+        let isChatVoiceRecording = false;
+
+        function appendChatBubble(role, text) {
+            const messagesEl = document.getElementById('chat-messages');
+            const welcome = document.getElementById('chat-welcome');
+            if (welcome) welcome.style.display = 'none';
+
+            const bubble = document.createElement('div');
+            bubble.className = 'chat-bubble ' + (role === 'user' ? 'user' : 'ai');
+            const timeStr = new Date().toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
+            bubble.innerHTML = escapeHtml(text) + '<div class="bubble-meta">' + (role === 'user' ? 'Bạn' : 'AI BeeEnglish') + ' • ' + timeStr + '</div>';
+            messagesEl.appendChild(bubble);
+            messagesEl.scrollTop = messagesEl.scrollHeight;
+        }
+
+        async function sendChatMessage(userText) {
+            if (!userText || !userText.trim()) return;
+            const text = userText.trim();
+            appendChatBubble('user', text);
+            chatHistory.push({ role: 'user', content: text });
+
+            const input = document.getElementById('chat-input');
+            if (input) input.value = '';
+
+            const sendBtn = document.getElementById('chat-send-btn');
+            if (sendBtn) sendBtn.disabled = true;
+
+            // Typing indicator
+            const messagesEl = document.getElementById('chat-messages');
+            const typing = document.createElement('div');
+            typing.className = 'chat-bubble ai';
+            typing.id = 'typing-indicator';
+            typing.innerHTML = '<em>AI đang suy nghĩ...</em>';
+            messagesEl.appendChild(typing);
+            messagesEl.scrollTop = messagesEl.scrollHeight;
+
+            try {
+                const API_KEY = getAPIKey();
+                const systemPrompt = 'Bạn là trợ lý AI thân thiện của ứng dụng học từ vựng BeeEnglish. Bạn giúp người học tiếng Anh (học sinh Việt Nam) về từ vựng, ngữ pháp, cách dùng từ, phát âm, và trò chuyện tự nhiên. Trả lời ngắn gọn, rõ ràng, khuyến khích. Có thể trả lời bằng tiếng Việt hoặc tiếng Anh tùy theo ngôn ngữ người dùng dùng. Nếu người dùng hỏi từ vựng, hãy đưa phiên âm IPA, nghĩa, ví dụ và bản dịch nếu phù hợp.';
+
+                const messages = [
+                    { role: 'system', content: systemPrompt }
+                ];
+                // Giữ tối đa 12 tin nhắn gần nhất để context không quá dài
+                const recent = chatHistory.slice(-12);
+                for (let i = 0; i < recent.length; i++) {
+                    messages.push(recent[i]);
+                }
+
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + API_KEY
+                    },
+                    body: JSON.stringify({
+                        model: 'gpt-5.4-nano',
+                        messages: messages,
+                        max_tokens: 800,
+                        temperature: 0.7
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error('API error ' + response.status);
+                }
+
+                const data = await response.json();
+                let reply = data.choices[0].message.content || 'Xin lỗi, tôi không thể trả lời lúc này.';
+                reply = reply.trim();
+
+                chatHistory.push({ role: 'assistant', content: reply });
+                const typingEl = document.getElementById('typing-indicator');
+                if (typingEl) typingEl.remove();
+                appendChatBubble('ai', reply);
+            } catch (err) {
+                console.error('Chat error:', err);
+                const typingEl = document.getElementById('typing-indicator');
+                if (typingEl) typingEl.remove();
+                appendChatBubble('ai', 'Xin lỗi, có lỗi xảy ra khi kết nối AI. Vui lòng thử lại sau.');
+            } finally {
+                if (sendBtn) sendBtn.disabled = false;
+            }
+        }
+
+        function clearChatHistory() {
+            chatHistory = [];
+            const messagesEl = document.getElementById('chat-messages');
+            if (messagesEl) {
+                messagesEl.innerHTML = `
+                    <div class="chat-welcome" id="chat-welcome">
+                        <span class="material-symbols-outlined">forum</span>
+                        Xin chào! Tôi là trợ lý AI của BeeEnglish.<br>
+                        Bạn có thể hỏi về từ vựng, ngữ pháp, cách dùng từ,<br>
+                        hoặc chỉ cần trò chuyện bằng tiếng Anh / tiếng Việt.
+                    </div>`;
+            }
+        }
+
+        async function translateTextWithAI(text, direction) {
+            const API_KEY = getAPIKey();
+            let prompt = '';
+            if (direction === 'vi-en') {
+                prompt = 'Dịch đoạn văn bản tiếng Việt sau sang tiếng Anh tự nhiên, chính xác. Chỉ trả về bản dịch tiếng Anh, không thêm giải thích:\n\n' + text;
+            } else {
+                prompt = 'Dịch đoạn văn bản tiếng Anh sau sang tiếng Việt tự nhiên, chính xác. Chỉ trả về bản dịch tiếng Việt, không thêm giải thích:\n\n' + text;
+            }
+
+            const response = await fetch(API_URL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + API_KEY
+                },
+                body: JSON.stringify({
+                    model: 'gpt-5.4-nano',
+                    messages: [
+                        { role: 'system', content: 'Bạn là chuyên gia dịch thuật Việt-Anh. Chỉ trả về bản dịch, không thêm text thừa.' },
+                        { role: 'user', content: prompt }
+                    ],
+                    max_tokens: 500,
+                    temperature: 0.3
+                })
+            });
+
+            if (!response.ok) throw new Error('Translate API error ' + response.status);
+            const data = await response.json();
+            return (data.choices[0].message.content || '').trim();
+        }
+
+        function getSelectedVoiceDirection() {
+            const radios = document.querySelectorAll('input[name="voiceDir"]');
+            for (let i = 0; i < radios.length; i++) {
+                if (radios[i].checked) return radios[i].value;
+            }
+            return 'vi-en';
+        }
+
+        function startVoiceTranslate() {
+            if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+                showAlert('Trình duyệt của bạn không hỗ trợ nhận diện giọng nói. Hãy dùng Chrome hoặc Edge.');
+                return;
+            }
+
+            if (isVoiceRecording) {
+                stopVoiceRecognition();
+                return;
+            }
+
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            currentRecognition = new SpeechRecognition();
+            const direction = getSelectedVoiceDirection();
+            currentRecognition.lang = direction === 'vi-en' ? 'vi-VN' : 'en-US';
+            currentRecognition.continuous = false;
+            currentRecognition.interimResults = false;
+            currentRecognition.maxAlternatives = 1;
+
+            const statusEl = document.getElementById('voice-status');
+            const resultBox = document.getElementById('voice-result');
+            const startBtn = document.getElementById('start-voice-btn');
+
+            currentRecognition.onstart = function() {
+                isVoiceRecording = true;
+                if (statusEl) statusEl.textContent = '🎤 Đang nghe... Hãy nói rõ ràng!';
+                if (startBtn) {
+                    startBtn.innerHTML = '<span class="material-symbols-outlined" style="vertical-align: middle; font-size: 20px;">stop</span> Dừng ghi âm';
+                    startBtn.style.background = 'linear-gradient(135deg, #f44336, #c62828)';
+                }
+                if (resultBox) resultBox.classList.remove('show');
+            };
+
+            currentRecognition.onresult = async function(event) {
+                const transcript = event.results[0][0].transcript;
+                if (statusEl) statusEl.textContent = 'Đã nhận diện. Đang dịch...';
+                if (resultBox) {
+                    document.getElementById('voice-original').innerHTML = '<strong>Bạn nói:</strong> ' + escapeHtml(transcript);
+                    document.getElementById('voice-translated').innerHTML = '<em>Đang dịch...</em>';
+                    resultBox.classList.add('show');
+                }
+
+                try {
+                    const translated = await translateTextWithAI(transcript, direction);
+                    if (resultBox) {
+                        document.getElementById('voice-translated').innerHTML = '<strong>Bản dịch:</strong> ' + escapeHtml(translated);
+                    }
+                    if (statusEl) statusEl.textContent = '✓ Dịch xong! Bản dịch đã được đọc to.';
+                    // Đọc to bản dịch
+                    const speakLang = direction === 'vi-en' ? 'en-US' : 'vi-VN';
+                    speakText(translated, 0.9, 1);
+                    // Tự động đưa vào ô chat input nếu muốn
+                    const chatInput = document.getElementById('chat-input');
+                    if (chatInput) chatInput.value = translated;
+                } catch (err) {
+                    console.error(err);
+                    if (statusEl) statusEl.textContent = 'Lỗi dịch: ' + err.message;
+                    if (resultBox) document.getElementById('voice-translated').innerHTML = '<span style="color:red;">Không dịch được. Thử lại.</span>';
+                }
+            };
+
+            currentRecognition.onerror = function(event) {
+                console.error('Speech recognition error:', event.error);
+                let msg = 'Lỗi nhận diện: ' + event.error;
+                if (event.error === 'not-allowed') msg = 'Bạn đã từ chối quyền microphone. Hãy cho phép mic.';
+                else if (event.error === 'no-speech') msg = 'Không nghe thấy giọng nói. Thử lại.';
+                if (statusEl) statusEl.textContent = msg;
+                resetVoiceButton();
+            };
+
+            currentRecognition.onend = function() {
+                resetVoiceButton();
+            };
+
+            currentRecognition.start();
+        }
+
+        function stopVoiceRecognition() {
+            if (currentRecognition) {
+                try { currentRecognition.stop(); } catch (e) {}
+            }
+            resetVoiceButton();
+        }
+
+        function resetVoiceButton() {
+            isVoiceRecording = false;
+            const startBtn = document.getElementById('start-voice-btn');
+            const statusEl = document.getElementById('voice-status');
+            if (startBtn) {
+                startBtn.innerHTML = '<span class="material-symbols-outlined" style="vertical-align: middle; font-size: 20px;">mic</span> Bắt đầu ghi âm';
+                startBtn.style.background = 'linear-gradient(135deg, #4CAF50, #2E7D32)';
+            }
+            if (statusEl && statusEl.textContent.indexOf('Đang nghe') !== -1) {
+                statusEl.textContent = 'Nhấn nút và nói rõ ràng...';
+            }
+        }
+
+        // Ghi âm để gửi tin nhắn chat (dùng recognition luôn)
+        function startChatVoiceInput() {
+            if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+                showAlert('Trình duyệt không hỗ trợ nhận diện giọng nói.');
+                return;
+            }
+            if (isChatVoiceRecording) {
+                if (currentRecognition) try { currentRecognition.stop(); } catch(e) {}
+                isChatVoiceRecording = false;
+                const btn = document.getElementById('chat-voice-btn');
+                if (btn) btn.classList.remove('recording');
+                return;
+            }
+
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            currentRecognition = new SpeechRecognition();
+            currentRecognition.lang = 'vi-VN';
+            currentRecognition.continuous = false;
+            currentRecognition.interimResults = false;
+
+            const btn = document.getElementById('chat-voice-btn');
+            currentRecognition.onstart = function() {
+                isChatVoiceRecording = true;
+                if (btn) btn.classList.add('recording');
+            };
+            currentRecognition.onresult = function(event) {
+                const transcript = event.results[0][0].transcript;
+                const input = document.getElementById('chat-input');
+                if (input) input.value = transcript;
+                sendChatMessage(transcript);
+            };
+            currentRecognition.onerror = function() {
+                isChatVoiceRecording = false;
+                if (btn) btn.classList.remove('recording');
+            };
+            currentRecognition.onend = function() {
+                isChatVoiceRecording = false;
+                if (btn) btn.classList.remove('recording');
+            };
+            currentRecognition.start();
+        }
+
+        // ============================================================
         // KHỞI TẠO SỰ KIỆN
         // ============================================================
         function initEventListeners() {
@@ -2442,6 +2968,65 @@
             if (classroomBtn) {
                 classroomBtn.addEventListener('click', function() {
                     window.open('thi.html', '_blank');
+                });
+            }
+
+            // ===== CHATBOT AI =====
+            const chatbotBtn = document.getElementById('chatbot');
+            if (chatbotBtn) {
+                chatbotBtn.addEventListener('click', function() {
+                    const menu = document.getElementById('chatbot-menu');
+                    if (menu) menu.classList.add('active');
+                });
+            }
+
+            const closeChatbotBtn = document.getElementById('close-chatbot-menu');
+            if (closeChatbotBtn) {
+                closeChatbotBtn.addEventListener('click', function() {
+                    const menu = document.getElementById('chatbot-menu');
+                    if (menu) menu.classList.remove('active');
+                    stopVoiceRecognition();
+                });
+            }
+
+            const chatSendBtn = document.getElementById('chat-send-btn');
+            if (chatSendBtn) {
+                chatSendBtn.addEventListener('click', function() {
+                    const input = document.getElementById('chat-input');
+                    if (input) sendChatMessage(input.value);
+                });
+            }
+
+            const chatInput = document.getElementById('chat-input');
+            if (chatInput) {
+                chatInput.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        sendChatMessage(chatInput.value);
+                    }
+                });
+            }
+
+            const chatClearBtn = document.getElementById('chat-clear-btn');
+            if (chatClearBtn) {
+                chatClearBtn.addEventListener('click', function() {
+                    if (confirm('Xóa toàn bộ lịch sử chat?')) {
+                        clearChatHistory();
+                    }
+                });
+            }
+
+            const startVoiceBtn = document.getElementById('start-voice-btn');
+            if (startVoiceBtn) {
+                startVoiceBtn.addEventListener('click', function() {
+                    startVoiceTranslate();
+                });
+            }
+
+            const chatVoiceBtn = document.getElementById('chat-voice-btn');
+            if (chatVoiceBtn) {
+                chatVoiceBtn.addEventListener('click', function() {
+                    startChatVoiceInput();
                 });
             }
             
