@@ -786,89 +786,96 @@
         .chat-container {
             display: flex;
             flex-direction: column;
-            height: 55vh;
-            max-height: 480px;
-            border: 1px solid #eee;
-            border-radius: 12px;
+            height: 62vh;
+            max-height: 560px;
+            border: 1px solid #e8e0f0;
+            border-radius: 16px;
             overflow: hidden;
-            background: #fafafa;
+            background: #faf8ff;
+            box-shadow: 0 4px 20px rgba(156, 39, 176, 0.08);
         }
         .chat-messages {
             flex: 1;
             overflow-y: auto;
-            padding: 16px;
+            padding: 20px;
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 14px;
         }
         .chat-bubble {
-            max-width: 85%;
-            padding: 12px 16px;
-            border-radius: 16px;
-            font-size: 0.95rem;
-            line-height: 1.45;
+            max-width: 88%;
+            padding: 14px 18px;
+            border-radius: 18px;
+            font-size: 1rem;
+            line-height: 1.55;
             word-break: break-word;
             position: relative;
+            white-space: pre-wrap;
         }
         .chat-bubble.user {
             align-self: flex-end;
             background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
             color: white;
             border-bottom-right-radius: 4px;
+            box-shadow: 0 3px 12px rgba(255, 165, 0, 0.25);
         }
         .chat-bubble.ai {
             align-self: flex-start;
             background: white;
             color: #333;
-            border: 1px solid #e0e0e0;
+            border: 1px solid #eee;
             border-bottom-left-radius: 4px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            box-shadow: 0 3px 12px rgba(0,0,0,0.06);
         }
         .chat-bubble .bubble-meta {
             font-size: 0.72rem;
-            opacity: 0.7;
-            margin-top: 6px;
+            opacity: 0.65;
+            margin-top: 8px;
         }
         .chat-input-area {
             display: flex;
-            gap: 8px;
-            padding: 12px;
+            gap: 10px;
+            padding: 14px 16px;
             background: white;
             border-top: 1px solid #eee;
             align-items: center;
         }
         .chat-input-area input {
             flex: 1;
-            padding: 12px 14px;
-            border: 2px solid #e0e0e0;
-            border-radius: 25px;
-            font-size: 0.95rem;
+            padding: 13px 16px;
+            border: 2px solid #e8e0f0;
+            border-radius: 28px;
+            font-size: 1rem;
             outline: none;
+            transition: border-color 0.2s;
         }
         .chat-input-area input:focus {
             border-color: #9C27B0;
+            box-shadow: 0 0 0 3px rgba(156, 39, 176, 0.12);
         }
         .chat-send-btn, .chat-voice-btn, .chat-clear-btn {
-            width: 44px;
-            height: 44px;
+            width: 48px;
+            height: 48px;
             border-radius: 50%;
             border: none;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 20px;
+            font-size: 22px;
             transition: all 0.2s;
             flex-shrink: 0;
         }
         .chat-send-btn {
             background: linear-gradient(135deg, #9C27B0 0%, #673AB7 100%);
             color: white;
+            box-shadow: 0 3px 10px rgba(156, 39, 176, 0.3);
         }
         .chat-send-btn:hover { transform: scale(1.08); }
         .chat-voice-btn {
             background: linear-gradient(135deg, #4CAF50 0%, #2E7D32 100%);
             color: white;
+            box-shadow: 0 3px 10px rgba(76, 175, 80, 0.25);
         }
         .chat-voice-btn.recording {
             background: linear-gradient(135deg, #f44336 0%, #c62828 100%);
@@ -879,86 +886,111 @@
             50% { transform: scale(1.12); }
         }
         .chat-clear-btn {
-            background: #f0f0f0;
+            background: #f5f5f5;
             color: #666;
         }
+        .chat-clear-btn:hover { background: #eee; }
         .voice-translate-panel {
-            background: #f5f0ff;
-            border-radius: 12px;
-            padding: 14px;
-            margin-bottom: 14px;
-            border: 1px solid #e1d5f5;
+            background: linear-gradient(135deg, #f8f0ff 0%, #f0e6ff 100%);
+            border-radius: 16px;
+            padding: 18px 20px;
+            margin-bottom: 16px;
+            border: 1px solid #e0d0f5;
+            box-shadow: 0 3px 15px rgba(156, 39, 176, 0.08);
         }
         .voice-translate-panel h4 {
-            margin: 0 0 10px;
-            color: #7B1FA2;
-            font-size: 0.95rem;
+            margin: 0 0 14px;
+            color: #6A1B9A;
+            font-size: 1.05rem;
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 8px;
+            font-weight: 700;
         }
         .voice-direction {
             display: flex;
-            gap: 8px;
-            margin-bottom: 10px;
+            gap: 10px;
+            margin-bottom: 14px;
             flex-wrap: wrap;
         }
         .voice-direction label {
             display: flex;
             align-items: center;
-            gap: 5px;
-            font-size: 0.88rem;
+            gap: 6px;
+            font-size: 0.95rem;
             cursor: pointer;
-            padding: 6px 12px;
+            padding: 10px 18px;
             background: white;
-            border-radius: 20px;
+            border-radius: 25px;
             border: 2px solid #e0e0e0;
             transition: all 0.2s;
+            font-weight: 500;
         }
-        .voice-direction input:checked + span,
+        .voice-direction label:hover {
+            border-color: #ce93d8;
+        }
+        .voice-direction input {
+            display: none;
+        }
         .voice-direction label:has(input:checked) {
             border-color: #9C27B0;
-            background: #f3e5f5;
-            color: #7B1FA2;
-            font-weight: 600;
+            background: linear-gradient(135deg, #f3e5f5, #e1bee7);
+            color: #6A1B9A;
+            font-weight: 700;
+            box-shadow: 0 2px 8px rgba(156, 39, 176, 0.15);
         }
         .voice-result-box {
             background: white;
-            border-radius: 10px;
-            padding: 12px;
-            margin-top: 10px;
-            min-height: 60px;
-            font-size: 0.92rem;
+            border-radius: 12px;
+            padding: 16px;
+            margin-top: 12px;
+            min-height: 70px;
+            font-size: 1rem;
             display: none;
+            border: 1px solid #eee;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.04);
         }
         .voice-result-box.show { display: block; }
         .voice-result-box .original {
             color: #555;
-            margin-bottom: 8px;
-            padding-bottom: 8px;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
             border-bottom: 1px dashed #ddd;
+            line-height: 1.5;
         }
         .voice-result-box .translated {
-            color: #2E7D32;
+            color: #1B5E20;
             font-weight: 600;
+            line-height: 1.5;
+            font-size: 1.05rem;
         }
         .voice-status-text {
-            font-size: 0.82rem;
+            font-size: 0.88rem;
             color: #666;
-            margin-top: 8px;
+            margin-top: 10px;
             text-align: center;
         }
         .chat-welcome {
             text-align: center;
             color: #888;
-            padding: 30px 15px;
-            font-size: 0.95rem;
+            padding: 40px 20px;
+            font-size: 1rem;
+            line-height: 1.6;
         }
-        .chat-welcome i {
-            font-size: 2.5rem;
+        .chat-welcome .material-symbols-outlined {
+            font-size: 3rem;
             color: #9C27B0;
-            margin-bottom: 10px;
+            margin-bottom: 12px;
             display: block;
+        }
+        #chatbot-menu .pop-up-content {
+            max-width: 640px !important;
+            max-height: 92vh;
+        }
+        #start-voice-btn {
+            font-size: 1rem;
+            padding: 14px 20px;
+            border-radius: 12px;
         }
     </style>
 </head>
@@ -1088,7 +1120,7 @@
 
         <!-- Popup Chatbot AI + Ghi âm dịch -->
         <div class="pop-up" id="chatbot-menu">
-            <div class="pop-up-content" style="max-width: 560px;">
+            <div class="pop-up-content" style="max-width: 640px;">
                 <span id="close-chatbot-menu" class="material-symbols-outlined close">close</span>
                 <h2 style="margin-bottom: 12px;"><span class="material-symbols-outlined" style="vertical-align: middle; color: #9C27B0;">smart_toy</span> Chat với AI BeeEnglish</h2>
 
@@ -1098,11 +1130,11 @@
                     <div class="voice-direction">
                         <label>
                             <input type="radio" name="voiceDir" value="vi-en" checked>
-                            <span>🇻🇳 Việt → 🇬🇧 Anh</span>
+                            <span>Việt → Anh</span>
                         </label>
                         <label>
                             <input type="radio" name="voiceDir" value="en-vi">
-                            <span>🇬🇧 Anh → 🇻🇳 Việt</span>
+                            <span>Anh → Việt</span>
                         </label>
                     </div>
                     <button type="button" id="start-voice-btn" class="btn" style="background: linear-gradient(135deg, #4CAF50, #2E7D32); margin-bottom: 0;">
@@ -1301,7 +1333,7 @@
                         'Authorization': 'Bearer ' + API_KEY
                     },
                     body: JSON.stringify({
-                        model: 'gpt-4.1-mini-2025-04-14',
+                        model: 'gpt-5.4-nano',
                         messages: [
                             {
                                 role: 'system',
@@ -1364,7 +1396,7 @@
                         'Authorization': 'Bearer ' + API_KEY
                     },
                     body: JSON.stringify({
-                        model: 'gpt-4.1-mini-2025-04-14',
+                        model: 'gpt-5.4-nano',
                         messages: [
                             {
                                 role: 'system',
@@ -2658,7 +2690,7 @@
 
             try {
                 const API_KEY = getAPIKey();
-                const systemPrompt = 'Bạn là trợ lý AI thân thiện của ứng dụng học từ vựng BeeEnglish. Bạn giúp người học tiếng Anh (học sinh Việt Nam) về từ vựng, ngữ pháp, cách dùng từ, phát âm, và trò chuyện tự nhiên. Trả lời ngắn gọn, rõ ràng, khuyến khích. Có thể trả lời bằng tiếng Việt hoặc tiếng Anh tùy theo ngôn ngữ người dùng dùng. Nếu người dùng hỏi từ vựng, hãy đưa phiên âm IPA, nghĩa, ví dụ và bản dịch nếu phù hợp.';
+                const systemPrompt = 'Bạn là trợ lý AI thân thiện của ứng dụng học từ vựng BeeEnglish. Bạn giúp người học tiếng Anh (học sinh Việt Nam) về từ vựng, ngữ pháp, cách dùng từ, phát âm, và trò chuyện tự nhiên. Có thể trả lời bằng tiếng Việt hoặc tiếng Anh tùy theo ngôn ngữ người dùng dùng. Nếu người dùng hỏi từ vựng, hãy đưa phiên âm IPA, nghĩa, ví dụ và bản dịch nếu phù hợp. QUY TẮC BẮT BUỘC: 1) Không dùng các ký tự đặc biệt như dấu sao (*), dấu gạch chéo (/), dấu thăng (#), dấu gạch dưới (_), dấu ngoặc vuông, dấu ngoặc nhọn trong câu trả lời. 2) Viết rõ ràng, dễ đọc, mỗi ý một dòng hoặc cách đoạn hợp lý, không viết một mạch dài không xuống dòng. 3) Trả lời ngắn gọn nhưng đầy đủ, khuyến khích người học.';
 
                 const messages = [
                     { role: 'system', content: systemPrompt }
@@ -2676,7 +2708,7 @@
                         'Authorization': 'Bearer ' + API_KEY
                     },
                     body: JSON.stringify({
-                        model: 'gpt-4.1-mini-2025-04-14',
+                        model: 'gpt-5.4-nano',
                         messages: messages,
                         max_tokens: 800,
                         temperature: 0.7
@@ -2735,7 +2767,7 @@
                     'Authorization': 'Bearer ' + API_KEY
                 },
                 body: JSON.stringify({
-                    model: 'gpt-4.1-mini-2025-04-14',
+                    model: 'gpt-5.4-nano',
                     messages: [
                         { role: 'system', content: 'Bạn là chuyên gia dịch thuật Việt-Anh. Chỉ trả về bản dịch, không thêm text thừa.' },
                         { role: 'user', content: prompt }
@@ -3301,4 +3333,4 @@
         initEventListeners();
     </script>
 </body>
-</html>
+</html
