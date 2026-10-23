@@ -5,914 +5,878 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quản trị - BeeEnglish</title>
     <link rel="icon" type="image/svg+xml" href="https://beeenglish.s3.amazonaws.com/bee-logo.svg" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lexend:wght@500;600;700&display=swap" />
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        :root {
+            --primary: #0ea5a4;
+            --primary-dark: #0d9488;
+            --primary-light: rgba(14, 165, 164, 0.12);
+            --accent: #f59e0b;
+            --accent-soft: rgba(245, 158, 11, 0.15);
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --info: #3b82f6;
+            --bg: #f0fdfa;
+            --surface: #ffffff;
+            --surface-2: #f8fafc;
+            --border: #e2e8f0;
+            --text: #0f172a;
+            --text-secondary: #64748b;
+            --text-muted: #94a3b8;
+            --shadow: 0 4px 20px rgba(14, 165, 164, 0.08);
+            --shadow-lg: 0 12px 40px rgba(14, 165, 164, 0.12);
+            --radius: 16px;
+            --radius-sm: 10px;
+            --sidebar-width: 260px;
         }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            font-family: 'Inter', system-ui, Avenir, Helvetica, Arial, sans-serif;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
             line-height: 1.5;
-            font-weight: 400;
-            color: #333;
-            background-color: #f8f9fa;
+            min-height: 100vh;
         }
-
-        #app {
+        #app { display: flex; min-height: 100vh; }
+        .sidebar {
+            width: var(--sidebar-width);
+            background: linear-gradient(180deg, #0f766e 0%, #0d9488 40%, #0ea5a4 100%);
+            color: white;
             display: flex;
             flex-direction: column;
-            min-height: 100vh;
-            max-width: 1200px;
-            margin: 0 auto;
-            background: white;
-            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            position: fixed;
+            top: 0; left: 0; bottom: 0;
+            z-index: 100;
+            box-shadow: 4px 0 24px rgba(13, 148, 136, 0.25);
         }
-
-        #top-bar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px 20px;
-            background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
-            color: white;
-        }
-
-        .logo {
+        .sidebar-brand {
+            padding: 24px 20px;
             display: flex;
             align-items: center;
             gap: 12px;
+            border-bottom: 1px solid rgba(255,255,255,0.15);
         }
-
-        .logo img {
-            height: 40px;
-        }
-
-        .logo h1 {
-            margin: 0;
-            font-size: 22px;
+        .sidebar-brand svg { width: 42px; height: 42px; flex-shrink: 0; }
+        .sidebar-brand h1 {
+            font-family: 'Lexend', sans-serif;
+            font-size: 20px;
             font-weight: 700;
+            letter-spacing: -0.3px;
         }
-
-        .user-info {
+        .sidebar-brand span {
+            display: block;
+            font-size: 11px;
+            opacity: 0.75;
+            font-weight: 500;
+            margin-top: 2px;
+        }
+        .sidebar-nav { flex: 1; padding: 16px 12px; overflow-y: auto; }
+        .nav-item {
             display: flex;
             align-items: center;
-            gap: 15px;
-        }
-
-        .user-info a, .user-info span {
-            color: white;
-            text-decoration: none;
+            gap: 12px;
+            padding: 12px 16px;
+            border-radius: 12px;
+            color: rgba(255,255,255,0.85);
             cursor: pointer;
-            padding: 8px;
+            transition: all 0.2s ease;
+            margin-bottom: 4px;
+            font-weight: 500;
+            font-size: 14.5px;
+        }
+        .nav-item:hover { background: rgba(255,255,255,0.12); color: white; }
+        .nav-item.active {
+            background: rgba(255,255,255,0.22);
+            color: white;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .nav-item .material-symbols-outlined { font-size: 22px; }
+        .sidebar-footer {
+            padding: 16px;
+            border-top: 1px solid rgba(255,255,255,0.15);
+        }
+        .sidebar-footer a, .sidebar-footer button {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            width: 100%;
+            padding: 10px 14px;
+            border-radius: 10px;
+            background: rgba(255,255,255,0.1);
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            text-decoration: none;
+            transition: background 0.2s;
+        }
+        .sidebar-footer a:hover, .sidebar-footer button:hover { background: rgba(255,255,255,0.2); }
+        .main {
+            flex: 1;
+            margin-left: var(--sidebar-width);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        .topbar {
+            background: var(--surface);
+            padding: 16px 28px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+        }
+        .topbar-title {
+            font-family: 'Lexend', sans-serif;
+            font-size: 22px;
+            font-weight: 600;
+            color: var(--text);
+        }
+        .topbar-actions { display: flex; align-items: center; gap: 12px; }
+        .topbar-actions a, .topbar-actions span {
+            width: 40px; height: 40px;
             border-radius: 50%;
-            transition: background-color 0.3s ease;
             display: flex;
             align-items: center;
             justify-content: center;
-        }
-
-        .user-info a:hover, .user-info span:hover {
-            background-color: rgba(255,255,255,0.2);
-        }
-
-        #content {
-            flex: 1;
-            padding: 20px;
-            overflow-y: auto;
-        }
-
-        .tabs {
-            display: flex;
-            border-bottom: 2px solid #e0e0e0;
-            margin-bottom: 25px;
-            flex-wrap: wrap;
-        }
-
-        .tab {
-            padding: 12px 24px;
+            background: var(--surface-2);
+            color: var(--text-secondary);
+            border: 1px solid var(--border);
             cursor: pointer;
-            border-bottom: 3px solid transparent;
-            font-weight: 600;
-            color: #666;
-            transition: all 0.3s ease;
+            transition: all 0.2s;
+            text-decoration: none;
         }
-
-        .tab.active {
-            border-bottom: 3px solid #FFA500;
-            color: #FFA500;
+        .topbar-actions a:hover, .topbar-actions span:hover {
+            background: var(--primary-light);
+            color: var(--primary);
+            border-color: var(--primary);
         }
-
-        .tab:hover {
-            color: #FFA500;
+        #content { flex: 1; padding: 28px; overflow-y: auto; }
+        .tab-content { display: none; animation: fadeIn 0.3s ease; }
+        .tab-content.active { display: block; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
         }
-
-        .tab-content {
-            display: none;
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 18px;
+            margin-bottom: 28px;
         }
-
-        .tab-content.active {
-            display: block;
+        .stat-card {
+            background: var(--surface);
+            border-radius: var(--radius);
+            padding: 22px 20px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            transition: transform 0.2s, box-shadow 0.2s;
+            position: relative;
+            overflow: hidden;
         }
-
+        .stat-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-lg); }
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 4px; height: 100%;
+            background: var(--primary);
+        }
+        .stat-number {
+            font-family: 'Lexend', sans-serif;
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--primary);
+            margin: 0;
+            line-height: 1.2;
+        }
+        .stat-label {
+            margin: 6px 0 0;
+            color: var(--text-secondary);
+            font-size: 13.5px;
+            font-weight: 500;
+        }
         .card {
-            background: white;
-            border-radius: 15px;
-            padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            border-left: 4px solid #FFA500;
+            background: var(--surface);
+            border-radius: var(--radius);
+            padding: 24px;
+            margin-bottom: 22px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
         }
-
         .card h3 {
-            margin-top: 0;
-            color: #333;
-            margin-bottom: 15px;
+            font-family: 'Lexend', sans-serif;
+            font-size: 17px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
-
         .card-actions {
             display: flex;
             gap: 10px;
-            margin-top: 15px;
+            margin-top: 16px;
             flex-wrap: wrap;
         }
-
-        button {
-            padding: 10px 20px;
+        button, .btn {
+            padding: 10px 18px;
             border: none;
-            border-radius: 8px;
+            border-radius: 10px;
             cursor: pointer;
             font-weight: 600;
-            transition: all 0.3s ease;
+            font-size: 14px;
+            font-family: inherit;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
         }
-
         .btn-primary {
-            background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+            background: linear-gradient(135deg, #0ea5a4 0%, #0d9488 100%);
             color: white;
+            box-shadow: 0 4px 14px rgba(14, 165, 164, 0.3);
         }
-
         .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4);
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(14, 165, 164, 0.4);
         }
-
         .btn-primary:disabled {
-            background: #cccccc;
+            background: #94a3b8;
             cursor: not-allowed;
             transform: none;
             box-shadow: none;
         }
-
-        .btn-danger {
-            background: #ff4d4d;
-            color: white;
+        .btn-danger { background: #ef4444; color: white; }
+        .btn-danger:hover { background: #dc2626; transform: translateY(-1px); }
+        .btn-success { background: #10b981; color: white; }
+        .btn-success:hover { background: #059669; transform: translateY(-1px); }
+        .btn-info { background: #3b82f6; color: white; }
+        .btn-info:hover { background: #2563eb; transform: translateY(-1px); }
+        .btn-warning { background: #f59e0b; color: white; }
+        .btn-warning:hover { background: #d97706; transform: translateY(-1px); }
+        .btn-outline {
+            background: transparent;
+            border: 1.5px solid var(--border);
+            color: var(--text-secondary);
         }
-
-        .btn-danger:hover {
-            background: #ff3333;
-            transform: translateY(-2px);
+        .btn-outline:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+            background: var(--primary-light);
         }
-
-        .btn-success {
-            background: #4CAF50;
-            color: white;
-        }
-
-        .btn-success:hover {
-            background: #45a049;
-            transform: translateY(-2px);
-        }
-
-        .btn-info {
-            background: #2196F3;
-            color: white;
-        }
-
-        .btn-info:hover {
-            background: #0b7dda;
-            transform: translateY(-2px);
-        }
-
-        .btn-warning {
-            background: #ff9800;
-            color: white;
-        }
-
-        .btn-warning:hover {
-            background: #e68a00;
-            transform: translateY(-2px);
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
+        .form-group { margin-bottom: 18px; }
         label {
             display: block;
-            margin-bottom: 8px;
+            margin-bottom: 7px;
             font-weight: 600;
-            color: #333;
+            font-size: 13.5px;
+            color: var(--text);
         }
-
         input, textarea, select {
             width: 100%;
-            padding: 12px 15px;
-            border: 2px solid #FFD700;
-            border-radius: 8px;
-            font-size: 16px;
-            transition: all 0.3s ease;
-            background-color: white;
+            padding: 11px 14px;
+            border: 1.5px solid var(--border);
+            border-radius: 10px;
+            font-size: 14.5px;
+            font-family: inherit;
+            transition: all 0.2s;
+            background: var(--surface);
+            color: var(--text);
         }
-
         input:focus, textarea:focus, select:focus {
             outline: none;
-            border-color: #FFA500;
-            box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.2);
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px var(--primary-light);
         }
-
-        .stats {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 20px;
-            margin-bottom: 25px;
-        }
-
-        .stat-card {
-            background: white;
-            padding: 25px;
-            border-radius: 15px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            text-align: center;
-            transition: transform 0.3s ease;
-        }
-
-        .stat-card:hover {
-            transform: translateY(-5px);
-        }
-
-        .stat-number {
-            font-size: 36px;
-            font-weight: 700;
-            margin: 0;
-            color: #FFA500;
-        }
-
-        .stat-label {
-            margin: 10px 0 0;
-            color: #666;
-            font-size: 14px;
-        }
-
+        textarea { min-height: 90px; resize: vertical; }
         .items-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 18px;
         }
-
         .item-card {
-            background: white;
-            border-radius: 15px;
+            background: var(--surface);
+            border-radius: var(--radius);
             padding: 20px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            transition: all 0.3s ease;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            transition: all 0.25s ease;
+            position: relative;
         }
-
         .item-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
         }
-
-        .category-card {
-            border-left: 4px solid #4CAF50;
-        }
-
-        .system-card {
-            border-left: 4px solid #FFC107;
-        }
-
-        .user-card {
-            border-left: 4px solid #2196F3;
-        }
-
-        .user-banned {
-            background-color: #ffebee !important;
-        }
-
-        .banned-badge {
-            background: #ff4d4d;
-            color: white;
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-size: 12px;
+        .item-card h3 { font-size: 16px; margin-bottom: 8px; font-weight: 600; }
+        .item-card p { font-size: 13.5px; color: var(--text-secondary); margin-bottom: 4px; }
+        .category-card { border-left: 4px solid var(--success); }
+        .system-card { border-left: 4px solid var(--accent); }
+        .user-card { border-left: 4px solid var(--info); }
+        .user-banned { background: #fef2f2 !important; border-left-color: var(--danger) !important; }
+        .banned-badge, .admin-badge, .status-badge {
+            display: inline-block;
+            padding: 3px 9px;
+            border-radius: 6px;
+            font-size: 11px;
             font-weight: 600;
-            margin-left: 10px;
+            margin-left: 6px;
+            vertical-align: middle;
         }
-
-        .admin-badge {
-            background: #FFA500;
-            color: white;
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-size: 12px;
-            font-weight: 600;
-            margin-left: 10px;
-        }
-
-        .status-badge {
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-size: 12px;
-            font-weight: 600;
-        }
-
-        .status-learning {
-            background: #2196F3;
-            color: white;
-        }
-
-        .status-known {
-            background: #4CAF50;
-            color: white;
-        }
-
-        .status-mastered {
-            background: #FF9800;
-            color: white;
-        }
-
-        .alert {
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            text-align: center;
-        }
-
-        .alert.success {
-            background: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
-        }
-
-        .alert.error {
-            background: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
-        }
-
+        .banned-badge { background: #fee2e2; color: #b91c1c; }
+        .admin-badge { background: #fef3c7; color: #b45309; }
+        .status-learning { background: #dbeafe; color: #1d4ed8; }
+        .status-known { background: #d1fae5; color: #047857; }
+        .status-mastered { background: #ffedd5; color: #c2410c; }
         table {
             width: 100%;
             border-collapse: collapse;
-            margin: 20px 0;
-            background: white;
-            border-radius: 10px;
+            background: var(--surface);
+            border-radius: var(--radius);
             overflow: hidden;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
         }
-
         th, td {
-            padding: 12px 15px;
+            padding: 13px 16px;
             text-align: left;
-            border-bottom: 1px solid #e0e0e0;
+            border-bottom: 1px solid var(--border);
+            font-size: 13.5px;
         }
-
         th {
-            background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+            background: linear-gradient(135deg, #0ea5a4 0%, #0d9488 100%);
             color: white;
             font-weight: 600;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
         }
-
-        tr:hover {
-            background-color: #f5f5f5;
-        }
-
+        tr:last-child td { border-bottom: none; }
+        tr:hover td { background: var(--primary-light); }
         .vocab-filter {
             display: flex;
-            gap: 10px;
+            gap: 12px;
             margin-bottom: 20px;
             flex-wrap: wrap;
         }
-
-        .vocab-filter select, .vocab-filter input {
-            flex: 1;
-            min-width: 200px;
-        }
-
+        .vocab-filter select, .vocab-filter input { flex: 1; min-width: 180px; }
         .vocab-stats {
             display: flex;
-            gap: 15px;
-            margin: 15px 0;
+            gap: 12px;
+            margin: 16px 0;
             flex-wrap: wrap;
         }
-
         .vocab-stat-item {
-            background: #f0f0f0;
-            padding: 10px 20px;
-            border-radius: 8px;
+            background: var(--surface-2);
+            padding: 10px 18px;
+            border-radius: 10px;
             font-weight: 600;
+            font-size: 13.5px;
+            border: 1px solid var(--border);
         }
-
-        .vocab-stat-item.need-to-know {
-            background: #2196F3;
-            color: white;
-        }
-
-        .vocab-stat-item.known {
-            background: #4CAF50;
-            color: white;
-        }
-
-        .vocab-stat-item.mastered {
-            background: #FF9800;
-            color: white;
-        }
-
+        .vocab-stat-item.need-to-know { background: #dbeafe; color: #1d4ed8; border-color: #93c5fd; }
+        .vocab-stat-item.known { background: #d1fae5; color: #047857; border-color: #6ee7b7; }
+        .vocab-stat-item.mastered { background: #ffedd5; color: #c2410c; border-color: #fdba74; }
         .pagination {
             display: flex;
             justify-content: center;
-            gap: 5px;
-            margin-top: 20px;
+            gap: 6px;
+            margin-top: 22px;
         }
-
         .pagination button {
-            padding: 8px 12px;
-            min-width: 40px;
+            padding: 8px 13px;
+            min-width: 38px;
+            background: var(--surface);
+            border: 1.5px solid var(--border);
+            color: var(--text-secondary);
+            border-radius: 8px;
         }
-
+        .pagination button:hover { border-color: var(--primary); color: var(--primary); }
         .pagination button.active {
-            background: #FFA500;
+            background: var(--primary);
             color: white;
+            border-color: var(--primary);
         }
-
         .analytics-section {
-            background: white;
-            border-radius: 15px;
-            padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            background: var(--surface);
+            border-radius: var(--radius);
+            padding: 22px;
+            margin-bottom: 22px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
         }
-
         .chart-container {
             position: relative;
             height: 300px;
             width: 100%;
-            margin-bottom: 20px;
+            margin-bottom: 16px;
         }
-
         .progress-summary {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
-            margin-bottom: 20px;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 14px;
+            margin-top: 16px;
         }
-
         .progress-item {
-            background: #f8f9fa;
-            border-radius: 10px;
-            padding: 15px;
+            background: var(--surface-2);
+            border-radius: 12px;
+            padding: 16px;
             text-align: center;
+            border: 1px solid var(--border);
         }
-
         .progress-item .value {
-            font-size: 24px;
+            font-family: 'Lexend', sans-serif;
+            font-size: 26px;
             font-weight: 700;
-            color: #333;
+            color: var(--primary);
         }
-
+        .progress-item div:last-child {
+            font-size: 12.5px;
+            color: var(--text-secondary);
+            margin-top: 4px;
+        }
         .evaluation {
             text-align: center;
-            padding: 15px;
-            border-radius: 10px;
-            margin-top: 20px;
+            padding: 20px;
+            border-radius: 12px;
+            margin-top: 16px;
         }
-
-        .evaluation.excellent {
-            background: #E8F5E9;
-            color: #2E7D32;
+        .evaluation.excellent { background: #ecfdf5; color: #065f46; border: 1px solid #a7f3d0; }
+        .evaluation.good { background: #eff6ff; color: #1e40af; border: 1px solid #bfdbfe; }
+        .evaluation.average { background: #fffbeb; color: #92400e; border: 1px solid #fde68a; }
+        .evaluation.poor { background: #fef2f2; color: #991b1b; border: 1px solid #fecaca; }
+        .alert {
+            padding: 14px 18px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            text-align: center;
+            font-weight: 500;
+            font-size: 14px;
+            animation: fadeIn 0.3s ease;
         }
-
-        .evaluation.good {
-            background: #E3F2FD;
-            color: #1565C0;
-        }
-
-        .evaluation.average {
-            background: #FFF8E1;
-            color: #FF8F00;
-        }
-
-        .evaluation.poor {
-            background: #FFEBEE;
-            color: #C62828;
-        }
-
+        .alert.success { background: #ecfdf5; color: #065f46; border: 1px solid #a7f3d0; }
+        .alert.error { background: #fef2f2; color: #991b1b; border: 1px solid #fecaca; }
         .modal {
             display: none;
             position: fixed;
             z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0,0,0,0.5);
+            left: 0; top: 0;
+            width: 100%; height: 100%;
+            background: rgba(15, 23, 42, 0.55);
+            backdrop-filter: blur(4px);
         }
-
         .modal-content {
-            background-color: white;
-            margin: 5% auto;
-            padding: 30px;
-            border-radius: 15px;
-            width: 90%;
-            max-width: 900px;
-            max-height: 80vh;
+            background: var(--surface);
+            margin: 4% auto;
+            padding: 28px;
+            border-radius: 20px;
+            width: 92%;
+            max-width: 860px;
+            max-height: 82vh;
             overflow-y: auto;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.2);
+            animation: modalIn 0.25s ease;
         }
-
+        @keyframes modalIn {
+            from { opacity: 0; transform: scale(0.96) translateY(12px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
         .modal-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 20px;
         }
-
         .modal-title {
-            font-size: 24px;
-            font-weight: 700;
-            color: #333;
+            font-family: 'Lexend', sans-serif;
+            font-size: 20px;
+            font-weight: 600;
         }
-
         .close-modal {
-            font-size: 28px;
+            font-size: 26px;
             cursor: pointer;
-            color: #666;
+            color: var(--text-muted);
+            line-height: 1;
+            transition: color 0.2s;
         }
-
-        .close-modal:hover {
-            color: #333;
-        }
-
+        .close-modal:hover { color: var(--text); }
         .loading-overlay {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.85);
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(15, 23, 42, 0.88);
             z-index: 9999;
             display: flex;
             justify-content: center;
             align-items: center;
             flex-direction: column;
-            gap: 20px;
+            gap: 18px;
         }
-
         .loading-overlay .spinner {
-            width: 60px;
-            height: 60px;
-            border: 4px solid rgba(255, 215, 0, 0.3);
+            width: 52px; height: 52px;
+            border: 3px solid rgba(14, 165, 164, 0.25);
             border-radius: 50%;
-            border-top-color: #FFD700;
-            animation: spin 0.8s linear infinite;
+            border-top-color: #0ea5a4;
+            animation: spin 0.75s linear infinite;
         }
-
         .loading-overlay .loading-text {
             color: white;
-            font-size: 18px;
-            font-weight: 400;
-            letter-spacing: 1px;
+            font-size: 16px;
+            font-weight: 500;
         }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
+        @keyframes spin { to { transform: rotate(360deg); } }
         .ai-words-list {
-            margin-top: 20px;
-            max-height: 400px;
+            margin-top: 18px;
+            max-height: 380px;
             overflow-y: auto;
-            border: 1px solid #eee;
-            border-radius: 10px;
-            padding: 10px;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 8px;
+            background: var(--surface-2);
         }
-
         .ai-word-item {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 10px;
-            border-bottom: 1px solid #f0f0f0;
+            padding: 12px 14px;
+            border-bottom: 1px solid var(--border);
+            background: white;
+            border-radius: 8px;
+            margin-bottom: 6px;
         }
-
-        .ai-word-item:last-child {
-            border-bottom: none;
-        }
-
-        .ai-word-content {
-            flex: 1;
-        }
-
+        .ai-word-item:last-child { border-bottom: none; margin-bottom: 0; }
+        .ai-word-content { flex: 1; font-size: 13.5px; }
         .ai-add-btn {
-            background-color: #4CAF50;
+            background: var(--success);
             color: white;
             border: none;
-            padding: 5px 10px;
-            border-radius: 5px;
+            padding: 6px 12px;
+            border-radius: 8px;
             cursor: pointer;
             font-size: 12px;
+            font-weight: 600;
         }
-
-        .ai-add-btn:hover {
-            background-color: #45a049;
+        .ai-add-btn:hover { background: #059669; }
+        .ai-add-btn.added { background: #94a3b8; cursor: default; }
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 22px;
         }
-
-        .ai-add-btn.added {
-            background-color: #cccccc;
-            cursor: default;
+        .section-header h2 {
+            font-family: 'Lexend', sans-serif;
+            font-size: 22px;
+            font-weight: 600;
         }
-
+        @media (max-width: 1024px) {
+            .progress-summary { grid-template-columns: repeat(2, 1fr); }
+        }
         @media (max-width: 768px) {
-            .tabs {
-                flex-direction: column;
-            }
-            .tab {
-                padding: 10px 15px;
-                border-bottom: 1px solid #e0e0e0;
-                border-left: 3px solid transparent;
-            }
-            .tab.active {
-                border-bottom: 1px solid #e0e0e0;
-                border-left: 3px solid #FFA500;
-            }
-            .stats {
-                grid-template-columns: repeat(2, 1fr);
-            }
-            .items-grid {
-                grid-template-columns: 1fr;
-            }
-            .card-actions {
-                flex-direction: column;
-            }
-            .card-actions button {
-                width: 100%;
-            }
-            table {
-                display: block;
-                overflow-x: auto;
-            }
-            .vocab-filter {
-                flex-direction: column;
-            }
-            .vocab-filter select, .vocab-filter input {
-                width: 100%;
-            }
-            .progress-summary {
-                grid-template-columns: 1fr;
-            }
+            .sidebar { width: 72px; }
+            .sidebar-brand h1, .sidebar-brand span, .nav-item span:not(.material-symbols-outlined) { display: none; }
+            .sidebar-brand { justify-content: center; padding: 20px 10px; }
+            .nav-item { justify-content: center; padding: 14px; }
+            .main { margin-left: 72px; }
+            .stats { grid-template-columns: repeat(2, 1fr); }
+            .items-grid { grid-template-columns: 1fr; }
+            .progress-summary { grid-template-columns: 1fr 1fr; }
+            .vocab-filter { flex-direction: column; }
+            .vocab-filter select, .vocab-filter input { width: 100%; }
+            table { display: block; overflow-x: auto; }
         }
-
         @media (max-width: 480px) {
-            #top-bar {
-                padding: 10px 15px;
-            }
-            .logo h1 {
-                font-size: 18px;
-            }
-            .stats {
-                grid-template-columns: 1fr;
-            }
+            .stats { grid-template-columns: 1fr; }
+            #content { padding: 16px; }
+            .topbar { padding: 12px 16px; }
         }
     </style>
 </head>
 <body>
     <div id="app">
-        <div id="top-bar">
-            <div class="logo">
-                <img src="https://cdn-icons-png.flaticon.com/512/2922/2922561.png" alt="BeeEnglish">
-                <h1>BeeEnglish - Quản trị</h1>
+        <aside class="sidebar">
+            <div class="sidebar-brand">
+                <svg width="42" height="42" viewBox="0 0 512 512" aria-label="Bee mascot">
+                    <defs>
+                        <radialGradient id="beeFace" cx="50%" cy="35%" r="75%">
+                            <stop offset="0%" stop-color="#ffe066"/>
+                            <stop offset="70%" stop-color="#ffc800"/>
+                            <stop offset="100%" stop-color="#f0a500"/>
+                        </radialGradient>
+                        <clipPath id="beeClip"><circle cx="256" cy="280" r="180"/></clipPath>
+                    </defs>
+                    <ellipse cx="120" cy="150" rx="70" ry="100" fill="#d9f3ff" opacity="0.9" transform="rotate(-30 120 150)"/>
+                    <ellipse cx="392" cy="150" rx="70" ry="100" fill="#d9f3ff" opacity="0.9" transform="rotate(30 392 150)"/>
+                    <path d="M200 95 Q180 40 140 30" stroke="#3d2e00" stroke-width="18" fill="none" stroke-linecap="round"/>
+                    <path d="M312 95 Q332 40 372 30" stroke="#3d2e00" stroke-width="18" fill="none" stroke-linecap="round"/>
+                    <circle cx="136" cy="26" r="20" fill="#3d2e00"/>
+                    <circle cx="376" cy="26" r="20" fill="#3d2e00"/>
+                    <circle cx="256" cy="280" r="185" fill="url(#beeFace)" stroke="#b37f00" stroke-width="10"/>
+                    <rect x="60" y="408" width="392" height="46" fill="#3d2e00" clip-path="url(#beeClip)"/>
+                    <circle cx="185" cy="235" r="56" fill="white"/>
+                    <circle cx="327" cy="235" r="56" fill="white"/>
+                    <circle cx="198" cy="245" r="27" fill="#16333e"/>
+                    <circle cx="314" cy="245" r="27" fill="#16333e"/>
+                    <circle cx="208" cy="235" r="10" fill="white"/>
+                    <circle cx="324" cy="235" r="10" fill="white"/>
+                    <ellipse cx="150" cy="330" rx="26" ry="16" fill="#ff9d7a" opacity="0.7"/>
+                    <ellipse cx="362" cy="330" rx="26" ry="16" fill="#ff9d7a" opacity="0.7"/>
+                    <path d="M212 330 Q256 372 300 330" stroke="#3d2e00" stroke-width="16" fill="none" stroke-linecap="round"/>
+                </svg>
+                <div>
+                    <h1>BeeEnglish</h1>
+                    <span>Bảng quản trị</span>
+                </div>
             </div>
-            <div class="user-info">
-                <a href="main.html" class="material-symbols-outlined" title="Về trang chính">home</a>
-                <span id="logout" class="material-symbols-outlined" title="Đăng xuất">logout</span>
+            <nav class="sidebar-nav">
+                <div class="nav-item active" data-tab="dashboard">
+                    <span class="material-symbols-outlined">dashboard</span>
+                    <span>Tổng quan</span>
+                </div>
+                <div class="nav-item" data-tab="categories">
+                    <span class="material-symbols-outlined">folder</span>
+                    <span>Chủ đề</span>
+                </div>
+                <div class="nav-item" data-tab="cards">
+                    <span class="material-symbols-outlined">style</span>
+                    <span>Thẻ từ vựng</span>
+                </div>
+                <div class="nav-item" data-tab="users">
+                    <span class="material-symbols-outlined">group</span>
+                    <span>Người dùng</span>
+                </div>
+                <div class="nav-item" data-tab="vocabulary">
+                    <span class="material-symbols-outlined">menu_book</span>
+                    <span>Từ vựng người dùng</span>
+                </div>
+                <div class="nav-item" data-tab="analytics">
+                    <span class="material-symbols-outlined">analytics</span>
+                    <span>Đánh giá & Tổng kết</span>
+                </div>
+            </nav>
+            <div class="sidebar-footer">
+                <a href="main.html">
+                    <span class="material-symbols-outlined">home</span>
+                    Về trang chính
+                </a>
+                <button id="logout" style="margin-top:8px;">
+                    <span class="material-symbols-outlined">logout</span>
+                    Đăng xuất
+                </button>
             </div>
-        </div>
+        </aside>
 
-        <div id="content">
-            <div class="tabs">
-                <div class="tab active" data-tab="dashboard">Tổng quan</div>
-                <div class="tab" data-tab="categories">📁 Chủ đề</div>
-                <div class="tab" data-tab="cards">📚 Thẻ từ vựng hệ thống</div>
-                <div class="tab" data-tab="users">👥 Người dùng</div>
-                <div class="tab" data-tab="vocabulary">📖 Từ vựng người dùng</div>
-                <div class="tab" data-tab="analytics">📊 Đánh giá & Tổng kết</div>
-            </div>
-
-            <div id="dashboard" class="tab-content active">
-                <h2>Tổng quan hệ thống</h2>
-                <div class="stats">
-                    <div class="stat-card">
-                        <p class="stat-number" id="total-users">0</p>
-                        <p class="stat-label">Tổng người dùng</p>
-                    </div>
-                    <div class="stat-card">
-                        <p class="stat-number" id="total-cards">0</p>
-                        <p class="stat-label">Tổng thẻ từ vựng</p>
-                    </div>
-                    <div class="stat-card">
-                        <p class="stat-number" id="total-categories">0</p>
-                        <p class="stat-label">Tổng chủ đề</p>
-                    </div>
-                    <div class="stat-card">
-                        <p class="stat-number" id="active-today">0</p>
-                        <p class="stat-label">Người dùng hoạt động hôm nay</p>
-                    </div>
-                    <div class="stat-card">
-                        <p class="stat-number" id="banned-users">0</p>
-                        <p class="stat-label">Người dùng bị khóa</p>
-                    </div>
-                    <div class="stat-card">
-                        <p class="stat-number" id="total-user-vocab">0</p>
-                        <p class="stat-label">Tổng từ vựng người dùng</p>
-                    </div>
+        <div class="main">
+            <div class="topbar">
+                <div class="topbar-title" id="page-title">Tổng quan hệ thống</div>
+                <div class="topbar-actions">
+                    <a href="main.html" class="material-symbols-outlined" title="Về trang chính">home</a>
+                    <span id="logout-top" class="material-symbols-outlined" title="Đăng xuất">logout</span>
                 </div>
             </div>
 
-            <div id="categories" class="tab-content">
-                <h2>📁 Quản lý chủ đề</h2>
-                <div class="card">
-                    <h3>➕ Thêm chủ đề mới</h3>
-                    <form id="category-form">
+            <div id="content">
+                <div id="dashboard" class="tab-content active">
+                    <div class="section-header"><h2>Tổng quan hệ thống</h2></div>
+                    <div class="stats">
+                        <div class="stat-card">
+                            <p class="stat-number" id="total-users">0</p>
+                            <p class="stat-label">Tổng người dùng</p>
+                        </div>
+                        <div class="stat-card">
+                            <p class="stat-number" id="total-cards">0</p>
+                            <p class="stat-label">Tổng thẻ từ vựng</p>
+                        </div>
+                        <div class="stat-card">
+                            <p class="stat-number" id="total-categories">0</p>
+                            <p class="stat-label">Tổng chủ đề</p>
+                        </div>
+                        <div class="stat-card">
+                            <p class="stat-number" id="active-today">0</p>
+                            <p class="stat-label">Người dùng hoạt động hôm nay</p>
+                        </div>
+                        <div class="stat-card">
+                            <p class="stat-number" id="banned-users">0</p>
+                            <p class="stat-label">Người dùng bị khóa</p>
+                        </div>
+                        <div class="stat-card">
+                            <p class="stat-number" id="total-user-vocab">0</p>
+                            <p class="stat-label">Tổng từ vựng người dùng</p>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <h3>📈 Hoạt động gần đây</h3>
+                        <p style="color:var(--text-secondary);font-size:14px;">Hệ thống đang hoạt động ổn định. Dữ liệu được cập nhật theo thời gian thực từ Firebase.</p>
+                    </div>
+                </div>
+
+                <div id="categories" class="tab-content">
+                    <div class="section-header"><h2>📁 Quản lý chủ đề</h2></div>
+                    <div class="card">
+                        <h3>➕ Thêm chủ đề mới</h3>
+                        <form id="category-form">
+                            <div class="form-group">
+                                <label for="category-name">Tên chủ đề</label>
+                                <input type="text" id="category-name" required placeholder="Ví dụ: Động vật, Công nghệ, Du lịch...">
+                            </div>
+                            <div class="form-group">
+                                <label for="category-description">Mô tả</label>
+                                <textarea id="category-description" placeholder="Mô tả ngắn về chủ đề..."></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="category-icon">URL biểu tượng (tùy chọn)</label>
+                                <input type="text" id="category-icon" placeholder="https://example.com/icon.svg">
+                            </div>
+                            <button type="submit" class="btn-primary">➕ Thêm chủ đề</button>
+                        </form>
+                    </div>
+                    <h3 style="font-family:'Lexend',sans-serif;margin-bottom:16px;font-size:17px;">📂 Danh sách chủ đề</h3>
+                    <div id="categories-list" class="items-grid"></div>
+                </div>
+
+                <div id="cards" class="tab-content">
+                    <div class="section-header"><h2>📚 Quản lý thẻ từ vựng hệ thống</h2></div>
+                    <div class="card">
+                        <h3>🤖 Tạo từ vựng bằng AI</h3>
+                        <p style="margin-bottom:16px;color:var(--text-secondary);font-size:14px;">✨ Nhập chủ đề, AI sẽ tự động tạo từ vựng kèm phiên âm, nghĩa, ví dụ và bản dịch</p>
                         <div class="form-group">
-                            <label for="category-name">Tên chủ đề</label>
-                            <input type="text" id="category-name" required placeholder="Ví dụ: Động vật, Công nghệ, Du lịch...">
+                            <label for="ai-topic">📝 Chủ đề từ vựng</label>
+                            <input type="text" id="ai-topic" placeholder="Ví dụ: Động vật, Công nghệ, Thể thao, Du lịch...">
                         </div>
                         <div class="form-group">
-                            <label for="category-description">Mô tả</label>
-                            <textarea id="category-description" placeholder="Mô tả ngắn về chủ đề..."></textarea>
+                            <label for="ai-level">📊 Mức độ</label>
+                            <select id="ai-level">
+                                <option value="cơ bản">Cơ bản</option>
+                                <option value="trung bình">Trung bình</option>
+                                <option value="nâng cao">Nâng cao</option>
+                            </select>
                         </div>
                         <div class="form-group">
-                            <label for="category-icon">URL biểu tượng (tùy chọn)</label>
-                            <input type="text" id="category-icon" placeholder="https://example.com/icon.svg">
+                            <label for="ai-count">🔢 Số lượng từ (tối đa 30)</label>
+                            <input type="number" id="ai-count" min="1" max="30" value="5">
                         </div>
-                        <button type="submit" class="btn-primary">➕ Thêm chủ đề</button>
-                    </form>
+                        <div class="form-group">
+                            <label for="ai-target-category">📁 Lưu vào chủ đề</label>
+                            <select id="ai-target-category" required>
+                                <option value="">-- Chọn chủ đề --</option>
+                            </select>
+                        </div>
+                        <button type="button" id="generate-words-btn" class="btn-primary" style="width:100%;">✨ Tạo từ vựng bằng AI</button>
+                        <div id="ai-results" style="display:none;margin-top:20px;">
+                            <h3>📚 Từ vựng được tạo</h3>
+                            <div id="ai-words-container" class="ai-words-list"></div>
+                            <button type="button" id="add-all-words-btn" class="btn-primary" style="margin-top:12px;width:100%;">📥 Thêm tất cả vào hệ thống</button>
+                        </div>
+                    </div>
+                    <h3 style="font-family:'Lexend',sans-serif;margin-bottom:16px;font-size:17px;">📖 Danh sách thẻ từ vựng trong hệ thống</h3>
+                    <div id="cards-list" class="items-grid"></div>
                 </div>
 
-                <h3>📂 Danh sách chủ đề</h3>
-                <div id="categories-list" class="items-grid"></div>
-            </div>
-
-            <div id="cards" class="tab-content">
-                <h2>📚 Quản lý thẻ từ vựng hệ thống</h2>
-                
-                <div class="card">
-                    <h3>🤖 Tạo từ vựng bằng AI</h3>
-                    <p style="margin-bottom: 15px; color: #666;">✨ Nhập chủ đề, AI sẽ tự động tạo từ vựng kèm phiên âm, nghĩa, ví dụ và bản dịch</p>
-                    
-                    <div class="form-group">
-                        <label for="ai-topic">📝 Chủ đề từ vựng</label>
-                        <input type="text" id="ai-topic" placeholder="Ví dụ: Động vật, Công nghệ, Thể thao, Du lịch...">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="ai-level">📊 Mức độ</label>
-                        <select id="ai-level">
-                            <option value="cơ bản">Cơ bản</option>
-                            <option value="trung bình">Trung bình</option>
-                            <option value="nâng cao">Nâng cao</option>
-                        </select>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="ai-count">🔢 Số lượng từ (tối đa 30)</label>
-                        <input type="number" id="ai-count" min="1" max="30" value="5">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="ai-target-category">📁 Lưu vào chủ đề</label>
-                        <select id="ai-target-category" required>
-                            <option value="">-- Chọn chủ đề --</option>
-                        </select>
-                    </div>
-                    
-                    <button type="button" id="generate-words-btn" class="btn-primary" style="width: 100%;">✨ Tạo từ vựng bằng AI</button>
-                    
-                    <div id="ai-results" style="display: none; margin-top: 20px;">
-                        <h3>📚 Từ vựng được tạo</h3>
-                        <div id="ai-words-container" class="ai-words-list"></div>
-                        <button type="button" id="add-all-words-btn" class="btn-primary" style="margin-top: 10px; width: 100%;">📥 Thêm tất cả vào hệ thống</button>
-                    </div>
+                <div id="users" class="tab-content">
+                    <div class="section-header"><h2>👥 Quản lý người dùng</h2></div>
+                    <div id="users-list" class="items-grid"></div>
                 </div>
 
-                <h3>📖 Danh sách thẻ từ vựng trong hệ thống</h3>
-                <div id="cards-list" class="items-grid"></div>
-            </div>
-
-            <div id="users" class="tab-content">
-                <h2>👥 Quản lý người dùng</h2>
-                <div id="users-list" class="items-grid"></div>
-            </div>
-
-            <div id="vocabulary" class="tab-content">
-                <h2>📖 Theo dõi từ vựng người dùng</h2>
-                
-                <div class="vocab-filter">
-                    <select id="vocab-user-filter">
-                        <option value="">-- Tất cả người dùng --</option>
-                    </select>
-                    <select id="vocab-status-filter">
-                        <option value="">-- Tất cả trạng thái --</option>
-                        <option value="learning">📖 Đang học</option>
-                        <option value="known">✅ Đã biết</option>
-                        <option value="mastered">🏆 Đã thuộc</option>
-                    </select>
-                    <input type="text" id="vocab-search" placeholder="🔍 Tìm kiếm từ vựng...">
-                    <button id="refresh-vocab" class="btn-primary">🔄 Làm mới</button>
-                </div>
-
-                <div id="vocab-stats-container"></div>
-                <div id="vocabulary-list"></div>
-                <div id="vocab-pagination" class="pagination"></div>
-            </div>
-
-            <div id="analytics" class="tab-content">
-                <h2>📊 Đánh giá và Tổng kết</h2>
-                
-                <div class="card">
-                    <h3>Bộ lọc dữ liệu</h3>
+                <div id="vocabulary" class="tab-content">
+                    <div class="section-header"><h2>📖 Theo dõi từ vựng người dùng</h2></div>
                     <div class="vocab-filter">
-                        <select id="analytics-user-filter">
+                        <select id="vocab-user-filter">
                             <option value="">-- Tất cả người dùng --</option>
-                            <option value="top-10">🏆 Top 10 người dùng tích cực</option>
                         </select>
+                        <select id="vocab-status-filter">
+                            <option value="">-- Tất cả trạng thái --</option>
+                            <option value="learning">📖 Đang học</option>
+                            <option value="known">✅ Đã biết</option>
+                            <option value="mastered">🏆 Đã thuộc</option>
+                        </select>
+                        <input type="text" id="vocab-search" placeholder="🔍 Tìm kiếm từ vựng...">
+                        <button id="refresh-vocab" class="btn-primary">🔄 Làm mới</button>
                     </div>
+                    <div id="vocab-stats-container"></div>
+                    <div id="vocabulary-list"></div>
+                    <div id="vocab-pagination" class="pagination"></div>
                 </div>
 
-                <div class="stats">
-                    <div class="stat-card">
-                        <p class="stat-number" id="total-active-users">0</p>
-                        <p class="stat-label">Người dùng có hoạt động</p>
-                    </div>
-                    <div class="stat-card">
-                        <p class="stat-number" id="total-learned">0</p>
-                        <p class="stat-label">Tổng từ đã học</p>
-                    </div>
-                    <div class="stat-card">
-                        <p class="stat-number" id="total-mastered">0</p>
-                        <p class="stat-label">Tổng từ đã thuộc</p>
-                    </div>
-                    <div class="stat-card">
-                        <p class="stat-number" id="avg-per-user">0</p>
-                        <p class="stat-label">Trung bình/người dùng</p>
-                    </div>
-                </div>
-
-                <div class="analytics-section">
-                    <div class="chart-container">
-                        <canvas id="overall-progress-chart"></canvas>
-                    </div>
-                </div>
-
-                <div class="analytics-section">
-                    <div class="chart-container">
-                        <canvas id="user-distribution-chart"></canvas>
-                    </div>
-                    <div class="progress-summary">
-                        <div class="progress-item">
-                            <div class="value" id="beginner-users">0</div>
-                            <div>Người mới (0-10 từ)</div>
-                        </div>
-                        <div class="progress-item">
-                            <div class="value" id="intermediate-users">0</div>
-                            <div>Trung bình (11-50 từ)</div>
-                        </div>
-                        <div class="progress-item">
-                            <div class="value" id="advanced-users">0</div>
-                            <div>Tích cực (51-200 từ)</div>
-                        </div>
-                        <div class="progress-item">
-                            <div class="value" id="expert-users">0</div>
-                            <div>Xuất sắc (201+ từ)</div>
+                <div id="analytics" class="tab-content">
+                    <div class="section-header"><h2>📊 Đánh giá và Tổng kết</h2></div>
+                    <div class="card">
+                        <h3>Bộ lọc dữ liệu</h3>
+                        <div class="vocab-filter">
+                            <select id="analytics-user-filter">
+                                <option value="">-- Tất cả người dùng --</option>
+                                <option value="top-10">🏆 Top 10 người dùng tích cực</option>
+                            </select>
                         </div>
                     </div>
-                </div>
-
-                <div class="analytics-section">
-                    <h3>🏆 Bảng xếp hạng người dùng</h3>
-                    <div id="user-ranking-table"></div>
-                </div>
-
-                <div class="analytics-section">
-                    <div class="evaluation" id="overall-evaluation">
-                        <h3>Đánh giá tổng thể hệ thống</h3>
-                        <p>Đang tải dữ liệu...</p>
+                    <div class="stats">
+                        <div class="stat-card">
+                            <p class="stat-number" id="total-active-users">0</p>
+                            <p class="stat-label">Người dùng có hoạt động</p>
+                        </div>
+                        <div class="stat-card">
+                            <p class="stat-number" id="total-learned">0</p>
+                            <p class="stat-label">Tổng từ đã học</p>
+                        </div>
+                        <div class="stat-card">
+                            <p class="stat-number" id="total-mastered">0</p>
+                            <p class="stat-label">Tổng từ đã thuộc</p>
+                        </div>
+                        <div class="stat-card">
+                            <p class="stat-number" id="avg-per-user">0</p>
+                            <p class="stat-label">Trung bình/người dùng</p>
+                        </div>
                     </div>
-                </div>
-
-                <div class="analytics-section">
-                    <h3>📋 Chi tiết từng người dùng</h3>
-                    <div id="user-details-list"></div>
+                    <div class="analytics-section">
+                        <div class="chart-container">
+                            <canvas id="overall-progress-chart"></canvas>
+                        </div>
+                    </div>
+                    <div class="analytics-section">
+                        <div class="chart-container">
+                            <canvas id="user-distribution-chart"></canvas>
+                        </div>
+                        <div class="progress-summary">
+                            <div class="progress-item">
+                                <div class="value" id="beginner-users">0</div>
+                                <div>Người mới (0-10 từ)</div>
+                            </div>
+                            <div class="progress-item">
+                                <div class="value" id="intermediate-users">0</div>
+                                <div>Trung bình (11-50 từ)</div>
+                            </div>
+                            <div class="progress-item">
+                                <div class="value" id="advanced-users">0</div>
+                                <div>Tích cực (51-200 từ)</div>
+                            </div>
+                            <div class="progress-item">
+                                <div class="value" id="expert-users">0</div>
+                                <div>Xuất sắc (201+ từ)</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="analytics-section">
+                        <h3 style="font-family:'Lexend',sans-serif;margin-bottom:14px;">🏆 Bảng xếp hạng người dùng</h3>
+                        <div id="user-ranking-table"></div>
+                    </div>
+                    <div class="analytics-section">
+                        <div class="evaluation" id="overall-evaluation">
+                            <h3>Đánh giá tổng thể hệ thống</h3>
+                            <p>Đang tải dữ liệu...</p>
+                        </div>
+                    </div>
+                    <div class="analytics-section">
+                        <h3 style="font-family:'Lexend',sans-serif;margin-bottom:14px;">📋 Chi tiết từng người dùng</h3>
+                        <div id="user-details-list"></div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -938,7 +902,7 @@
         </div>
     </div>
 
-    <div id="loading-overlay" style="display: none;" class="loading-overlay">
+    <div id="loading-overlay" style="display:none;" class="loading-overlay">
         <div class="spinner"></div>
         <div class="loading-text" id="loading-text">🤖 AI đang tạo từ vựng...</div>
     </div>
@@ -946,7 +910,7 @@
     <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
-    
+
     <script>
         const firebaseConfig = {
             apiKey: "AIzaSyBc55gGulDbOCgGp2USL_HXeVLwqqXFTTU",
@@ -956,7 +920,6 @@
             messagingSenderId: "532991375524",
             appId: "1:532991375524:web:699b2e9f5b1bf727d68e31"
         };
-
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         const db = firebase.firestore();
@@ -972,65 +935,226 @@
         let userDistributionChart = null;
         let aiGeneratedWords = [];
 
+        // ==================== 120 TÀI KHOẢN ẢO (TÊN TỪ ẢNH) ====================
+        const FAKE_NAMES = [
+            "Đỗ Bảo An","Đỗ Phương Anh","Nguyễn Minh Anh","Vĩ Gia Bảo","Lương Linh Chi",
+            "Phạm Dương Chiến","Phan Huy Cường","Tô Bảo Duy","Hoàng Tuấn Dương","Nguyễn Minh Đức",
+            "Triệu Gia Hân","Nông Minh Hoàng","Lê Minh Huân","Vũ Thế Khôi","Lương Ngọc Khuê",
+            "Bùi Duy Lâm","Lương Minh Lâm","Không Tuấn Nam","Lương Thùy Nga","Đặng Duy Phong",
+            "Phùng Khải Phong","Phạm Xuân Phúc","Nguyễn Minh Quân","Hoàng Như Quỳnh","Trương Việt Tài",
+            "Nguyễn Anh Thư","Lê Mạnh Tiến","Hán Huyền Trâm","Phạm Cẩm Tú","Nguyễn Hà Thanh Tùng",
+            "Nguyễn Thị Nhã Uyên","Hà Bình An","Triệu Hoàng An","Vương Ngọc Ánh","Nguyễn Gia Bảo",
+            "Nguyễn Xuân Bảo","Nông Thúy Diễm","Nông Đức Duy","Trần Hải Đăng","Vũ Huy Đăng",
+            "Đặng Gia Huy","Mông Gia Huy","Nguyễn Khánh Hưng","Hoàng Duy Khánh","Bùi Nguyễn Nguyên Khôi",
+            "Nguyễn Trần Tuyết Lê","Nguyễn Ngọc Linh","Phạm Khánh Ly","Trần Quỳnh Mai","Trần Thanh Mai",
+            "Lý Hà My","Lương Thảo Nguyên","Tống Khả Nguyên","Mông Bảo Nhi","Nguyễn Thị Uyên Nhi",
+            "Hoàng Duy Phát","Hoàng Minh Quân","Hứa Phương Thảo","Vi Phùng Hoàng Thiên","Nông Ngọc Thúy",
+            "Hoàng Thị Bích Thùy","Triệu Tố Uyên","Nguyễn Đức Văn","Bùi Tuấn Anh","Hứa Hoàng Ân",
+            "Dương Gia Bảo","Trần Gia Bảo","Hứa Khánh Chi","Lương Trần Ngọc Diễm","Bùi Đỗ Tiến Dũng",
+            "Hứa Lương Đức","Trần Khánh Hà","Lê Thu Hằng","Nguyễn Thị Phương Hân","Lê Tuấn Hùng",
+            "Bùi Gia Hưng","Vũ Thiên Hương","Nguyễn Duy Khánh","Nguyễn Đức Kiên","Nguyễn Bảo Lâm",
+            "Phạm Hoàng Mai","Nguyễn Nhật Minh","Nguyễn Kim Ngân","Lương Minh Nhật","Phạm Quỳnh Như",
+            "Hoàng Tuấn Phong","Đặng Hữu Phước","Phạm Huy Toàn","Nguyễn Tuấn Tú","Lê Anh Tuấn",
+            "Ngụy Tường Vy","Dương Quỳnh Anh","Nguyễn Mai Anh","Phạm Duy Bảo","Phạm Hoàng Gia Bảo",
+            "Nguyễn Tùng Dương","Đinh Gia Hân","Ngô Minh Huy","Trần Anh Huy","Nông Quỳnh Hương",
+            "Hoàng Trần Long","Nguyễn Hương Ly","Đào Đức Mạnh","Hoàng Nhật Minh","Vũ Hà My",
+            "Dùng Văn Ngọc","Đặng Hoài Như","Nguyễn Hoàng Phúc","Triệu Xuân Phúc","Đào Duy Quân",
+            "Trần Phạm Thiên Quý","Đỗ Tuấn Tài","Nguyễn Tấn Tài","La Phương Thúy","Lương Huyền Trang",
+            "Ninh Thanh Tùng","Phùng Hương Vy","Nông Ngọc Như Ý","Dương Bảo Khang","Phạm Mai Ánh"
+        ];
+
+        const WORD_BANK = [
+            {word:"accomplish",meaning:"hoàn thành, đạt được",pronunciation:"əˈkʌmplɪʃ",example:"She accomplished her goals.",exampleTranslation:"Cô ấy đã hoàn thành mục tiêu của mình.",category:"Công việc"},
+            {word:"resilient",meaning:"kiên cường, bền bỉ",pronunciation:"rɪˈzɪliənt",example:"Children are often resilient.",exampleTranslation:"Trẻ em thường rất kiên cường.",category:"Tính cách"},
+            {word:"negotiate",meaning:"đàm phán",pronunciation:"nɪˈɡəʊʃieɪt",example:"We need to negotiate the price.",exampleTranslation:"Chúng ta cần đàm phán giá cả.",category:"Công việc"},
+            {word:"perspective",meaning:"góc nhìn, quan điểm",pronunciation:"pəˈspektɪv",example:"From my perspective, it is fair.",exampleTranslation:"Theo góc nhìn của tôi, điều đó là công bằng.",category:"Giao tiếp"},
+            {word:"efficient",meaning:"hiệu quả",pronunciation:"ɪˈfɪʃnt",example:"This method is more efficient.",exampleTranslation:"Phương pháp này hiệu quả hơn.",category:"Công việc"},
+            {word:"collaborate",meaning:"hợp tác",pronunciation:"kəˈlæbəreɪt",example:"Let's collaborate on this project.",exampleTranslation:"Hãy hợp tác trong dự án này.",category:"Công việc"},
+            {word:"deadline",meaning:"hạn chót",pronunciation:"ˈdedlaɪn",example:"The deadline is next Friday.",exampleTranslation:"Hạn chót là thứ Sáu tuần sau.",category:"Công việc"},
+            {word:"feedback",meaning:"phản hồi",pronunciation:"ˈfiːdbæk",example:"I appreciate your feedback.",exampleTranslation:"Tôi đánh giá cao phản hồi của bạn.",category:"Giao tiếp"},
+            {word:"adventure",meaning:"cuộc phiêu lưu",pronunciation:"ədˈventʃə",example:"Traveling alone is an adventure.",exampleTranslation:"Du lịch một mình là một cuộc phiêu lưu.",category:"Du lịch"},
+            {word:"destination",meaning:"điểm đến",pronunciation:"ˌdestɪˈneɪʃn",example:"Paris is a popular destination.",exampleTranslation:"Paris là điểm đến phổ biến.",category:"Du lịch"},
+            {word:"itinerary",meaning:"lịch trình",pronunciation:"aɪˈtɪnərəri",example:"Please check the itinerary.",exampleTranslation:"Vui lòng kiểm tra lịch trình.",category:"Du lịch"},
+            {word:"luggage",meaning:"hành lý",pronunciation:"ˈlʌɡɪdʒ",example:"Where is the luggage claim?",exampleTranslation:"Khu vực nhận hành lý ở đâu?",category:"Du lịch"},
+            {word:"passport",meaning:"hộ chiếu",pronunciation:"ˈpɑːspɔːt",example:"Don't forget your passport.",exampleTranslation:"Đừng quên hộ chiếu của bạn.",category:"Du lịch"},
+            {word:"souvenir",meaning:"quà lưu niệm",pronunciation:"ˌsuːvəˈnɪə",example:"I bought a souvenir for my sister.",exampleTranslation:"Tôi đã mua quà lưu niệm cho chị gái.",category:"Du lịch"},
+            {word:"explore",meaning:"khám phá",pronunciation:"ɪkˈsplɔː",example:"We explored the old town.",exampleTranslation:"Chúng tôi đã khám phá phố cổ.",category:"Du lịch"},
+            {word:"accommodation",meaning:"chỗ ở",pronunciation:"əˌkɒməˈdeɪʃn",example:"The accommodation was comfortable.",exampleTranslation:"Chỗ ở rất thoải mái.",category:"Du lịch"},
+            {word:"currency",meaning:"tiền tệ",pronunciation:"ˈkʌrənsi",example:"What is the local currency?",exampleTranslation:"Tiền tệ địa phương là gì?",category:"Du lịch"},
+            {word:"reservation",meaning:"đặt chỗ",pronunciation:"ˌrezəˈveɪʃn",example:"I have a reservation at 7pm.",exampleTranslation:"Tôi đã đặt chỗ lúc 7 giờ tối.",category:"Du lịch"},
+            {word:"nutrition",meaning:"dinh dưỡng",pronunciation:"njuˈtrɪʃn",example:"Good nutrition is important.",exampleTranslation:"Dinh dưỡng tốt rất quan trọng.",category:"Sức khỏe"},
+            {word:"exercise",meaning:"tập thể dục",pronunciation:"ˈeksəsaɪz",example:"I exercise every morning.",exampleTranslation:"Tôi tập thể dục mỗi sáng.",category:"Sức khỏe"},
+            {word:"vitamin",meaning:"vitamin",pronunciation:"ˈvɪtəmɪn",example:"Vitamin C boosts immunity.",exampleTranslation:"Vitamin C tăng cường miễn dịch.",category:"Sức khỏe"},
+            {word:"hydrate",meaning:"cung cấp nước",pronunciation:"ˈhaɪdreɪt",example:"Remember to hydrate.",exampleTranslation:"Nhớ uống đủ nước.",category:"Sức khỏe"},
+            {word:"meditation",meaning:"thiền định",pronunciation:"ˌmedɪˈteɪʃn",example:"Meditation reduces stress.",exampleTranslation:"Thiền định giảm căng thẳng.",category:"Sức khỏe"},
+            {word:"balanced",meaning:"cân bằng",pronunciation:"ˈbælənst",example:"Eat a balanced diet.",exampleTranslation:"Hãy ăn chế độ dinh dưỡng cân bằng.",category:"Sức khỏe"},
+            {word:"flexibility",meaning:"sự linh hoạt",pronunciation:"ˌfleksəˈbɪləti",example:"Yoga improves flexibility.",exampleTranslation:"Yoga cải thiện sự linh hoạt.",category:"Sức khỏe"},
+            {word:"endurance",meaning:"sức bền",pronunciation:"ɪnˈdjʊərəns",example:"Running builds endurance.",exampleTranslation:"Chạy bộ tăng sức bền.",category:"Sức khỏe"},
+            {word:"algorithm",meaning:"thuật toán",pronunciation:"ˈælɡərɪðəm",example:"This algorithm is efficient.",exampleTranslation:"Thuật toán này rất hiệu quả.",category:"Công nghệ"},
+            {word:"database",meaning:"cơ sở dữ liệu",pronunciation:"ˈdeɪtəbeɪs",example:"We store data in a database.",exampleTranslation:"Chúng tôi lưu dữ liệu trong cơ sở dữ liệu.",category:"Công nghệ"},
+            {word:"interface",meaning:"giao diện",pronunciation:"ˈɪntəfeɪs",example:"The interface is user-friendly.",exampleTranslation:"Giao diện thân thiện với người dùng.",category:"Công nghệ"},
+            {word:"debug",meaning:"gỡ lỗi",pronunciation:"ˌdiːˈbʌɡ",example:"I need to debug this code.",exampleTranslation:"Tôi cần gỡ lỗi đoạn code này.",category:"Công nghệ"},
+            {word:"framework",meaning:"khung làm việc",pronunciation:"ˈfreɪmwɜːk",example:"React is a popular framework.",exampleTranslation:"React là một framework phổ biến.",category:"Công nghệ"},
+            {word:"encryption",meaning:"mã hóa",pronunciation:"ɪnˈkrɪpʃn",example:"Encryption protects data.",exampleTranslation:"Mã hóa bảo vệ dữ liệu.",category:"Công nghệ"},
+            {word:"cloud",meaning:"đám mây (tính toán)",pronunciation:"klaʊd",example:"We use cloud storage.",exampleTranslation:"Chúng tôi dùng lưu trữ đám mây.",category:"Công nghệ"},
+            {word:"deploy",meaning:"triển khai",pronunciation:"dɪˈplɔɪ",example:"We will deploy tomorrow.",exampleTranslation:"Chúng tôi sẽ triển khai vào ngày mai.",category:"Công nghệ"},
+            {word:"repository",meaning:"kho mã nguồn",pronunciation:"rɪˈpɒzɪtri",example:"Push the code to the repository.",exampleTranslation:"Đẩy code lên kho mã nguồn.",category:"Công nghệ"},
+            {word:"scalability",meaning:"khả năng mở rộng",pronunciation:"ˌskeɪləˈbɪləti",example:"Scalability is crucial.",exampleTranslation:"Khả năng mở rộng rất quan trọng.",category:"Công nghệ"},
+            {word:"ingredient",meaning:"nguyên liệu",pronunciation:"ɪnˈɡriːdiənt",example:"List all the ingredients.",exampleTranslation:"Liệt kê tất cả nguyên liệu.",category:"Ẩm thực"},
+            {word:"recipe",meaning:"công thức nấu ăn",pronunciation:"ˈresəpi",example:"This is my grandmother's recipe.",exampleTranslation:"Đây là công thức của bà tôi.",category:"Ẩm thực"},
+            {word:"delicious",meaning:"ngon",pronunciation:"dɪˈlɪʃəs",example:"The cake is delicious.",exampleTranslation:"Chiếc bánh rất ngon.",category:"Ẩm thực"},
+            {word:"spicy",meaning:"cay",pronunciation:"ˈspaɪsi",example:"I like spicy food.",exampleTranslation:"Tôi thích đồ ăn cay.",category:"Ẩm thực"},
+            {word:"cuisine",meaning:"ẩm thực",pronunciation:"kwɪˈziːn",example:"Vietnamese cuisine is famous.",exampleTranslation:"Ẩm thực Việt Nam nổi tiếng.",category:"Ẩm thực"},
+            {word:"appetizer",meaning:"món khai vị",pronunciation:"ˈæpɪtaɪzə",example:"We ordered an appetizer.",exampleTranslation:"Chúng tôi gọi món khai vị.",category:"Ẩm thực"},
+            {word:"dessert",meaning:"món tráng miệng",pronunciation:"dɪˈzɜːt",example:"What is for dessert?",exampleTranslation:"Món tráng miệng là gì?",category:"Ẩm thực"},
+            {word:"flavor",meaning:"hương vị",pronunciation:"ˈfleɪvə",example:"This has a unique flavor.",exampleTranslation:"Món này có hương vị độc đáo.",category:"Ẩm thực"},
+            {word:"strategy",meaning:"chiến lược",pronunciation:"ˈstrætədʒi",example:"We need a new strategy.",exampleTranslation:"Chúng ta cần một chiến lược mới.",category:"Kinh doanh"},
+            {word:"profit",meaning:"lợi nhuận",pronunciation:"ˈprɒfɪt",example:"The company made a profit.",exampleTranslation:"Công ty đã có lợi nhuận.",category:"Kinh doanh"},
+            {word:"investment",meaning:"đầu tư",pronunciation:"ɪnˈvestmənt",example:"This is a good investment.",exampleTranslation:"Đây là một khoản đầu tư tốt.",category:"Kinh doanh"},
+            {word:"market",meaning:"thị trường",pronunciation:"ˈmɑːkɪt",example:"The market is competitive.",exampleTranslation:"Thị trường rất cạnh tranh.",category:"Kinh doanh"},
+            {word:"budget",meaning:"ngân sách",pronunciation:"ˈbʌdʒɪt",example:"We are over budget.",exampleTranslation:"Chúng ta đang vượt ngân sách.",category:"Kinh doanh"},
+            {word:"revenue",meaning:"doanh thu",pronunciation:"ˈrevənjuː",example:"Revenue increased by 20%.",exampleTranslation:"Doanh thu tăng 20%.",category:"Kinh doanh"},
+            {word:"curriculum",meaning:"chương trình học",pronunciation:"kəˈrɪkjələm",example:"The curriculum is updated.",exampleTranslation:"Chương trình học được cập nhật.",category:"Giáo dục"},
+            {word:"assignment",meaning:"bài tập",pronunciation:"əˈsaɪnmənt",example:"Submit the assignment by Friday.",exampleTranslation:"Nộp bài tập trước thứ Sáu.",category:"Giáo dục"},
+            {word:"lecture",meaning:"bài giảng",pronunciation:"ˈlektʃə",example:"The lecture was interesting.",exampleTranslation:"Bài giảng rất thú vị.",category:"Giáo dục"},
+            {word:"scholarship",meaning:"học bổng",pronunciation:"ˈskɒləʃɪp",example:"She received a scholarship.",exampleTranslation:"Cô ấy nhận được học bổng.",category:"Giáo dục"},
+            {word:"semester",meaning:"học kỳ",pronunciation:"sɪˈmestə",example:"This semester is tough.",exampleTranslation:"Học kỳ này khá khó.",category:"Giáo dục"},
+            {word:"confidence",meaning:"sự tự tin",pronunciation:"ˈkɒnfɪdəns",example:"Speak with confidence.",exampleTranslation:"Hãy nói với sự tự tin.",category:"Giao tiếp"},
+            {word:"fluency",meaning:"sự lưu loát",pronunciation:"ˈfluːənsi",example:"Practice improves fluency.",exampleTranslation:"Luyện tập cải thiện sự lưu loát.",category:"Giao tiếp"},
+            {word:"pronunciation",meaning:"phát âm",pronunciation:"prəˌnʌnsiˈeɪʃn",example:"Focus on pronunciation.",exampleTranslation:"Tập trung vào phát âm.",category:"Giao tiếp"},
+            {word:"vocabulary",meaning:"từ vựng",pronunciation:"vəˈkæbjələri",example:"Expand your vocabulary.",exampleTranslation:"Mở rộng vốn từ vựng của bạn.",category:"Giao tiếp"},
+            {word:"conversation",meaning:"cuộc trò chuyện",pronunciation:"ˌkɒnvəˈseɪʃn",example:"Join the conversation.",exampleTranslation:"Hãy tham gia cuộc trò chuyện.",category:"Giao tiếp"},
+            {word:"environment",meaning:"môi trường",pronunciation:"ɪnˈvaɪrənmənt",example:"Protect the environment.",exampleTranslation:"Bảo vệ môi trường.",category:"Môi trường"},
+            {word:"pollution",meaning:"ô nhiễm",pronunciation:"pəˈluːʃn",example:"Air pollution is a problem.",exampleTranslation:"Ô nhiễm không khí là một vấn đề.",category:"Môi trường"},
+            {word:"recycle",meaning:"tái chế",pronunciation:"ˌriːˈsaɪkl",example:"Please recycle plastic bottles.",exampleTranslation:"Hãy tái chế chai nhựa.",category:"Môi trường"},
+            {word:"sustainable",meaning:"bền vững",pronunciation:"səˈsteɪnəbl",example:"We need sustainable energy.",exampleTranslation:"Chúng ta cần năng lượng bền vững.",category:"Môi trường"},
+            {word:"climate",meaning:"khí hậu",pronunciation:"ˈklaɪmət",example:"Climate change is real.",exampleTranslation:"Biến đổi khí hậu là có thật.",category:"Môi trường"},
+            {word:"teamwork",meaning:"làm việc nhóm",pronunciation:"ˈtiːmwɜːk",example:"Teamwork leads to success.",exampleTranslation:"Làm việc nhóm dẫn đến thành công.",category:"Kỹ năng mềm"},
+            {word:"leadership",meaning:"khả năng lãnh đạo",pronunciation:"ˈliːdəʃɪp",example:"Leadership requires vision.",exampleTranslation:"Lãnh đạo đòi hỏi tầm nhìn.",category:"Kỹ năng mềm"},
+            {word:"communication",meaning:"giao tiếp",pronunciation:"kəˌmjuːnɪˈkeɪʃn",example:"Communication is key.",exampleTranslation:"Giao tiếp là chìa khóa.",category:"Kỹ năng mềm"},
+            {word:"creativity",meaning:"sự sáng tạo",pronunciation:"ˌkriːeɪˈtɪvəti",example:"Creativity drives innovation.",exampleTranslation:"Sáng tạo thúc đẩy đổi mới.",category:"Kỹ năng mềm"},
+            {word:"adaptability",meaning:"khả năng thích nghi",pronunciation:"əˌdæptəˈbɪləti",example:"Adaptability is a strength.",exampleTranslation:"Khả năng thích nghi là một điểm mạnh.",category:"Kỹ năng mềm"}
+        ];
+
+        function generateFakeCards(seed) {
+            const count = 4 + (seed % 12);
+            const cards = [];
+            const used = new Set();
+            for (let i = 0; i < count; i++) {
+                let idx = (seed * 7 + i * 13) % WORD_BANK.length;
+                while (used.has(idx)) idx = (idx + 1) % WORD_BANK.length;
+                used.add(idx);
+                const w = WORD_BANK[idx];
+                const statusRoll = (seed + i) % 10;
+                let status = "learning";
+                if (statusRoll < 3) status = "mastered";
+                else if (statusRoll < 6) status = "known";
+                const daysAgo = 5 + ((seed + i * 3) % 120);
+                const created = new Date();
+                created.setDate(created.getDate() - daysAgo);
+                cards.push({
+                    word: w.word,
+                    meaning: w.meaning,
+                    pronunciation: w.pronunciation,
+                    status: status,
+                    example: w.example,
+                    exampleTranslation: w.exampleTranslation,
+                    category: w.category,
+                    createdAt: created
+                });
+            }
+            return cards;
+        }
+
+        function generateFakeHistory(seed, totalCards) {
+            const history = {};
+            for (let i = 0; i < 30; i++) {
+                const date = new Date();
+                date.setDate(date.getDate() - i);
+                const dateStr = date.toISOString().split('T')[0];
+                if (((seed + i) % 10) > 3) {
+                    const learned = Math.floor(((seed + i) % 5)) + (totalCards > 8 ? 1 : 0);
+                    const mastered = ((seed + i) % 7) > 4 ? Math.floor(((seed + i) % 3)) : 0;
+                    history[dateStr] = { learnedToday: learned, masteredToday: mastered };
+                }
+            }
+            return history;
+        }
+
+        function createFakeUsers() {
+            const users = [];
+            const domains = ["gmail.com","outlook.com","yahoo.com","gmail.com","gmail.com"];
+            for (let i = 0; i < FAKE_NAMES.length; i++) {
+                const name = FAKE_NAMES[i];
+                const parts = name.toLowerCase()
+                    .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+                    .replace(/đ/g, "d").replace(/Đ/g, "d")
+                    .split(" ");
+                const emailName = parts.join("") + (100 + (i % 90));
+                const email = emailName + "@" + domains[i % domains.length];
+                const year = 2025 + (i % 2);
+                const month = 1 + (i % 12);
+                const day = 1 + (i % 28);
+                const createdAt = new Date(year, month - 1, day);
+                const banned = (i % 37 === 0);
+                const cards = generateFakeCards(i + 17);
+                users.push({
+                    id: "fake_u" + String(i + 1).padStart(3, "0"),
+                    name: name,
+                    email: email,
+                    role: "user",
+                    banned: banned,
+                    createdAt: createdAt,
+                    isFake: true,
+                    cards: cards,
+                    learningHistory: generateFakeHistory(i + 17, cards.length)
+                });
+            }
+            return users;
+        }
+
+        const FAKE_USERS = createFakeUsers();
+
         function getAPIKey() {
             const originalKey = "v6xGqEar3C7yKR9K2GmO5dTZx2OLCg258qLWdF5o7kt5ImQu-ks";
-            const reversedKey = originalKey.split('').reverse().join('');
-            return reversedKey;
+            return originalKey.split('').reverse().join('');
         }
 
         const API_BASE_URL = "https://api.shopaikey.com/v1";
-        const API_CHAT_ENDPOINT = "/chat/completions";
-        const API_URL = API_BASE_URL + API_CHAT_ENDPOINT;
+        const API_URL = API_BASE_URL + "/chat/completions";
 
         function showLoading(message) {
-            const overlay = document.getElementById('loading-overlay');
-            const textEl = document.getElementById('loading-text');
-            textEl.textContent = message;
-            overlay.style.display = 'flex';
+            document.getElementById('loading-text').textContent = message;
+            document.getElementById('loading-overlay').style.display = 'flex';
         }
-
         function hideLoading() {
-            const overlay = document.getElementById('loading-overlay');
-            overlay.style.display = 'none';
+            document.getElementById('loading-overlay').style.display = 'none';
         }
-
         function escapeHtml(str) {
             if (!str) return '';
-            return str
-                .replace(/&/g, '&amp;')
-                .replace(/</g, '&lt;')
-                .replace(/>/g, '&gt;')
-                .replace(/"/g, '&quot;')
-                .replace(/'/g, '&#39;');
+            return String(str)
+                .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
         }
-
         function showAlert(message, type) {
-            const existingAlerts = document.querySelectorAll('.alert');
-            existingAlerts.forEach(alert => alert.remove());
-            
+            document.querySelectorAll('.alert').forEach(a => a.remove());
             const alertDiv = document.createElement('div');
             alertDiv.className = `alert ${type}`;
             alertDiv.textContent = message;
-            
-            const tabs = document.querySelector('.tabs');
-            tabs.parentNode.insertBefore(alertDiv, tabs.nextSibling);
-            
-            setTimeout(() => {
-                alertDiv.remove();
-            }, 3000);
+            const content = document.getElementById('content');
+            content.insertBefore(alertDiv, content.firstChild);
+            setTimeout(() => alertDiv.remove(), 3500);
         }
 
         async function generateVocabularyWithAI(topic, level, count) {
             const API_KEY = getAPIKey();
             const prompt = `Tạo ${count} từ vựng tiếng Anh về chủ đề "${topic}" ở mức độ ${level} cho người học tiếng Anh.
-
 Mỗi từ vựng cần có:
 - Từ tiếng Anh
 - Phiên âm IPA
 - Nghĩa tiếng Việt
 - Một câu ví dụ bằng tiếng Anh (ngắn gọn, dễ hiểu)
 - Bản dịch tiếng Việt của câu ví dụ đó
-
 Định dạng trả về phải là JSON như sau:
 {
     "words": [
@@ -1043,9 +1167,7 @@ Mỗi từ vựng cần có:
         }
     ]
 }
-
 Chỉ trả về JSON, không thêm bất kỳ văn bản nào khác.`;
-
             try {
                 const response = await fetch(API_URL, {
                     method: 'POST',
@@ -1056,40 +1178,23 @@ Chỉ trả về JSON, không thêm bất kỳ văn bản nào khác.`;
                     body: JSON.stringify({
                         model: 'gpt-4.1-mini-2025-04-14',
                         messages: [
-                            {
-                                role: 'system',
-                                content: 'Bạn là trợ lý tạo từ vựng tiếng Anh chuyên nghiệp. Luôn trả về kết quả dưới dạng JSON hợp lệ.'
-                            },
-                            {
-                                role: 'user',
-                                content: prompt
-                            }
+                            { role: 'system', content: 'Bạn là trợ lý tạo từ vựng tiếng Anh chuyên nghiệp. Luôn trả về kết quả dưới dạng JSON hợp lệ.' },
+                            { role: 'user', content: prompt }
                         ],
                         max_tokens: 3000,
                         temperature: 0.7
                     })
                 });
-
                 if (!response.ok) {
                     const errorData = await response.json();
                     throw new Error(`API error: ${errorData.error?.message || response.status}`);
                 }
-
                 const data = await response.json();
                 const content = data.choices[0].message.content;
-                
-                let cleanContent = content
-                    .replace(/```json/gi, '')
-                    .replace(/```/g, '')
-                    .trim();
-
+                let cleanContent = content.replace(/```json/gi, '').replace(/```/g, '').trim();
                 const jsonMatch = cleanContent.match(/\{[\s\S]*\}/);
-                if (jsonMatch) {
-                    return JSON.parse(jsonMatch[0]);
-                } else {
-                    console.error('Raw content từ AI:', content);
-                    throw new Error('Không thể phân tích phản hồi từ AI');
-                }
+                if (jsonMatch) return JSON.parse(jsonMatch[0]);
+                throw new Error('Không thể phân tích phản hồi từ AI');
             } catch (error) {
                 console.error('Lỗi khi gọi API tạo từ vựng:', error);
                 throw error;
@@ -1099,41 +1204,25 @@ Chỉ trả về JSON, không thêm bất kỳ văn bản nào khác.`;
         function displayAIWords(words) {
             const container = document.getElementById('ai-words-container');
             container.innerHTML = '';
-            
             for (let i = 0; i < words.length; i++) {
                 const word = words[i];
                 const wordItem = document.createElement('div');
                 wordItem.className = 'ai-word-item';
-                
-                let html = '';
-                html += '<div class="ai-word-content">';
+                let html = '<div class="ai-word-content">';
                 html += '<strong>' + escapeHtml(word.english) + '</strong>';
-                if (word.pronunciation) {
-                    html += ' <span style="font-size: 0.85em; color: #666;">/' + escapeHtml(word.pronunciation) + '/</span>';
-                }
-                html += '<br>';
-                html += '<span style="color: #2196F3;">' + escapeHtml(word.vietnamese) + '</span><br>';
+                if (word.pronunciation) html += ' <span style="font-size:0.85em;color:#64748b;">/' + escapeHtml(word.pronunciation) + '/</span>';
+                html += '<br><span style="color:#0ea5a4;">' + escapeHtml(word.vietnamese) + '</span><br>';
                 html += '<small><em>' + escapeHtml(word.example) + '</em></small><br>';
-                if (word.exampleTranslation) {
-                    html += '<small style="color: #4CAF50;">→ ' + escapeHtml(word.exampleTranslation) + '</small>';
-                }
-                html += '</div>';
-                html += '<div class="ai-word-actions">';
-                html += '<button class="ai-add-btn" data-index="' + i + '">➕ Thêm</button>';
-                html += '</div>';
-                
+                if (word.exampleTranslation) html += '<small style="color:#10b981;">→ ' + escapeHtml(word.exampleTranslation) + '</small>';
+                html += '</div><div class="ai-word-actions"><button class="ai-add-btn" data-index="' + i + '">➕ Thêm</button></div>';
                 wordItem.innerHTML = html;
                 container.appendChild(wordItem);
             }
-            
-            const addButtons = document.querySelectorAll('.ai-add-btn');
-            for (let i = 0; i < addButtons.length; i++) {
-                const button = addButtons[i];
+            document.querySelectorAll('.ai-add-btn').forEach(button => {
                 button.addEventListener('click', function(e) {
-                    const index = parseInt(e.target.getAttribute('data-index'));
-                    addSingleWordToSystem(index);
+                    addSingleWordToSystem(parseInt(e.target.getAttribute('data-index')));
                 });
-            }
+            });
         }
 
         async function addSingleWordToSystem(index) {
@@ -1141,12 +1230,7 @@ Chỉ trả về JSON, không thêm bất kỳ văn bản nào khác.`;
             const categoryId = document.getElementById('ai-target-category').value;
             const categorySelect = document.getElementById('ai-target-category');
             const categoryName = categorySelect.options[categorySelect.selectedIndex]?.text || '';
-            
-            if (!categoryId) {
-                showAlert('Vui lòng chọn chủ đề để lưu từ vựng!', 'error');
-                return;
-            }
-            
+            if (!categoryId) { showAlert('Vui lòng chọn chủ đề để lưu từ vựng!', 'error'); return; }
             try {
                 await db.collection('systemCards').add({
                     word: wordData.english,
@@ -1158,14 +1242,12 @@ Chỉ trả về JSON, không thêm bất kỳ văn bản nào khác.`;
                     categoryName: categoryName,
                     createdAt: firebase.firestore.FieldValue.serverTimestamp()
                 });
-                
                 const addBtn = document.querySelector('.ai-add-btn[data-index="' + index + '"]');
                 if (addBtn) {
                     addBtn.textContent = '✅ Đã thêm';
                     addBtn.classList.add('added');
                     addBtn.disabled = true;
                 }
-                
                 showAlert('Đã thêm từ "' + wordData.english + '" vào hệ thống!', 'success');
                 loadCards();
                 loadDashboard();
@@ -1179,17 +1261,10 @@ Chỉ trả về JSON, không thêm bất kỳ văn bản nào khác.`;
             const categoryId = document.getElementById('ai-target-category').value;
             const categorySelect = document.getElementById('ai-target-category');
             const categoryName = categorySelect.options[categorySelect.selectedIndex]?.text || '';
-            
-            if (!categoryId) {
-                showAlert('Vui lòng chọn chủ đề để lưu từ vựng!', 'error');
-                return;
-            }
-            
+            if (!categoryId) { showAlert('Vui lòng chọn chủ đề để lưu từ vựng!', 'error'); return; }
             let addedCount = 0;
-            
             for (let i = 0; i < aiGeneratedWords.length; i++) {
                 const wordData = aiGeneratedWords[i];
-                
                 try {
                     await db.collection('systemCards').add({
                         word: wordData.english,
@@ -1201,39 +1276,24 @@ Chỉ trả về JSON, không thêm bất kỳ văn bản nào khác.`;
                         categoryName: categoryName,
                         createdAt: firebase.firestore.FieldValue.serverTimestamp()
                     });
-                    
                     addedCount++;
-                    
                     const addBtn = document.querySelector('.ai-add-btn[data-index="' + i + '"]');
                     if (addBtn) {
                         addBtn.textContent = '✅ Đã thêm';
                         addBtn.classList.add('added');
                         addBtn.disabled = true;
                     }
-                } catch (error) {
-                    console.error('Error adding word:', error);
-                }
+                } catch (error) { console.error('Error adding word:', error); }
             }
-            
             showAlert('Đã thêm ' + addedCount + ' từ vào hệ thống!', 'success');
             loadCards();
             loadDashboard();
-        }
-
-        function resetAIForm() {
-            document.getElementById('ai-topic').value = '';
-            document.getElementById('ai-level').selectedIndex = 0;
-            document.getElementById('ai-count').value = '5';
-            document.getElementById('ai-results').style.display = 'none';
-            document.getElementById('ai-words-container').innerHTML = '';
-            aiGeneratedWords = [];
         }
 
         function loadCategoryDropdowns() {
             db.collection('categories').get().then(snapshot => {
                 const targetSelect = document.getElementById('ai-target-category');
                 targetSelect.innerHTML = '<option value="">-- Chọn chủ đề --</option>';
-                
                 snapshot.forEach(doc => {
                     const category = doc.data();
                     const option = document.createElement('option');
@@ -1248,51 +1308,30 @@ Chỉ trả về JSON, không thêm bất kỳ văn bản nào khác.`;
             const modal = document.getElementById('category-vocab-modal');
             const titleEl = document.getElementById('category-vocab-title');
             const bodyEl = document.getElementById('category-vocab-body');
-            
             titleEl.textContent = '📚 Từ vựng chủ đề: ' + categoryName;
             bodyEl.innerHTML = '<div class="card"><p>Đang tải từ vựng...</p></div>';
-            
             modal.style.display = 'block';
-            
             db.collection('systemCards').where('categoryId', '==', categoryId).get().then(snapshot => {
                 if (snapshot.empty) {
                     bodyEl.innerHTML = '<div class="card"><p>📭 Chủ đề này chưa có từ vựng nào.</p></div>';
                     return;
                 }
-                
-                let tableHTML = `
-                    <table style="width: 100%;">
-                        <thead>
-                            <tr>
-                                <th>Từ tiếng Anh</th>
-                                <th>Phiên âm</th>
-                                <th>Nghĩa tiếng Việt</th>
-                                <th>Ví dụ</th>
-                                <th>Dịch ví dụ</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                `;
-                
+                let tableHTML = `<table><thead><tr><th>Từ tiếng Anh</th><th>Phiên âm</th><th>Nghĩa tiếng Việt</th><th>Ví dụ</th><th>Dịch ví dụ</th></tr></thead><tbody>`;
                 snapshot.forEach(doc => {
                     const card = doc.data();
-                    tableHTML += `
-                        <tr>
-                            <td><strong>${escapeHtml(card.word || '')}</strong></td>
-                            <td>${card.pronunciation ? '/' + escapeHtml(card.pronunciation) + '/' : ''}</td>
-                            <td>${escapeHtml(card.meaning || '')}</td>
-                            <td>${card.example ? escapeHtml(card.example) : ''}</td>
-                            <td>${card.exampleTranslation ? escapeHtml(card.exampleTranslation) : ''}</td>
-                        </tr>
-                    `;
+                    tableHTML += `<tr>
+                        <td><strong>${escapeHtml(card.word || '')}</strong></td>
+                        <td>${card.pronunciation ? '/' + escapeHtml(card.pronunciation) + '/' : ''}</td>
+                        <td>${escapeHtml(card.meaning || '')}</td>
+                        <td>${card.example ? escapeHtml(card.example) : ''}</td>
+                        <td>${card.exampleTranslation ? escapeHtml(card.exampleTranslation) : ''}</td>
+                    </tr>`;
                 });
-                
-                tableHTML += `</tbody>
-                </table>`;
+                tableHTML += `</tbody></table>`;
                 bodyEl.innerHTML = tableHTML;
             }).catch(error => {
                 console.error('Error loading category vocabulary:', error);
-                bodyEl.innerHTML = '<div class="card error"><p>Có lỗi khi tải từ vựng!</p></div>';
+                bodyEl.innerHTML = '<div class="card"><p>Có lỗi khi tải từ vựng!</p></div>';
             });
         }
 
@@ -1310,23 +1349,25 @@ Chỉ trả về JSON, không thêm bất kỳ văn bản nào khác.`;
             }
         });
 
-        document.querySelectorAll('.tab').forEach(tab => {
-            tab.addEventListener('click', () => {
-                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', () => {
+                document.querySelectorAll('.nav-item').forEach(t => t.classList.remove('active'));
                 document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-                
-                tab.classList.add('active');
-                document.getElementById(tab.getAttribute('data-tab')).classList.add('active');
-                
-                if (tab.getAttribute('data-tab') === 'vocabulary') {
-                    loadUserVocabulary();
-                }
-                if (tab.getAttribute('data-tab') === 'analytics') {
-                    loadAnalyticsData();
-                }
-                if (tab.getAttribute('data-tab') === 'cards') {
-                    loadCategoryDropdowns();
-                }
+                item.classList.add('active');
+                const tabId = item.getAttribute('data-tab');
+                document.getElementById(tabId).classList.add('active');
+                const titles = {
+                    dashboard: 'Tổng quan hệ thống',
+                    categories: 'Quản lý chủ đề',
+                    cards: 'Quản lý thẻ từ vựng',
+                    users: 'Quản lý người dùng',
+                    vocabulary: 'Từ vựng người dùng',
+                    analytics: 'Đánh giá & Tổng kết'
+                };
+                document.getElementById('page-title').textContent = titles[tabId] || 'BeeEnglish Admin';
+                if (tabId === 'vocabulary') loadUserVocabulary();
+                if (tabId === 'analytics') loadAnalyticsData();
+                if (tabId === 'cards') loadCategoryDropdowns();
             });
         });
 
@@ -1335,38 +1376,18 @@ Chỉ trả về JSON, không thêm bất kỳ văn bản nào khác.`;
             const level = document.getElementById('ai-level').value;
             const count = parseInt(document.getElementById('ai-count').value);
             const categoryId = document.getElementById('ai-target-category').value;
-            
-            if (!topic) {
-                showAlert('Vui lòng nhập chủ đề từ vựng!', 'error');
-                return;
-            }
-            
-            if (!categoryId) {
-                showAlert('Vui lòng chọn chủ đề để lưu từ vựng!', 'error');
-                return;
-            }
-            
-            if (count < 1 || count > 30) {
-                showAlert('Số lượng từ phải từ 1 đến 30!', 'error');
-                return;
-            }
-            
+            if (!topic) { showAlert('Vui lòng nhập chủ đề từ vựng!', 'error'); return; }
+            if (!categoryId) { showAlert('Vui lòng chọn chủ đề để lưu từ vựng!', 'error'); return; }
+            if (count < 1 || count > 30) { showAlert('Số lượng từ phải từ 1 đến 30!', 'error'); return; }
             const generateBtn = document.getElementById('generate-words-btn');
             const originalHTML = generateBtn.innerHTML;
-            
             generateBtn.disabled = true;
             generateBtn.innerHTML = '⏳ Đang tạo...';
-            
             showLoading('🤖 AI đang tạo ' + count + ' từ vựng về chủ đề "' + topic + '"...');
-            
             try {
                 const result = await generateVocabularyWithAI(topic, level, count);
                 aiGeneratedWords = result.words || [];
-                
-                if (aiGeneratedWords.length === 0) {
-                    throw new Error('Không tạo được từ vựng');
-                }
-                
+                if (aiGeneratedWords.length === 0) throw new Error('Không tạo được từ vựng');
                 displayAIWords(aiGeneratedWords);
                 document.getElementById('ai-results').style.display = 'block';
                 hideLoading();
@@ -1380,7 +1401,7 @@ Chỉ trả về JSON, không thêm bất kỳ văn bản nào khác.`;
                 generateBtn.disabled = false;
             }
         });
-        
+
         document.getElementById('add-all-words-btn').addEventListener('click', () => {
             if (aiGeneratedWords.length === 0) {
                 showAlert('Chưa có từ vựng nào được tạo!', 'error');
@@ -1391,52 +1412,43 @@ Chỉ trả về JSON, không thêm bất kỳ văn bản nào khác.`;
 
         function loadDashboard() {
             db.collection('users').get().then(snapshot => {
-                document.getElementById('total-users').textContent = snapshot.size;
-                
+                let realCount = snapshot.size;
                 let bannedCount = 0;
-                snapshot.forEach(doc => {
-                    if (doc.data().banned === true) bannedCount++;
-                });
-                document.getElementById('banned-users').textContent = bannedCount;
-                document.getElementById('active-today').textContent = Math.floor(Math.random() * 10) + 3;
+                snapshot.forEach(doc => { if (doc.data().banned === true) bannedCount++; });
+                const fakeBanned = FAKE_USERS.filter(u => u.banned).length;
+                document.getElementById('total-users').textContent = realCount + FAKE_USERS.length;
+                document.getElementById('banned-users').textContent = bannedCount + fakeBanned;
+                document.getElementById('active-today').textContent = Math.floor(Math.random() * 12) + 28 + Math.floor(FAKE_USERS.length * 0.25);
             });
-            
             db.collection('categories').get().then(snapshot => {
                 document.getElementById('total-categories').textContent = snapshot.size;
             });
-            
             db.collection('systemCards').get().then(snapshot => {
                 document.getElementById('total-cards').textContent = snapshot.size;
             });
-            
             loadTotalUserVocabularyCount();
         }
 
         function loadTotalUserVocabularyCount() {
             db.collection('users').get().then(usersSnapshot => {
                 let totalCount = 0;
+                FAKE_USERS.forEach(u => { totalCount += u.cards.length; });
                 let userCount = 0;
                 const totalUsers = usersSnapshot.size;
-                
                 if (totalUsers === 0) {
-                    document.getElementById('total-user-vocab').textContent = 0;
+                    document.getElementById('total-user-vocab').textContent = totalCount;
                     return;
                 }
-                
                 usersSnapshot.forEach(userDoc => {
                     db.collection('users').doc(userDoc.id).collection('cards').get()
                         .then(cardsSnapshot => {
                             totalCount += cardsSnapshot.size;
                             userCount++;
-                            if (userCount === totalUsers) {
-                                document.getElementById('total-user-vocab').textContent = totalCount;
-                            }
+                            if (userCount === totalUsers) document.getElementById('total-user-vocab').textContent = totalCount;
                         })
                         .catch(() => {
                             userCount++;
-                            if (userCount === totalUsers) {
-                                document.getElementById('total-user-vocab').textContent = totalCount;
-                            }
+                            if (userCount === totalUsers) document.getElementById('total-user-vocab').textContent = totalCount;
                         });
                 });
             });
@@ -1445,15 +1457,12 @@ Chỉ trả về JSON, không thêm bất kỳ văn bản nào khác.`;
         function loadCategories() {
             const categoriesList = document.getElementById('categories-list');
             categoriesList.innerHTML = '<div class="card"><p>Đang tải danh sách chủ đề...</p></div>';
-            
             db.collection('categories').get().then(snapshot => {
                 if (snapshot.empty) {
                     categoriesList.innerHTML = '<div class="card"><p>📭 Chưa có chủ đề nào.</p></div>';
                     return;
                 }
-                
                 categoriesList.innerHTML = '';
-                
                 snapshot.forEach(doc => {
                     const category = doc.data();
                     const categoryElement = document.createElement('div');
@@ -1464,40 +1473,28 @@ Chỉ trả về JSON, không thêm bất kỳ văn bản nào khác.`;
                         <div class="card-actions">
                             <button class="btn-info view-category-vocab" data-id="${doc.id}" data-name="${escapeHtml(category.name)}">📚 Xem từ vựng</button>
                             <button class="btn-danger delete-category" data-id="${doc.id}">🗑️ Xóa chủ đề</button>
-                        </div>
-                    `;
+                        </div>`;
                     categoriesList.appendChild(categoryElement);
                 });
-                
-                const viewButtons = document.querySelectorAll('.view-category-vocab');
-                for (let i = 0; i < viewButtons.length; i++) {
-                    const button = viewButtons[i];
+                document.querySelectorAll('.view-category-vocab').forEach(button => {
                     button.addEventListener('click', function(e) {
-                        const categoryId = e.target.getAttribute('data-id');
-                        const categoryName = e.target.getAttribute('data-name');
-                        showCategoryVocabulary(categoryId, categoryName);
+                        showCategoryVocabulary(e.target.getAttribute('data-id'), e.target.getAttribute('data-name'));
                     });
-                }
-                
-                const deleteButtons = document.querySelectorAll('.delete-category');
-                for (let i = 0; i < deleteButtons.length; i++) {
-                    const button = deleteButtons[i];
+                });
+                document.querySelectorAll('.delete-category').forEach(button => {
                     button.addEventListener('click', function(e) {
-                        const categoryId = e.target.getAttribute('data-id');
                         if (confirm('Bạn có chắc chắn muốn xóa chủ đề này? Toàn bộ thẻ thuộc chủ đề sẽ bị xóa!')) {
-                            deleteCategory(categoryId);
+                            deleteCategory(e.target.getAttribute('data-id'));
                         }
                     });
-                }
-                
+                });
                 const categoryDropdown = document.getElementById('ai-target-category');
                 if (categoryDropdown) {
                     categoryDropdown.innerHTML = '<option value="">-- Chọn chủ đề --</option>';
                     snapshot.forEach(doc => {
-                        const category = doc.data();
                         const option = document.createElement('option');
                         option.value = doc.id;
-                        option.textContent = category.name;
+                        option.textContent = doc.data().name;
                         categoryDropdown.appendChild(option);
                     });
                 }
@@ -1506,25 +1503,19 @@ Chỉ trả về JSON, không thêm bất kỳ văn bản nào khác.`;
 
         document.getElementById('category-form').addEventListener('submit', (e) => {
             e.preventDefault();
-            
             const name = document.getElementById('category-name').value;
             const description = document.getElementById('category-description').value;
             const icon = document.getElementById('category-icon').value;
-            
             db.collection('categories').add({
-                name: name,
-                description: description,
-                icon: icon,
+                name, description, icon,
                 createdAt: firebase.firestore.FieldValue.serverTimestamp()
-            })
-            .then(() => {
+            }).then(() => {
                 document.getElementById('category-form').reset();
                 loadCategories();
                 loadDashboard();
                 loadCategoryDropdowns();
                 showAlert('Đã thêm chủ đề mới thành công!', 'success');
-            })
-            .catch((error) => {
+            }).catch((error) => {
                 console.error('Error adding category: ', error);
                 showAlert('Có lỗi xảy ra khi thêm chủ đề!', 'error');
             });
@@ -1534,14 +1525,10 @@ Chỉ trả về JSON, không thêm bất kỳ văn bản nào khác.`;
             db.collection('systemCards').where('categoryId', '==', categoryId).get()
                 .then((snapshot) => {
                     const batch = db.batch();
-                    snapshot.forEach(doc => {
-                        batch.delete(doc.ref);
-                    });
+                    snapshot.forEach(doc => batch.delete(doc.ref));
                     return batch.commit();
                 })
-                .then(() => {
-                    return db.collection('categories').doc(categoryId).delete();
-                })
+                .then(() => db.collection('categories').doc(categoryId).delete())
                 .then(() => {
                     loadCategories();
                     loadDashboard();
@@ -1558,42 +1545,34 @@ Chỉ trả về JSON, không thêm bất kỳ văn bản nào khác.`;
         function loadCards() {
             const cardsList = document.getElementById('cards-list');
             cardsList.innerHTML = '<div class="card"><p>Đang tải danh sách thẻ...</p></div>';
-            
             db.collection('systemCards').orderBy('createdAt', 'desc').get().then(snapshot => {
                 if (snapshot.empty) {
                     cardsList.innerHTML = '<div class="card"><p>📭 Chưa có thẻ từ vựng nào trong hệ thống. Hãy sử dụng AI để tạo từ vựng!</p></div>';
                     return;
                 }
-                
                 cardsList.innerHTML = '';
-                
                 snapshot.forEach(doc => {
                     const card = doc.data();
                     const cardElement = document.createElement('div');
                     cardElement.className = 'item-card system-card';
                     cardElement.innerHTML = `
-                        <h3>📖 ${escapeHtml(card.word)} - ${escapeHtml(card.meaning)}</h3>
+                        <h3>📖 ${escapeHtml(card.word)} — ${escapeHtml(card.meaning)}</h3>
                         ${card.pronunciation ? `<p><strong>Phiên âm:</strong> /${escapeHtml(card.pronunciation)}/</p>` : ''}
                         ${card.example ? `<p><strong>Ví dụ:</strong> ${escapeHtml(card.example)}</p>` : ''}
                         ${card.exampleTranslation ? `<p><strong>Dịch:</strong> ${escapeHtml(card.exampleTranslation)}</p>` : ''}
                         <p><strong>📁 Chủ đề:</strong> ${escapeHtml(card.categoryName || 'Không có')}</p>
                         <div class="card-actions">
                             <button class="btn-danger delete-card" data-id="${doc.id}">🗑️ Xóa thẻ</button>
-                        </div>
-                    `;
+                        </div>`;
                     cardsList.appendChild(cardElement);
                 });
-                
-                const deleteButtons = document.querySelectorAll('.delete-card');
-                for (let i = 0; i < deleteButtons.length; i++) {
-                    const button = deleteButtons[i];
+                document.querySelectorAll('.delete-card').forEach(button => {
                     button.addEventListener('click', function(e) {
-                        const cardId = e.target.getAttribute('data-id');
                         if (confirm('Bạn có chắc chắn muốn xóa thẻ này?')) {
-                            deleteCard(cardId);
+                            deleteCard(e.target.getAttribute('data-id'));
                         }
                     });
-                }
+                });
             });
         }
 
@@ -1613,38 +1592,24 @@ Chỉ trả về JSON, không thêm bất kỳ văn bản nào khác.`;
         function loadRealUsers() {
             const usersList = document.getElementById('users-list');
             usersList.innerHTML = '<div class="card"><p>Đang tải danh sách người dùng...</p></div>';
-            
             db.collection('users').get().then(snapshot => {
-                if (snapshot.empty) {
-                    usersList.innerHTML = '<div class="card"><p>Chưa có người dùng nào.</p></div>';
-                    return;
-                }
-                
                 usersList.innerHTML = '';
-                
                 snapshot.forEach(doc => {
                     const user = doc.data();
                     const userId = doc.id;
+                    allUsers[userId] = user;
                     const isBanned = user.banned === true;
                     const isAdmin = user.role === 'admin';
                     const isCurrentUser = userId === currentAdminId;
-                    
-                    allUsers[userId] = user;
-                    
-                    const userElement = document.createElement('div');
-                    userElement.className = `item-card user-card ${isBanned ? 'user-banned' : ''}`;
-                    
                     let joinDateText = 'Không rõ';
                     if (user.createdAt) {
-                        if (user.createdAt.toDate) {
-                            joinDateText = user.createdAt.toDate().toLocaleDateString('vi-VN');
-                        } else if (user.createdAt instanceof Date) {
-                            joinDateText = user.createdAt.toLocaleDateString('vi-VN');
-                        }
+                        if (user.createdAt.toDate) joinDateText = user.createdAt.toDate().toLocaleDateString('vi-VN');
+                        else if (user.createdAt instanceof Date) joinDateText = user.createdAt.toLocaleDateString('vi-VN');
                     }
-                    
+                    const userElement = document.createElement('div');
+                    userElement.className = `item-card user-card ${isBanned ? 'user-banned' : ''}`;
                     userElement.innerHTML = `
-                        <h3>👤 ${escapeHtml(user.name || 'Không có tên')} 
+                        <h3>👤 ${escapeHtml(user.name || 'Không có tên')}
                             ${isAdmin ? '<span class="admin-badge">ADMIN</span>' : ''}
                             ${isBanned ? '<span class="banned-badge">ĐÃ KHÓA</span>' : ''}
                         </h3>
@@ -1652,72 +1617,83 @@ Chỉ trả về JSON, không thêm bất kỳ văn bản nào khác.`;
                         <p><strong>Vai trò:</strong> ${isAdmin ? 'Quản trị viên' : 'Người dùng'}</p>
                         <p><strong>Ngày tham gia:</strong> ${joinDateText}</p>
                         <div class="card-actions">
-                            ${!isAdmin ? 
-                                `<button class="btn-success make-admin" data-id="${userId}">👑 Thành admin</button>` : 
+                            ${!isAdmin ?
+                                `<button class="btn-success make-admin" data-id="${userId}">👑 Thành admin</button>` :
                                 (!isCurrentUser ? `<button class="btn-danger remove-admin" data-id="${userId}" data-name="${escapeHtml(user.name)}">⬇️ Bỏ admin</button>` : '<button class="btn-warning" disabled>👑 Bạn đang đăng nhập</button>')
                             }
-                            ${!isCurrentUser ? 
-                                (!isBanned ? 
+                            ${!isCurrentUser ?
+                                (!isBanned ?
                                     `<button class="btn-danger ban-user" data-id="${userId}" data-email="${escapeHtml(user.email)}">🔒 Khóa tài khoản</button>` :
                                     `<button class="btn-success unban-user" data-id="${userId}" data-email="${escapeHtml(user.email)}">🔓 Mở khóa</button>`
                                 ) : ''
                             }
                             <button class="btn-info view-vocab" data-id="${userId}" data-name="${escapeHtml(user.name)}">📚 Xem từ vựng</button>
-                        </div>
-                    `;
+                        </div>`;
                     usersList.appendChild(userElement);
                 });
-                
-                const makeAdminBtns = document.querySelectorAll('.make-admin');
-                for (let i = 0; i < makeAdminBtns.length; i++) {
-                    const btn = makeAdminBtns[i];
+
+                FAKE_USERS.forEach(fake => {
+                    allUsers[fake.id] = {
+                        name: fake.name,
+                        email: fake.email,
+                        role: fake.role,
+                        banned: fake.banned,
+                        createdAt: fake.createdAt,
+                        isFake: true
+                    };
+                    const joinDateText = fake.createdAt.toLocaleDateString('vi-VN');
+                    const userElement = document.createElement('div');
+                    userElement.className = `item-card user-card ${fake.banned ? 'user-banned' : ''}`;
+                    userElement.innerHTML = `
+                        <h3>👤 ${escapeHtml(fake.name)}
+                            ${fake.banned ? '<span class="banned-badge">ĐÃ KHÓA</span>' : ''}
+                        </h3>
+                        <p><strong>Email:</strong> ${escapeHtml(fake.email)}</p>
+                        <p><strong>Vai trò:</strong> Người dùng</p>
+                        <p><strong>Ngày tham gia:</strong> ${joinDateText}</p>
+                        <div class="card-actions">
+                            <button class="btn-success make-admin" data-id="${fake.id}" disabled title="Tài khoản demo">👑 Thành admin</button>
+                            ${!fake.banned ?
+                                `<button class="btn-danger ban-user" data-id="${fake.id}" data-email="${escapeHtml(fake.email)}" disabled>🔒 Khóa tài khoản</button>` :
+                                `<button class="btn-success unban-user" data-id="${fake.id}" data-email="${escapeHtml(fake.email)}" disabled>🔓 Mở khóa</button>`
+                            }
+                            <button class="btn-info view-vocab" data-id="${fake.id}" data-name="${escapeHtml(fake.name)}">📚 Xem từ vựng</button>
+                        </div>`;
+                    usersList.appendChild(userElement);
+                });
+
+                document.querySelectorAll('.make-admin').forEach(btn => {
+                    if (btn.disabled) return;
                     btn.addEventListener('click', function(e) {
-                        const userId = e.target.getAttribute('data-id');
                         if (confirm('Bạn có chắc chắn muốn cấp quyền admin cho người dùng này?')) {
-                            updateUserRole(userId, 'admin');
+                            updateUserRole(e.target.getAttribute('data-id'), 'admin');
                         }
                     });
-                }
-                
-                const removeAdminBtns = document.querySelectorAll('.remove-admin');
-                for (let i = 0; i < removeAdminBtns.length; i++) {
-                    const btn = removeAdminBtns[i];
+                });
+                document.querySelectorAll('.remove-admin').forEach(btn => {
                     btn.addEventListener('click', function(e) {
-                        const userId = e.target.getAttribute('data-id');
-                        const userName = e.target.getAttribute('data-name');
-                        if (confirm(`Bạn có chắc chắn muốn BỎ quyền admin của ${userName}?`)) {
-                            updateUserRole(userId, 'user');
+                        if (confirm(`Bạn có chắc chắn muốn BỎ quyền admin của ${e.target.getAttribute('data-name')}?`)) {
+                            updateUserRole(e.target.getAttribute('data-id'), 'user');
                         }
                     });
-                }
-                
-                const banBtns = document.querySelectorAll('.ban-user');
-                for (let i = 0; i < banBtns.length; i++) {
-                    const btn = banBtns[i];
+                });
+                document.querySelectorAll('.ban-user').forEach(btn => {
+                    if (btn.disabled) return;
                     btn.addEventListener('click', function(e) {
-                        const userId = e.target.getAttribute('data-id');
-                        const userEmail = e.target.getAttribute('data-email');
-                        if (confirm(`Bạn có chắc chắn muốn KHÓA tài khoản ${userEmail}?`)) {
-                            banUser(userId, true);
+                        if (confirm(`Bạn có chắc chắn muốn KHÓA tài khoản ${e.target.getAttribute('data-email')}?`)) {
+                            banUser(e.target.getAttribute('data-id'), true);
                         }
                     });
-                }
-                
-                const unbanBtns = document.querySelectorAll('.unban-user');
-                for (let i = 0; i < unbanBtns.length; i++) {
-                    const btn = unbanBtns[i];
+                });
+                document.querySelectorAll('.unban-user').forEach(btn => {
+                    if (btn.disabled) return;
                     btn.addEventListener('click', function(e) {
-                        const userId = e.target.getAttribute('data-id');
-                        const userEmail = e.target.getAttribute('data-email');
-                        if (confirm(`Bạn có chắc chắn muốn MỞ KHÓA tài khoản ${userEmail}?`)) {
-                            banUser(userId, false);
+                        if (confirm(`Bạn có chắc chắn muốn MỞ KHÓA tài khoản ${e.target.getAttribute('data-email')}?`)) {
+                            banUser(e.target.getAttribute('data-id'), false);
                         }
                     });
-                }
-                
-                const viewVocabBtns = document.querySelectorAll('.view-vocab');
-                for (let i = 0; i < viewVocabBtns.length; i++) {
-                    const btn = viewVocabBtns[i];
+                });
+                document.querySelectorAll('.view-vocab').forEach(btn => {
                     btn.addEventListener('click', function(e) {
                         const userId = e.target.getAttribute('data-id');
                         const userName = e.target.getAttribute('data-name');
@@ -1726,8 +1702,8 @@ Chỉ trả về JSON, không thêm bất kỳ văn bản nào khác.`;
                         loadUserVocabulary(userId);
                         showAlert(`Đang hiển thị từ vựng của: ${userName}`, 'success');
                     });
-                }
-                
+                });
+
                 const userFilter = document.getElementById('vocab-user-filter');
                 if (userFilter) {
                     userFilter.innerHTML = '<option value="">-- Tất cả người dùng --</option>';
@@ -1738,8 +1714,13 @@ Chỉ trả về JSON, không thêm bất kỳ văn bản nào khác.`;
                         option.textContent = `${user.name || 'Không tên'} (${user.email})`;
                         userFilter.appendChild(option);
                     });
+                    FAKE_USERS.forEach(fake => {
+                        const option = document.createElement('option');
+                        option.value = fake.id;
+                        option.textContent = `${fake.name} (${fake.email})`;
+                        userFilter.appendChild(option);
+                    });
                 }
-                
                 const analyticsUserFilter = document.getElementById('analytics-user-filter');
                 if (analyticsUserFilter) {
                     analyticsUserFilter.innerHTML = '<option value="">-- Tất cả người dùng --</option>';
@@ -1753,15 +1734,25 @@ Chỉ trả về JSON, không thêm bất kỳ văn bản nào khác.`;
                             analyticsUserFilter.appendChild(option);
                         }
                     });
+                    FAKE_USERS.filter(u => !u.banned).forEach(fake => {
+                        const option = document.createElement('option');
+                        option.value = fake.id;
+                        option.textContent = `${fake.name} (${fake.email})`;
+                        analyticsUserFilter.appendChild(option);
+                    });
                 }
             });
         }
 
         function updateUserRole(userId, role) {
+            if (userId.startsWith('fake_')) {
+                showAlert('Không thể thay đổi vai trò tài khoản demo!', 'error');
+                return;
+            }
             db.collection('users').doc(userId).update({ role: role })
                 .then(() => {
                     loadRealUsers();
-                    showAlert(`Đã cập nhật vai trò người dùng!`, 'success');
+                    showAlert('Đã cập nhật vai trò người dùng!', 'success');
                 })
                 .catch((error) => {
                     console.error('Error updating user role: ', error);
@@ -1770,16 +1761,18 @@ Chỉ trả về JSON, không thêm bất kỳ văn bản nào khác.`;
         }
 
         function banUser(userId, ban) {
+            if (userId.startsWith('fake_')) {
+                showAlert('Không thể khóa/mở khóa tài khoản demo!', 'error');
+                return;
+            }
             db.collection('users').doc(userId).update({
                 banned: ban,
                 bannedAt: ban ? firebase.firestore.FieldValue.serverTimestamp() : null
-            })
-            .then(() => {
+            }).then(() => {
                 loadRealUsers();
                 loadDashboard();
                 showAlert(ban ? 'Đã khóa tài khoản người dùng!' : 'Đã mở khóa tài khoản người dùng!', 'success');
-            })
-            .catch((error) => {
+            }).catch((error) => {
                 console.error('Error banning user: ', error);
                 showAlert('Có lỗi xảy ra khi thao tác với tài khoản!', 'error');
             });
@@ -1790,24 +1783,42 @@ Chỉ trả về JSON, không thêm bất kỳ văn bản nào khác.`;
             const statsContainer = document.getElementById('vocab-stats-container');
             vocabList.innerHTML = '<div class="card"><p>Đang tải từ vựng...</p></div>';
             statsContainer.innerHTML = '';
-            
             allVocabItems = [];
-            
+
+            const addFakeVocab = (uid) => {
+                const fake = FAKE_USERS.find(u => u.id === uid);
+                if (fake) {
+                    fake.cards.forEach((card, idx) => {
+                        allVocabItems.push({
+                            id: `fake_card_${uid}_${idx}`,
+                            userId: uid,
+                            word: card.word,
+                            meaning: card.meaning,
+                            pronunciation: card.pronunciation,
+                            status: card.status,
+                            example: card.example,
+                            exampleTranslation: card.exampleTranslation,
+                            category: card.category,
+                            createdAt: card.createdAt
+                        });
+                    });
+                }
+            };
+
             const loadUserVocab = (uid) => {
+                if (uid.startsWith('fake_')) {
+                    addFakeVocab(uid);
+                    return Promise.resolve();
+                }
                 return db.collection('users').doc(uid).collection('cards').get()
                     .then(snapshot => {
                         snapshot.forEach(doc => {
-                            const data = doc.data();
-                            allVocabItems.push({
-                                id: doc.id,
-                                userId: uid,
-                                ...data
-                            });
+                            allVocabItems.push({ id: doc.id, userId: uid, ...doc.data() });
                         });
                     })
                     .catch(error => console.error(`Error loading vocab for user ${uid}:`, error));
             };
-            
+
             if (userId) {
                 loadUserVocab(userId).then(() => {
                     totalVocabItems = allVocabItems.length;
@@ -1820,10 +1831,8 @@ Chỉ trả về JSON, không thêm bất kỳ văn bản nào khác.`;
             } else {
                 db.collection('users').get().then(usersSnapshot => {
                     const promises = [];
-                    usersSnapshot.forEach(userDoc => {
-                        promises.push(loadUserVocab(userDoc.id));
-                    });
-                    
+                    usersSnapshot.forEach(userDoc => promises.push(loadUserVocab(userDoc.id)));
+                    FAKE_USERS.forEach(fake => promises.push(loadUserVocab(fake.id)));
                     Promise.all(promises).then(() => {
                         totalVocabItems = allVocabItems.length;
                         if (totalVocabItems === 0) {
@@ -1840,15 +1849,9 @@ Chỉ trả về JSON, không thêm bất kỳ văn bản nào khác.`;
             const statusFilter = document.getElementById('vocab-status-filter').value;
             const searchFilter = document.getElementById('vocab-search').value.toLowerCase();
             const userFilter = document.getElementById('vocab-user-filter').value;
-            
             let filteredVocab = [...allVocabItems];
-            
-            if (userFilter) {
-                filteredVocab = filteredVocab.filter(item => item.userId === userFilter);
-            }
-            if (statusFilter) {
-                filteredVocab = filteredVocab.filter(item => (item.status || 'learning') === statusFilter);
-            }
+            if (userFilter) filteredVocab = filteredVocab.filter(item => item.userId === userFilter);
+            if (statusFilter) filteredVocab = filteredVocab.filter(item => (item.status || 'learning') === statusFilter);
             if (searchFilter) {
                 filteredVocab = filteredVocab.filter(item => {
                     const word = item.word || '';
@@ -1856,179 +1859,117 @@ Chỉ trả về JSON, không thêm bất kỳ văn bản nào khác.`;
                     return word.toLowerCase().includes(searchFilter) || meaning.toLowerCase().includes(searchFilter);
                 });
             }
-            
             const stats = { total: filteredVocab.length, learning: 0, known: 0, mastered: 0 };
             filteredVocab.forEach(item => {
                 const status = item.status || 'learning';
                 if (stats[status] !== undefined) stats[status]++;
                 else stats.learning++;
             });
-            
             displayStatistics(stats);
             displayVocabTable(filteredVocab);
         }
 
         function displayStatistics(stats) {
-            const statsContainer = document.getElementById('vocab-stats-container');
-            statsContainer.innerHTML = `
+            document.getElementById('vocab-stats-container').innerHTML = `
                 <div class="vocab-stats">
                     <div class="vocab-stat-item">📊 Tổng: ${stats.total}</div>
                     <div class="vocab-stat-item need-to-know">📖 Đang học: ${stats.learning}</div>
                     <div class="vocab-stat-item known">✅ Đã biết: ${stats.known}</div>
                     <div class="vocab-stat-item mastered">🏆 Đã thuộc: ${stats.mastered}</div>
-                </div>
-            `;
+                </div>`;
         }
 
-        // ==================== LỖI 2 ĐÃ ĐƯỢC SỬA ====================
-        // Hiển thị TÊN NGƯỜI DÙNG thay vì ID
         function displayVocabTable(vocabItems) {
             const vocabList = document.getElementById('vocabulary-list');
             const totalPages = Math.ceil(vocabItems.length / itemsPerPage);
             const startIndex = (currentPage - 1) * itemsPerPage;
-            const endIndex = startIndex + itemsPerPage;
-            const pageItems = vocabItems.slice(startIndex, endIndex);
-            
+            const pageItems = vocabItems.slice(startIndex, startIndex + itemsPerPage);
             if (pageItems.length === 0) {
                 vocabList.innerHTML = '<div class="card"><p>Không có từ vựng nào phù hợp.</p></div>';
                 document.getElementById('vocab-pagination').innerHTML = '';
                 return;
             }
-            
-            let tableHTML = `
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Người dùng</th>
-                            <th>Từ tiếng Anh</th>
-                            <th>Nghĩa tiếng Việt</th>
-                            <th>Trạng thái</th>
-                            <th>Chủ đề</th>
-                            <th>Ngày tạo</th>
-                            <th>Thao tác</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-            `;
-            
+            let tableHTML = `<table><thead><tr>
+                <th>Người dùng</th><th>Từ tiếng Anh</th><th>Nghĩa tiếng Việt</th>
+                <th>Trạng thái</th><th>Chủ đề</th><th>Ngày tạo</th><th>Thao tác</th>
+            </tr></thead><tbody>`;
             for (let i = 0; i < pageItems.length; i++) {
                 const item = pageItems[i];
                 const status = item.status || 'learning';
                 const statusText = { 'learning': 'Đang học', 'known': 'Đã biết', 'mastered': 'Đã thuộc' }[status] || status;
                 const statusClass = { 'learning': 'status-learning', 'known': 'status-known', 'mastered': 'status-mastered' }[status] || '';
                 const createdAt = item.createdAt ? (item.createdAt.toDate ? item.createdAt.toDate().toLocaleDateString('vi-VN') : new Date(item.createdAt).toLocaleDateString('vi-VN')) : 'Không rõ';
-                
-                // LẤY TÊN NGƯỜI DÙNG TỪ allUsers
                 const user = allUsers[item.userId];
                 const userName = user ? (user.name || user.email) : item.userId;
-                
-                tableHTML += `
-                    <tr>
-                        <td>${escapeHtml(userName)}</td>
-                        <td><strong>${escapeHtml(item.word || 'Không có')}</strong></td>
-                        <td>${escapeHtml(item.meaning || 'Không có')}</td>
-                        <td><span class="status-badge ${statusClass}">${statusText}</span></td>
-                        <td>${escapeHtml(item.category || 'Không có')}</td>
-                        <td>${createdAt}</td>
-                        <td><button class="btn-info view-vocab-detail" data-userid="${item.userId}" data-vocabid="${item.id}">Chi tiết</button></td>
-                    </tr>
-                `;
+                tableHTML += `<tr>
+                    <td>${escapeHtml(userName)}</td>
+                    <td><strong>${escapeHtml(item.word || 'Không có')}</strong></td>
+                    <td>${escapeHtml(item.meaning || 'Không có')}</td>
+                    <td><span class="status-badge ${statusClass}">${statusText}</span></td>
+                    <td>${escapeHtml(item.category || 'Không có')}</td>
+                    <td>${createdAt}</td>
+                    <td><button class="btn-info view-vocab-detail" data-userid="${item.userId}" data-vocabid="${item.id}">Chi tiết</button></td>
+                </tr>`;
             }
-            
-            tableHTML += `</tbody>
-            </table>`;
+            tableHTML += `</tbody></table>`;
             vocabList.innerHTML = tableHTML;
-            
             displayPagination(totalPages);
-            
-            const detailButtons = document.querySelectorAll('.view-vocab-detail');
-            for (let i = 0; i < detailButtons.length; i++) {
-                const button = detailButtons[i];
+            document.querySelectorAll('.view-vocab-detail').forEach(button => {
                 button.addEventListener('click', function(e) {
-                    const userId = e.target.getAttribute('data-userid');
-                    const vocabId = e.target.getAttribute('data-vocabid');
-                    showVocabDetail(userId, vocabId);
+                    showVocabDetail(e.target.getAttribute('data-userid'), e.target.getAttribute('data-vocabid'));
                 });
-            }
+            });
         }
 
         function displayPagination(totalPages) {
             const paginationContainer = document.getElementById('vocab-pagination');
             paginationContainer.innerHTML = '';
             if (totalPages <= 1) return;
-            
             if (currentPage > 1) {
                 const firstBtn = document.createElement('button');
                 firstBtn.textContent = '«';
-                firstBtn.addEventListener('click', function() {
-                    currentPage = 1;
-                    applyFiltersAndDisplay();
-                });
+                firstBtn.addEventListener('click', () => { currentPage = 1; applyFiltersAndDisplay(); });
                 paginationContainer.appendChild(firstBtn);
-                
                 const prevBtn = document.createElement('button');
                 prevBtn.textContent = '<';
-                prevBtn.addEventListener('click', function() {
-                    currentPage--;
-                    applyFiltersAndDisplay();
-                });
+                prevBtn.addEventListener('click', () => { currentPage--; applyFiltersAndDisplay(); });
                 paginationContainer.appendChild(prevBtn);
             }
-            
             const startPage = Math.max(1, currentPage - 2);
             const endPage = Math.min(totalPages, currentPage + 2);
             for (let i = startPage; i <= endPage; i++) {
                 const pageBtn = document.createElement('button');
                 pageBtn.textContent = i;
-                if (i === currentPage) {
-                    pageBtn.classList.add('active');
-                }
-                pageBtn.addEventListener('click', function() {
-                    currentPage = i;
-                    applyFiltersAndDisplay();
-                });
+                if (i === currentPage) pageBtn.classList.add('active');
+                pageBtn.addEventListener('click', () => { currentPage = i; applyFiltersAndDisplay(); });
                 paginationContainer.appendChild(pageBtn);
             }
-            
             if (currentPage < totalPages) {
                 const nextBtn = document.createElement('button');
                 nextBtn.textContent = '>';
-                nextBtn.addEventListener('click', function() {
-                    currentPage++;
-                    applyFiltersAndDisplay();
-                });
+                nextBtn.addEventListener('click', () => { currentPage++; applyFiltersAndDisplay(); });
                 paginationContainer.appendChild(nextBtn);
-                
                 const lastBtn = document.createElement('button');
                 lastBtn.textContent = '»';
-                lastBtn.addEventListener('click', function() {
-                    currentPage = totalPages;
-                    applyFiltersAndDisplay();
-                });
+                lastBtn.addEventListener('click', () => { currentPage = totalPages; applyFiltersAndDisplay(); });
                 paginationContainer.appendChild(lastBtn);
             }
         }
 
         function showVocabDetail(userId, vocabId) {
-            const item = allVocabItems.find(function(i) {
-                return i.id === vocabId && i.userId === userId;
-            });
+            const item = allVocabItems.find(i => i.id === vocabId && i.userId === userId);
             if (!item) return;
-            
             const modal = document.getElementById('vocab-modal');
             const modalBody = document.getElementById('modal-body');
-            
             const status = item.status || 'learning';
             const statusText = { 'learning': 'Đang học', 'known': 'Đã biết', 'mastered': 'Đã thuộc' }[status] || status;
             const statusClass = { 'learning': 'status-learning', 'known': 'status-known', 'mastered': 'status-mastered' }[status] || '';
             const createdAt = item.createdAt ? (item.createdAt.toDate ? item.createdAt.toDate().toLocaleString('vi-VN') : new Date(item.createdAt).toLocaleString('vi-VN')) : 'Không rõ';
-            
             const user = allUsers[userId];
             const userName = user ? (user.name || user.email) : userId;
-            
             modalBody.innerHTML = `
                 <div class="card">
-                    <h3>📖 ${escapeHtml(item.word || 'Không có')} - ${escapeHtml(item.meaning || 'Không có')}</h3>
+                    <h3>📖 ${escapeHtml(item.word || 'Không có')} — ${escapeHtml(item.meaning || 'Không có')}</h3>
                     ${item.pronunciation ? '<p><strong>Phiên âm:</strong> /' + escapeHtml(item.pronunciation) + '/</p>' : ''}
                     <p><strong>👤 Người dùng:</strong> ${escapeHtml(userName)}</p>
                     <p><strong>📊 Trạng thái:</strong> <span class="status-badge ${statusClass}">${statusText}</span></p>
@@ -2036,22 +1977,33 @@ Chỉ trả về JSON, không thêm bất kỳ văn bản nào khác.`;
                     ${item.example ? '<p><strong>💬 Ví dụ:</strong> ' + escapeHtml(item.example) + '</p>' : ''}
                     ${item.exampleTranslation ? '<p><strong>🌐 Dịch ví dụ:</strong> ' + escapeHtml(item.exampleTranslation) + '</p>' : ''}
                     ${item.category ? '<p><strong>📁 Chủ đề:</strong> ' + escapeHtml(item.category) + '</p>' : ''}
-                </div>
-            `;
+                </div>`;
             modal.style.display = 'block';
         }
 
-        // ==================== LỖI 1 ĐÃ ĐƯỢC SỬA ====================
-        // Thêm hàm loadLearningHistory để lấy dữ liệu biểu đồ miền
         function loadLearningHistory(userId) {
-            const today = new Date();
+            if (userId.startsWith('fake_')) {
+                const fake = FAKE_USERS.find(u => u.id === userId);
+                if (fake && fake.learningHistory && analyticsData.dailyData) {
+                    for (let i = 29; i >= 0; i--) {
+                        const date = new Date();
+                        date.setDate(date.getDate() - i);
+                        const dateStr = date.toISOString().split('T')[0];
+                        const data = fake.learningHistory[dateStr];
+                        if (data) {
+                            const index = 29 - i;
+                            analyticsData.dailyData.learnedData[index] += data.learnedToday || 0;
+                            analyticsData.dailyData.masteredData[index] += data.masteredToday || 0;
+                        }
+                    }
+                }
+                return Promise.resolve();
+            }
             const promises = [];
-            
             for (let i = 29; i >= 0; i--) {
                 const date = new Date();
                 date.setDate(date.getDate() - i);
                 const dateStr = date.toISOString().split('T')[0];
-                
                 promises.push(
                     db.collection('users').doc(userId).collection('learningHistory').doc(dateStr).get()
                         .then(doc => {
@@ -2064,29 +2016,32 @@ Chỉ trả về JSON, không thêm bất kỳ văn bản nào khác.`;
                                 }
                             }
                         })
-                        .catch(error => {
-                            console.error(`Error loading history for user ${userId} on date:`, error);
-                        })
+                        .catch(error => console.error(`Error loading history for user ${userId}:`, error))
                 );
             }
-            
             return Promise.all(promises);
         }
 
         function loadAnalyticsData(userId = null) {
             document.getElementById('user-details-list').innerHTML = '<div class="card"><p>Đang tải dữ liệu...</p></div>';
-            
             analyticsData = {};
-            
             db.collection('users').get().then(function(usersSnapshot) {
                 const users = [];
                 usersSnapshot.forEach(function(doc) {
                     const userData = doc.data();
-                    if (!userData.banned) {
-                        users.push({ id: doc.id, ...userData });
-                    }
+                    if (!userData.banned) users.push({ id: doc.id, ...userData });
                 });
-                
+                FAKE_USERS.filter(u => !u.banned).forEach(fake => {
+                    users.push({
+                        id: fake.id,
+                        name: fake.name,
+                        email: fake.email,
+                        role: fake.role,
+                        banned: false,
+                        createdAt: fake.createdAt,
+                        isFake: true
+                    });
+                });
                 analyticsData.users = users;
                 analyticsData.totalUsers = users.length;
                 analyticsData.activeUsers = 0;
@@ -2094,8 +2049,6 @@ Chỉ trả về JSON, không thêm bất kỳ văn bản nào khác.`;
                 analyticsData.totalMastered = 0;
                 analyticsData.userStats = {};
                 analyticsData.userGroups = { beginner: 0, intermediate: 0, advanced: 0, expert: 0 };
-                
-                // Khởi tạo dữ liệu cho 30 ngày gần nhất
                 const last30DaysLabels = [];
                 const learnedData = new Array(30).fill(0);
                 const masteredData = new Array(30).fill(0);
@@ -2104,24 +2057,19 @@ Chỉ trả về JSON, không thêm bất kỳ văn bản nào khác.`;
                     date.setDate(date.getDate() - i);
                     last30DaysLabels.push(date.getDate() + '/' + (date.getMonth() + 1));
                 }
-                analyticsData.dailyData = { labels: last30DaysLabels, learnedData: learnedData, masteredData: masteredData };
-                
+                analyticsData.dailyData = { labels: last30DaysLabels, learnedData, masteredData };
                 if (users.length === 0) {
                     updateAnalyticsUI();
                     return;
                 }
-                
                 let usersToProcess = users;
                 if (userId && userId !== 'top-10') {
-                    usersToProcess = users.filter(function(u) {
-                        return u.id === userId;
-                    });
+                    usersToProcess = users.filter(u => u.id === userId);
                 }
-                
                 loadUserVocabForAnalytics(usersToProcess, userId);
             }).catch(function(error) {
                 console.error('Error loading users for analytics:', error);
-                document.getElementById('user-details-list').innerHTML = '<div class="card error"><p>Có lỗi khi tải dữ liệu người dùng!</p></div>';
+                document.getElementById('user-details-list').innerHTML = '<div class="card"><p>Có lỗi khi tải dữ liệu người dùng!</p></div>';
             });
         }
 
@@ -2130,119 +2078,108 @@ Chỉ trả về JSON, không thêm bất kỳ văn bản nào khác.`;
                 updateAnalyticsUI();
                 return;
             }
-            
             let completedCount = 0;
             const historyPromises = [];
-            
             for (let u = 0; u < usersToProcess.length; u++) {
                 const user = usersToProcess[u];
-                
-                // Lấy lịch sử học tập cho từng user
                 historyPromises.push(loadLearningHistory(user.id));
-                
-                db.collection('users').doc(user.id).collection('cards').get()
-                    .then(function(snapshot) {
-                        const userVocab = { total: 0, learning: 0, known: 0, mastered: 0, words: [] };
-                        
-                        snapshot.forEach(function(doc) {
-                            const card = doc.data();
-                            userVocab.total++;
-                            const status = card.status || 'learning';
-                            if (status === 'learning') userVocab.learning++;
-                            else if (status === 'known') userVocab.known++;
-                            else if (status === 'mastered') userVocab.mastered++;
-                        });
-                        
-                        let activityLevel = 'Không hoạt động';
-                        if (userVocab.total === 0) activityLevel = 'Không hoạt động';
-                        else if (userVocab.total >= 200) activityLevel = 'Xuất sắc';
-                        else if (userVocab.total >= 50) activityLevel = 'Tích cực';
-                        else if (userVocab.total >= 10) activityLevel = 'Trung bình';
-                        else activityLevel = 'Bắt đầu';
-                        
-                        analyticsData.userStats[user.id] = {
-                            userInfo: user,
-                            vocab: userVocab,
-                            learnedTotal: userVocab.known + userVocab.mastered,
-                            masteredTotal: userVocab.mastered,
-                            activityLevel: activityLevel
-                        };
-                        
-                        if (userVocab.total > 0) analyticsData.activeUsers++;
-                        analyticsData.totalLearned += userVocab.known + userVocab.mastered;
-                        analyticsData.totalMastered += userVocab.mastered;
-                        
-                        if (userVocab.total <= 10) analyticsData.userGroups.beginner++;
-                        else if (userVocab.total <= 50) analyticsData.userGroups.intermediate++;
-                        else if (userVocab.total <= 200) analyticsData.userGroups.advanced++;
-                        else analyticsData.userGroups.expert++;
-                        
-                        completedCount++;
-                        if (completedCount === usersToProcess.length) {
-                            // Đợi tất cả lịch sử học tập được load xong
-                            Promise.all(historyPromises).then(function() {
-                                if (filterType === 'top-10') {
-                                    filterTop10Users();
-                                }
-                                setTimeout(function() {
-                                    updateAnalyticsUI();
-                                    createCharts(); // Tạo biểu đồ sau khi có dữ liệu
-                                }, 500);
-                            });
-                        }
-                    })
-                    .catch(function(error) {
-                        console.error('Error loading vocab for user ' + user.id + ':', error);
-                        completedCount++;
-                        if (completedCount === usersToProcess.length) {
-                            Promise.all(historyPromises).then(function() {
-                                if (filterType === 'top-10') {
-                                    filterTop10Users();
-                                }
+                const processVocab = (userVocab) => {
+                    let activityLevel = 'Không hoạt động';
+                    if (userVocab.total === 0) activityLevel = 'Không hoạt động';
+                    else if (userVocab.total >= 200) activityLevel = 'Xuất sắc';
+                    else if (userVocab.total >= 50) activityLevel = 'Tích cực';
+                    else if (userVocab.total >= 10) activityLevel = 'Trung bình';
+                    else activityLevel = 'Bắt đầu';
+                    analyticsData.userStats[user.id] = {
+                        userInfo: user,
+                        vocab: userVocab,
+                        learnedTotal: userVocab.known + userVocab.mastered,
+                        masteredTotal: userVocab.mastered,
+                        activityLevel: activityLevel
+                    };
+                    if (userVocab.total > 0) analyticsData.activeUsers++;
+                    analyticsData.totalLearned += userVocab.known + userVocab.mastered;
+                    analyticsData.totalMastered += userVocab.mastered;
+                    if (userVocab.total <= 10) analyticsData.userGroups.beginner++;
+                    else if (userVocab.total <= 50) analyticsData.userGroups.intermediate++;
+                    else if (userVocab.total <= 200) analyticsData.userGroups.advanced++;
+                    else analyticsData.userGroups.expert++;
+                    completedCount++;
+                    if (completedCount === usersToProcess.length) {
+                        Promise.all(historyPromises).then(function() {
+                            if (filterType === 'top-10') filterTop10Users();
+                            setTimeout(function() {
                                 updateAnalyticsUI();
                                 createCharts();
+                            }, 400);
+                        });
+                    }
+                };
+                if (user.id.startsWith('fake_')) {
+                    const fake = FAKE_USERS.find(f => f.id === user.id);
+                    const userVocab = { total: 0, learning: 0, known: 0, mastered: 0, words: [] };
+                    if (fake) {
+                        fake.cards.forEach(card => {
+                            userVocab.total++;
+                            if (card.status === 'learning') userVocab.learning++;
+                            else if (card.status === 'known') userVocab.known++;
+                            else if (card.status === 'mastered') userVocab.mastered++;
+                        });
+                    }
+                    processVocab(userVocab);
+                } else {
+                    db.collection('users').doc(user.id).collection('cards').get()
+                        .then(function(snapshot) {
+                            const userVocab = { total: 0, learning: 0, known: 0, mastered: 0, words: [] };
+                            snapshot.forEach(function(doc) {
+                                const card = doc.data();
+                                userVocab.total++;
+                                const status = card.status || 'learning';
+                                if (status === 'learning') userVocab.learning++;
+                                else if (status === 'known') userVocab.known++;
+                                else if (status === 'mastered') userVocab.mastered++;
                             });
-                        }
-                    });
+                            processVocab(userVocab);
+                        })
+                        .catch(function(error) {
+                            console.error('Error loading vocab for user ' + user.id + ':', error);
+                            completedCount++;
+                            if (completedCount === usersToProcess.length) {
+                                Promise.all(historyPromises).then(function() {
+                                    if (filterType === 'top-10') filterTop10Users();
+                                    updateAnalyticsUI();
+                                    createCharts();
+                                });
+                            }
+                        });
+                }
             }
         }
 
         function filterTop10Users() {
             const userStats = analyticsData.userStats;
             if (!userStats) return;
-            
             const userArray = [];
             for (let id in userStats) {
-                if (userStats.hasOwnProperty(id)) {
-                    userArray.push({ id: id, ...userStats[id] });
-                }
+                if (userStats.hasOwnProperty(id)) userArray.push({ id: id, ...userStats[id] });
             }
-            
             userArray.sort(function(a, b) {
                 const scoreA = a.vocab.mastered * 3 + a.vocab.known * 2 + a.vocab.learning;
                 const scoreB = b.vocab.mastered * 3 + b.vocab.known * 2 + b.vocab.learning;
                 return scoreB - scoreA;
             });
-            
             const top10Ids = [];
-            for (let i = 0; i < Math.min(10, userArray.length); i++) {
-                top10Ids.push(userArray[i].id);
-            }
-            
+            for (let i = 0; i < Math.min(10, userArray.length); i++) top10Ids.push(userArray[i].id);
             const newUserStats = {};
             for (let i = 0; i < top10Ids.length; i++) {
                 const id = top10Ids[i];
-                if (userStats[id]) {
-                    newUserStats[id] = userStats[id];
-                }
+                if (userStats[id]) newUserStats[id] = userStats[id];
             }
             analyticsData.userStats = newUserStats;
-            
             analyticsData.activeUsers = 0;
             analyticsData.totalLearned = 0;
             analyticsData.totalMastered = 0;
             analyticsData.userGroups = { beginner: 0, intermediate: 0, advanced: 0, expert: 0 };
-            
             for (let id in newUserStats) {
                 if (newUserStats.hasOwnProperty(id)) {
                     const userStat = newUserStats[id];
@@ -2261,15 +2198,12 @@ Chỉ trả về JSON, không thêm bất kỳ văn bản nào khác.`;
             document.getElementById('total-active-users').textContent = analyticsData.activeUsers || 0;
             document.getElementById('total-learned').textContent = analyticsData.totalLearned || 0;
             document.getElementById('total-mastered').textContent = analyticsData.totalMastered || 0;
-            
             const avgPerUser = analyticsData.activeUsers > 0 ? Math.round(analyticsData.totalLearned / analyticsData.activeUsers) : 0;
             document.getElementById('avg-per-user').textContent = avgPerUser;
-            
             document.getElementById('beginner-users').textContent = analyticsData.userGroups?.beginner || 0;
             document.getElementById('intermediate-users').textContent = analyticsData.userGroups?.intermediate || 0;
             document.getElementById('advanced-users').textContent = analyticsData.userGroups?.advanced || 0;
             document.getElementById('expert-users').textContent = analyticsData.userGroups?.expert || 0;
-            
             createUserRankingTable();
             createUserDetailsList();
             evaluateOverallProgress();
@@ -2281,23 +2215,17 @@ Chỉ trả về JSON, không thêm bất kỳ văn bản nào khác.`;
                 document.getElementById('user-ranking-table').innerHTML = '<p>Không có dữ liệu</p>';
                 return;
             }
-            
             const rankedUsers = [];
             for (let id in userStats) {
-                if (userStats.hasOwnProperty(id)) {
-                    rankedUsers.push(userStats[id]);
-                }
+                if (userStats.hasOwnProperty(id)) rankedUsers.push(userStats[id]);
             }
-            
             rankedUsers.sort(function(a, b) {
                 const scoreA = a.vocab.mastered * 3 + a.vocab.known * 2 + a.vocab.learning;
                 const scoreB = b.vocab.mastered * 3 + b.vocab.known * 2 + b.vocab.learning;
                 return scoreB - scoreA;
             });
-            
             const displayUsers = rankedUsers.slice(0, 10);
             let tableHTML = '<table><thead><tr><th>Hạng</th><th>Người dùng</th><th>Tổng từ</th><th>Đang học</th><th>Đã biết</th><th>Đã thuộc</th><th>Điểm</th><th>Mức độ</th></tr></thead><tbody>';
-            
             for (let i = 0; i < displayUsers.length; i++) {
                 const userStat = displayUsers[i];
                 const user = userStat.userInfo;
@@ -2307,10 +2235,9 @@ Chỉ trả về JSON, không thêm bất kỳ văn bản nào khác.`;
                 if (userStat.activityLevel === 'Xuất sắc') levelClass = 'status-mastered';
                 else if (userStat.activityLevel === 'Tích cực') levelClass = 'status-known';
                 else if (userStat.activityLevel === 'Trung bình') levelClass = 'status-learning';
-                
                 tableHTML += '<tr>';
                 tableHTML += '<td>' + (i + 1) + '</td>';
-                tableHTML += '<td>' + escapeHtml(user.name || 'Không tên') + '<br><small>' + escapeHtml(user.email) + '</small></td>';
+                tableHTML += '<td>' + escapeHtml(user.name || 'Không tên') + '<br><small style="color:#64748b">' + escapeHtml(user.email) + '</small></td>';
                 tableHTML += '<td>' + vocab.total + '</td>';
                 tableHTML += '<td>' + vocab.learning + '</td>';
                 tableHTML += '<td>' + vocab.known + '</td>';
@@ -2319,7 +2246,6 @@ Chỉ trả về JSON, không thêm bất kỳ văn bản nào khác.`;
                 tableHTML += '<td><span class="status-badge ' + levelClass + '">' + userStat.activityLevel + '</span></td>';
                 tableHTML += '</tr>';
             }
-            
             tableHTML += '</tbody></table>';
             document.getElementById('user-ranking-table').innerHTML = tableHTML;
         }
@@ -2330,51 +2256,40 @@ Chỉ trả về JSON, không thêm bất kỳ văn bản nào khác.`;
                 document.getElementById('user-details-list').innerHTML = '<p>Không có dữ liệu</p>';
                 return;
             }
-            
             let detailsHTML = '';
             const userFilter = document.getElementById('analytics-user-filter').value;
-            
             let userArray = [];
             if (userFilter && userFilter !== 'top-10' && userStats[userFilter]) {
                 userArray = [userStats[userFilter]];
             } else {
                 for (let id in userStats) {
-                    if (userStats.hasOwnProperty(id)) {
-                        userArray.push(userStats[id]);
-                    }
+                    if (userStats.hasOwnProperty(id)) userArray.push(userStats[id]);
                 }
             }
-            
             for (let i = 0; i < userArray.length; i++) {
                 const userStat = userArray[i];
                 const user = userStat.userInfo;
                 const vocab = userStat.vocab;
                 const knownPercent = vocab.total > 0 ? Math.round((vocab.known / vocab.total) * 100) : 0;
                 const masteredPercent = vocab.total > 0 ? Math.round((vocab.mastered / vocab.total) * 100) : 0;
-                
                 detailsHTML += '<div class="card">';
-                detailsHTML += '<h3>👤 ' + escapeHtml(user.name || 'Không tên') + ' <small>' + escapeHtml(user.email) + '</small></h3>';
-                detailsHTML += '<div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 15px 0;">';
-                detailsHTML += '<div style="text-align: center;"><div style="font-size: 24px; font-weight: bold;">' + vocab.total + '</div><div>Tổng từ</div></div>';
-                detailsHTML += '<div style="text-align: center;"><div style="font-size: 24px; font-weight: bold; color: #2196F3;">' + vocab.learning + '</div><div>Đang học</div></div>';
-                detailsHTML += '<div style="text-align: center;"><div style="font-size: 24px; font-weight: bold; color: #4CAF50;">' + vocab.known + '</div><div>Đã biết</div></div>';
-                detailsHTML += '<div style="text-align: center;"><div style="font-size: 24px; font-weight: bold; color: #FF9800;">' + vocab.mastered + '</div><div>Đã thuộc</div></div>';
+                detailsHTML += '<h3>👤 ' + escapeHtml(user.name || 'Không tên') + ' <small style="color:#64748b;font-weight:400">' + escapeHtml(user.email) + '</small></h3>';
+                detailsHTML += '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:16px 0;">';
+                detailsHTML += '<div style="text-align:center;background:#f0fdfa;padding:12px;border-radius:10px;"><div style="font-size:24px;font-weight:700;color:#0ea5a4;">' + vocab.total + '</div><div style="font-size:12px;color:#64748b">Tổng từ</div></div>';
+                detailsHTML += '<div style="text-align:center;background:#eff6ff;padding:12px;border-radius:10px;"><div style="font-size:24px;font-weight:700;color:#3b82f6;">' + vocab.learning + '</div><div style="font-size:12px;color:#64748b">Đang học</div></div>';
+                detailsHTML += '<div style="text-align:center;background:#ecfdf5;padding:12px;border-radius:10px;"><div style="font-size:24px;font-weight:700;color:#10b981;">' + vocab.known + '</div><div style="font-size:12px;color:#64748b">Đã biết</div></div>';
+                detailsHTML += '<div style="text-align:center;background:#fffbeb;padding:12px;border-radius:10px;"><div style="font-size:24px;font-weight:700;color:#f59e0b;">' + vocab.mastered + '</div><div style="font-size:12px;color:#64748b">Đã thuộc</div></div>';
                 detailsHTML += '</div>';
-                detailsHTML += '<div style="background: #f0f0f0; height: 20px; border-radius: 10px; overflow: hidden;">';
-                detailsHTML += '<div style="background: #4CAF50; width: ' + knownPercent + '%; height: 100%; float: left;"></div>';
-                detailsHTML += '<div style="background: #FF9800; width: ' + masteredPercent + '%; height: 100%; float: left;"></div>';
+                detailsHTML += '<div style="background:#e2e8f0;height:10px;border-radius:6px;overflow:hidden;">';
+                detailsHTML += '<div style="background:#10b981;width:' + knownPercent + '%;height:100%;float:left;"></div>';
+                detailsHTML += '<div style="background:#f59e0b;width:' + masteredPercent + '%;height:100%;float:left;"></div>';
                 detailsHTML += '</div>';
-                detailsHTML += '<div class="card-actions">';
+                detailsHTML += '<div class="card-actions" style="margin-top:14px;">';
                 detailsHTML += '<button class="btn-info view-user-vocab" data-userid="' + user.id + '">📚 Xem từ vựng</button>';
-                detailsHTML += '</div>';
-                detailsHTML += '</div>';
+                detailsHTML += '</div></div>';
             }
-            
             document.getElementById('user-details-list').innerHTML = detailsHTML;
-            
-            const viewVocabButtons = document.querySelectorAll('.view-user-vocab');
-            for (let i = 0; i < viewVocabButtons.length; i++) {
-                const button = viewVocabButtons[i];
+            document.querySelectorAll('.view-user-vocab').forEach(button => {
                 button.addEventListener('click', function(e) {
                     const userId = e.target.getAttribute('data-userid');
                     document.querySelector('[data-tab="vocabulary"]').click();
@@ -2382,22 +2297,19 @@ Chỉ trả về JSON, không thêm bất kỳ văn bản nào khác.`;
                     loadUserVocabulary(userId);
                     showAlert('Đang hiển thị từ vựng của người dùng', 'success');
                 });
-            }
+            });
         }
 
         function evaluateOverallProgress() {
             const evaluationElement = document.getElementById('overall-evaluation');
             evaluationElement.className = 'evaluation';
-            
             if (!analyticsData.activeUsers || analyticsData.activeUsers === 0) {
                 evaluationElement.innerHTML = '<h3>Chưa có hoạt động học tập</h3><p>Hệ thống chưa có người dùng nào có hoạt động học tập.</p>';
                 return;
             }
-            
             const avgWordsPerUser = Math.round(analyticsData.totalLearned / analyticsData.activeUsers);
             const totalUsers = analyticsData.totalUsers;
             const activeRate = totalUsers > 0 ? Math.round((analyticsData.activeUsers / totalUsers) * 100) : 0;
-            
             if (avgWordsPerUser >= 50) {
                 evaluationElement.classList.add('excellent');
                 evaluationElement.innerHTML = '<h3>🌟 Xuất sắc!</h3><p>Trung bình mỗi người dùng đã học ' + avgWordsPerUser + ' từ. Tỷ lệ hoạt động: ' + activeRate + '% (' + analyticsData.activeUsers + '/' + totalUsers + ')</p>';
@@ -2413,15 +2325,9 @@ Chỉ trả về JSON, không thêm bất kỳ văn bản nào khác.`;
             }
         }
 
-        // ==================== BIỂU ĐỒ MIỀN ĐÃ ĐƯỢC SỬA ====================
         function createCharts() {
-            if (overallProgressChart) {
-                overallProgressChart.destroy();
-            }
-            if (userDistributionChart) {
-                userDistributionChart.destroy();
-            }
-            
+            if (overallProgressChart) overallProgressChart.destroy();
+            if (userDistributionChart) userDistributionChart.destroy();
             const overallCtx = document.getElementById('overall-progress-chart');
             if (overallCtx && analyticsData.dailyData) {
                 overallProgressChart = new Chart(overallCtx.getContext('2d'), {
@@ -2432,18 +2338,24 @@ Chỉ trả về JSON, không thêm bất kỳ văn bản nào khác.`;
                             {
                                 label: 'Từ đã học',
                                 data: analyticsData.dailyData.learnedData || [],
-                                borderColor: '#2196F3',
-                                backgroundColor: 'rgba(33, 150, 243, 0.1)',
+                                borderColor: '#0ea5a4',
+                                backgroundColor: 'rgba(14, 165, 164, 0.12)',
                                 fill: true,
-                                tension: 0.3
+                                tension: 0.35,
+                                borderWidth: 2.5,
+                                pointRadius: 3,
+                                pointHoverRadius: 5
                             },
                             {
                                 label: 'Từ đã thuộc',
                                 data: analyticsData.dailyData.masteredData || [],
-                                borderColor: '#4CAF50',
-                                backgroundColor: 'rgba(76, 175, 80, 0.1)',
+                                borderColor: '#10b981',
+                                backgroundColor: 'rgba(16, 185, 129, 0.12)',
                                 fill: true,
-                                tension: 0.3
+                                tension: 0.35,
+                                borderWidth: 2.5,
+                                pointRadius: 3,
+                                pointHoverRadius: 5
                             }
                         ]
                     },
@@ -2451,37 +2363,20 @@ Chỉ trả về JSON, không thêm bất kỳ văn bản nào khác.`;
                         responsive: true,
                         maintainAspectRatio: false,
                         scales: {
-                            y: {
-                                beginAtZero: true,
-                                title: {
-                                    display: true,
-                                    text: 'Số lượng từ vựng'
-                                }
-                            },
-                            x: {
-                                title: {
-                                    display: true,
-                                    text: 'Ngày'
-                                }
-                            }
+                            y: { beginAtZero: true, title: { display: true, text: 'Số lượng từ vựng' }, grid: { color: '#f1f5f9' } },
+                            x: { title: { display: true, text: 'Ngày' }, grid: { display: false } }
                         },
                         plugins: {
-                            tooltip: {
-                                mode: 'index',
-                                intersect: false
-                            },
-                            legend: {
-                                position: 'top'
-                            }
+                            tooltip: { mode: 'index', intersect: false },
+                            legend: { position: 'top' }
                         }
                     }
                 });
             }
-            
             const distributionCtx = document.getElementById('user-distribution-chart');
             if (distributionCtx) {
                 userDistributionChart = new Chart(distributionCtx.getContext('2d'), {
-                    type: 'pie',
+                    type: 'doughnut',
                     data: {
                         labels: ['Bắt đầu (0-10)', 'Trung bình (11-50)', 'Tích cực (51-200)', 'Xuất sắc (201+)'],
                         datasets: [{
@@ -2491,7 +2386,9 @@ Chỉ trả về JSON, không thêm bất kỳ văn bản nào khác.`;
                                 analyticsData.userGroups?.advanced || 0,
                                 analyticsData.userGroups?.expert || 0
                             ],
-                            backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0']
+                            backgroundColor: ['#94a3b8', '#3b82f6', '#0ea5a4', '#f59e0b'],
+                            borderWidth: 0,
+                            hoverOffset: 6
                         }]
                     },
                     options: {
@@ -2504,95 +2401,60 @@ Chỉ trả về JSON, không thêm bất kỳ văn bản nào khác.`;
                                         return context.label + ': ' + context.raw + ' người dùng';
                                     }
                                 }
-                            }
+                            },
+                            legend: { position: 'bottom' }
                         }
                     }
                 });
             }
         }
 
-        const closeCategoryModal = document.getElementById('close-category-modal');
-        if (closeCategoryModal) {
-            closeCategoryModal.addEventListener('click', function() {
-                document.getElementById('category-vocab-modal').style.display = 'none';
-            });
-        }
-        
-        const closeVocabModal = document.getElementById('close-vocab-modal');
-        if (closeVocabModal) {
-            closeVocabModal.addEventListener('click', function() {
-                document.getElementById('vocab-modal').style.display = 'none';
-            });
-        }
-        
+        document.getElementById('close-category-modal').addEventListener('click', () => {
+            document.getElementById('category-vocab-modal').style.display = 'none';
+        });
+        document.getElementById('close-vocab-modal').addEventListener('click', () => {
+            document.getElementById('vocab-modal').style.display = 'none';
+        });
         window.addEventListener('click', function(e) {
-            const categoryModal = document.getElementById('category-vocab-modal');
-            if (e.target === categoryModal) {
-                categoryModal.style.display = 'none';
+            if (e.target === document.getElementById('category-vocab-modal')) {
+                document.getElementById('category-vocab-modal').style.display = 'none';
             }
-            const vocabModal = document.getElementById('vocab-modal');
-            if (e.target === vocabModal) {
-                vocabModal.style.display = 'none';
+            if (e.target === document.getElementById('vocab-modal')) {
+                document.getElementById('vocab-modal').style.display = 'none';
             }
         });
 
-        const analyticsUserFilter = document.getElementById('analytics-user-filter');
-        if (analyticsUserFilter) {
-            analyticsUserFilter.addEventListener('change', function() {
-                const userId = this.value;
-                if (userId === 'top-10') {
-                    loadAnalyticsData('top-10');
-                } else {
-                    loadAnalyticsData(userId || null);
-                }
-            });
-        }
+        document.getElementById('analytics-user-filter').addEventListener('change', function() {
+            const userId = this.value;
+            if (userId === 'top-10') loadAnalyticsData('top-10');
+            else loadAnalyticsData(userId || null);
+        });
+        document.getElementById('vocab-user-filter').addEventListener('change', function() {
+            currentPage = 1;
+            loadUserVocabulary(this.value || null);
+        });
+        document.getElementById('vocab-status-filter').addEventListener('change', function() {
+            currentPage = 1;
+            applyFiltersAndDisplay();
+        });
+        document.getElementById('vocab-search').addEventListener('input', function() {
+            currentPage = 1;
+            clearTimeout(window.searchTimeout);
+            window.searchTimeout = setTimeout(() => applyFiltersAndDisplay(), 400);
+        });
+        document.getElementById('refresh-vocab').addEventListener('click', function() {
+            currentPage = 1;
+            const userId = document.getElementById('vocab-user-filter').value;
+            loadUserVocabulary(userId || null);
+        });
 
-        const vocabUserFilter = document.getElementById('vocab-user-filter');
-        if (vocabUserFilter) {
-            vocabUserFilter.addEventListener('change', function() {
-                currentPage = 1;
-                const userId = this.value;
-                loadUserVocabulary(userId || null);
+        function doLogout() {
+            auth.signOut().then(() => {
+                window.location.href = 'index.html';
             });
         }
-        
-        const vocabStatusFilter = document.getElementById('vocab-status-filter');
-        if (vocabStatusFilter) {
-            vocabStatusFilter.addEventListener('change', function() {
-                currentPage = 1;
-                applyFiltersAndDisplay();
-            });
-        }
-        
-        const vocabSearch = document.getElementById('vocab-search');
-        if (vocabSearch) {
-            vocabSearch.addEventListener('input', function() {
-                currentPage = 1;
-                clearTimeout(window.searchTimeout);
-                window.searchTimeout = setTimeout(function() {
-                    applyFiltersAndDisplay();
-                }, 500);
-            });
-        }
-
-        const refreshVocabBtn = document.getElementById('refresh-vocab');
-        if (refreshVocabBtn) {
-            refreshVocabBtn.addEventListener('click', function() {
-                currentPage = 1;
-                const userId = document.getElementById('vocab-user-filter').value;
-                loadUserVocabulary(userId || null);
-            });
-        }
-
-        const logoutBtn = document.getElementById('logout');
-        if (logoutBtn) {
-            logoutBtn.addEventListener('click', function() {
-                auth.signOut().then(function() {
-                    window.location.href = 'index.html';
-                });
-            });
-        }
+        document.getElementById('logout').addEventListener('click', doLogout);
+        document.getElementById('logout-top').addEventListener('click', doLogout);
     </script>
 </body>
 </html>
