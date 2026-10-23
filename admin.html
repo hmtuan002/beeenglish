@@ -935,7 +935,7 @@
         let userDistributionChart = null;
         let aiGeneratedWords = [];
 
-        // ==================== 120 TÀI KHOẢN ẢO (TÊN TỪ ẢNH) ====================
+        // ==================== 520 TÀI KHOẢN ẢO (MỞ RỘNG MẠNH) ====================
         const FAKE_NAMES = [
             "Đỗ Bảo An","Đỗ Phương Anh","Nguyễn Minh Anh","Vĩ Gia Bảo","Lương Linh Chi",
             "Phạm Dương Chiến","Phan Huy Cường","Tô Bảo Duy","Hoàng Tuấn Dương","Nguyễn Minh Đức",
@@ -960,7 +960,82 @@
             "Hoàng Trần Long","Nguyễn Hương Ly","Đào Đức Mạnh","Hoàng Nhật Minh","Vũ Hà My",
             "Dùng Văn Ngọc","Đặng Hoài Như","Nguyễn Hoàng Phúc","Triệu Xuân Phúc","Đào Duy Quân",
             "Trần Phạm Thiên Quý","Đỗ Tuấn Tài","Nguyễn Tấn Tài","La Phương Thúy","Lương Huyền Trang",
-            "Ninh Thanh Tùng","Phùng Hương Vy","Nông Ngọc Như Ý","Dương Bảo Khang","Phạm Mai Ánh"
+            "Ninh Thanh Tùng","Phùng Hương Vy","Nông Ngọc Như Ý","Dương Bảo Khang","Phạm Mai Ánh",
+            // Mở rộng thêm hàng trăm tên ảo
+            "Lê Thị Hồng Nhung","Trần Văn Khoa","Nguyễn Thị Lan Anh","Phạm Đức Thành","Hoàng Thị Mai",
+            "Vũ Minh Tuấn","Đặng Thị Thu Hà","Bùi Quốc Việt","Ngô Thị Hương","Lý Văn Sơn",
+            "Trương Thị Kim","Phan Minh Đức","Đỗ Thị Ngọc","Hồ Văn Phong","Mai Thị Thanh",
+            "Lưu Quốc Bảo","Tạ Thị Huyền","Chu Minh Hải","Đinh Thị Lan","Võ Văn Hùng",
+            "Nguyễn Thị Bảo Ngọc","Trần Quốc Anh","Lê Minh Châu","Phạm Thị Thảo","Hoàng Đức Long",
+            "Vũ Thị Yến","Đặng Văn Nam","Bùi Thị Hằng","Ngô Minh Khoa","Lý Thị Phương",
+            "Trương Văn Tài","Phan Thị Diễm","Đỗ Minh Quân","Hồ Thị Trang","Mai Văn Dũng",
+            "Lưu Thị Hồng","Tạ Minh Đức","Chu Thị Lan","Đinh Văn Phúc","Võ Thị Mai",
+            "Nguyễn Văn Thành","Trần Thị Hương","Lê Quốc Bảo","Phạm Minh Tuấn","Hoàng Thị Ngọc",
+            "Vũ Văn Khoa","Đặng Thị Lan Anh","Bùi Minh Hải","Ngô Thị Thanh","Lý Văn Phong",
+            "Trương Thị Huyền","Phan Văn Sơn","Đỗ Thị Kim","Hồ Minh Việt","Mai Thị Hằng",
+            "Lưu Văn Đức","Tạ Thị Yến","Chu Minh Long","Đinh Thị Châu","Võ Văn Nam",
+            "Nguyễn Thị Phương","Trần Văn Hùng","Lê Thị Diễm","Phạm Minh Quân","Hoàng Thị Trang",
+            "Vũ Văn Dũng","Đặng Thị Hồng","Bùi Minh Phúc","Ngô Thị Mai","Lý Văn Thành",
+            "Trương Thị Hương","Phan Văn Anh","Đỗ Thị Bảo","Hồ Minh Châu","Mai Thị Thảo",
+            "Lưu Văn Long","Tạ Thị Ngọc","Chu Minh Tuấn","Đinh Thị Khoa","Võ Văn Hải",
+            "Nguyễn Thị Thanh","Trần Văn Phong","Lê Thị Huyền","Phạm Minh Sơn","Hoàng Thị Kim",
+            "Vũ Văn Việt","Đặng Thị Hằng","Bùi Minh Đức","Ngô Thị Yến","Lý Văn Long",
+            "Trương Thị Châu","Phan Văn Nam","Đỗ Thị Phương","Hồ Minh Hùng","Mai Thị Diễm",
+            "Lưu Văn Quân","Tạ Thị Trang","Chu Minh Dũng","Đinh Thị Hồng","Võ Văn Phúc",
+            "Nguyễn Thị Mai","Trần Văn Thành","Lê Thị Hương","Phạm Minh Anh","Hoàng Thị Bảo",
+            "Vũ Văn Châu","Đặng Thị Thảo","Bùi Minh Long","Ngô Thị Ngọc","Lý Văn Tuấn",
+            "Trương Thị Khoa","Phan Văn Hải","Đỗ Thị Thanh","Hồ Minh Phong","Mai Thị Huyền",
+            "Lưu Văn Sơn","Tạ Thị Kim","Chu Minh Việt","Đinh Thị Hằng","Võ Văn Đức",
+            "Nguyễn Thị Yến","Trần Văn Long","Lê Thị Châu","Phạm Minh Nam","Hoàng Thị Phương",
+            "Vũ Văn Hùng","Đặng Thị Diễm","Bùi Minh Quân","Ngô Thị Trang","Lý Văn Dũng",
+            "Trương Thị Hồng","Phan Văn Phúc","Đỗ Thị Mai","Hồ Minh Thành","Mai Thị Hương",
+            "Lưu Văn Anh","Tạ Thị Bảo","Chu Minh Châu","Đinh Thị Thảo","Võ Văn Long",
+            "Nguyễn Thị Ngọc","Trần Văn Tuấn","Lê Thị Khoa","Phạm Minh Hải","Hoàng Thị Thanh",
+            "Vũ Văn Phong","Đặng Thị Huyền","Bùi Minh Sơn","Ngô Thị Kim","Lý Văn Việt",
+            "Trương Thị Hằng","Phan Văn Đức","Đỗ Thị Yến","Hồ Minh Long","Mai Thị Châu",
+            "Lưu Văn Nam","Tạ Thị Phương","Chu Minh Hùng","Đinh Thị Diễm","Võ Văn Quân",
+            "Nguyễn Thị Trang","Trần Văn Dũng","Lê Thị Hồng","Phạm Minh Phúc","Hoàng Thị Mai",
+            "Vũ Văn Thành","Đặng Thị Hương","Bùi Minh Anh","Ngô Thị Bảo","Lý Văn Châu",
+            "Trương Thị Thảo","Phan Văn Long","Đỗ Thị Ngọc","Hồ Minh Tuấn","Mai Thị Khoa",
+            "Lưu Văn Hải","Tạ Thị Thanh","Chu Minh Phong","Đinh Thị Huyền","Võ Văn Sơn",
+            "Nguyễn Thị Kim","Trần Văn Việt","Lê Thị Hằng","Phạm Minh Đức","Hoàng Thị Yến",
+            "Vũ Văn Long","Đặng Thị Châu","Bùi Minh Nam","Ngô Thị Phương","Lý Văn Hùng",
+            "Trương Thị Diễm","Phan Văn Quân","Đỗ Thị Trang","Hồ Minh Dũng","Mai Thị Hồng",
+            "Lưu Văn Phúc","Tạ Thị Mai","Chu Minh Thành","Đinh Thị Hương","Võ Văn Anh",
+            "Nguyễn Thị Bảo","Trần Văn Châu","Lê Thị Thảo","Phạm Minh Long","Hoàng Thị Ngọc",
+            "Vũ Văn Tuấn","Đặng Thị Khoa","Bùi Minh Hải","Ngô Thị Thanh","Lý Văn Phong",
+            "Trương Thị Huyền","Phan Văn Sơn","Đỗ Thị Kim","Hồ Minh Việt","Mai Thị Hằng",
+            "Lưu Văn Đức","Tạ Thị Yến","Chu Minh Long","Đinh Thị Châu","Võ Văn Nam",
+            "Nguyễn Thị Phương","Trần Văn Hùng","Lê Thị Diễm","Phạm Minh Quân","Hoàng Thị Trang",
+            "Vũ Văn Dũng","Đặng Thị Hồng","Bùi Minh Phúc","Ngô Thị Mai","Lý Văn Thành",
+            "Trương Thị Hương","Phan Văn Anh","Đỗ Thị Bảo","Hồ Minh Châu","Mai Thị Thảo",
+            "Lưu Văn Long","Tạ Thị Ngọc","Chu Minh Tuấn","Đinh Thị Khoa","Võ Văn Hải",
+            "Nguyễn Thị Thanh","Trần Văn Phong","Lê Thị Huyền","Phạm Minh Sơn","Hoàng Thị Kim",
+            "Vũ Văn Việt","Đặng Thị Hằng","Bùi Minh Đức","Ngô Thị Yến","Lý Văn Long",
+            "Trương Thị Châu","Phan Văn Nam","Đỗ Thị Phương","Hồ Minh Hùng","Mai Thị Diễm",
+            "Lưu Văn Quân","Tạ Thị Trang","Chu Minh Dũng","Đinh Thị Hồng","Võ Văn Phúc",
+            "Nguyễn Thị Mai","Trần Văn Thành","Lê Thị Hương","Phạm Minh Anh","Hoàng Thị Bảo",
+            "Vũ Văn Châu","Đặng Thị Thảo","Bùi Minh Long","Ngô Thị Ngọc","Lý Văn Tuấn",
+            "Trương Thị Khoa","Phan Văn Hải","Đỗ Thị Thanh","Hồ Minh Phong","Mai Thị Huyền",
+            "Lưu Văn Sơn","Tạ Thị Kim","Chu Minh Việt","Đinh Thị Hằng","Võ Văn Đức",
+            "Nguyễn Thị Yến","Trần Văn Long","Lê Thị Châu","Phạm Minh Nam","Hoàng Thị Phương",
+            "Vũ Văn Hùng","Đặng Thị Diễm","Bùi Minh Quân","Ngô Thị Trang","Lý Văn Dũng",
+            "Trương Thị Hồng","Phan Văn Phúc","Đỗ Thị Mai","Hồ Minh Thành","Mai Thị Hương",
+            "Lưu Văn Anh","Tạ Thị Bảo","Chu Minh Châu","Đinh Thị Thảo","Võ Văn Long",
+            "Nguyễn Thị Ngọc","Trần Văn Tuấn","Lê Thị Khoa","Phạm Minh Hải","Hoàng Thị Thanh",
+            "Vũ Văn Phong","Đặng Thị Huyền","Bùi Minh Sơn","Ngô Thị Kim","Lý Văn Việt",
+            "Trương Thị Hằng","Phan Văn Đức","Đỗ Thị Yến","Hồ Minh Long","Mai Thị Châu",
+            "Lưu Văn Nam","Tạ Thị Phương","Chu Minh Hùng","Đinh Thị Diễm","Võ Văn Quân",
+            "Nguyễn Thị Trang","Trần Văn Dũng","Lê Thị Hồng","Phạm Minh Phúc","Hoàng Thị Mai",
+            "Vũ Văn Thành","Đặng Thị Hương","Bùi Minh Anh","Ngô Thị Bảo","Lý Văn Châu",
+            "Trương Thị Thảo","Phan Văn Long","Đỗ Thị Ngọc","Hồ Minh Tuấn","Mai Thị Khoa",
+            "Lưu Văn Hải","Tạ Thị Thanh","Chu Minh Phong","Đinh Thị Huyền","Võ Văn Sơn",
+            "Nguyễn Thị Kim","Trần Văn Việt","Lê Thị Hằng","Phạm Minh Đức","Hoàng Thị Yến",
+            "Vũ Văn Long","Đặng Thị Châu","Bùi Minh Nam","Ngô Thị Phương","Lý Văn Hùng",
+            "Trương Thị Diễm","Phan Văn Quân","Đỗ Thị Trang","Hồ Minh Dũng","Mai Thị Hồng",
+            "Lưu Văn Phúc","Tạ Thị Mai","Chu Minh Thành","Đinh Thị Hương","Võ Văn Anh",
+            "Nguyễn Thị Bảo","Trần Văn Châu","Lê Thị Thảo","Phạm Minh Long","Hoàng Thị Ngọc",
+            "Vũ Văn Tuấn","Đặng Thị Khoa","Bùi Minh Hải","Ngô Thị Thanh","Lý Văn Phong"
         ];
 
         const WORD_BANK = [
@@ -1037,7 +1112,8 @@
         ];
 
         function generateFakeCards(seed) {
-            const count = 4 + (seed % 12);
+            // Tăng mạnh số từ mỗi tài khoản ảo: 25 ~ 90 từ
+            const count = 25 + (seed % 66);
             const cards = [];
             const used = new Set();
             for (let i = 0; i < count; i++) {
@@ -1047,9 +1123,9 @@
                 const w = WORD_BANK[idx];
                 const statusRoll = (seed + i) % 10;
                 let status = "learning";
-                if (statusRoll < 3) status = "mastered";
-                else if (statusRoll < 6) status = "known";
-                const daysAgo = 5 + ((seed + i * 3) % 120);
+                if (statusRoll < 4) status = "mastered";
+                else if (statusRoll < 7) status = "known";
+                const daysAgo = 3 + ((seed + i * 3) % 90);
                 const created = new Date();
                 created.setDate(created.getDate() - daysAgo);
                 cards.push({
@@ -1068,14 +1144,20 @@
 
         function generateFakeHistory(seed, totalCards) {
             const history = {};
+            // Tạo xu hướng tăng dần rõ rệt: ngày càng gần hiện tại thì học càng nhiều
             for (let i = 0; i < 30; i++) {
                 const date = new Date();
                 date.setDate(date.getDate() - i);
                 const dateStr = date.toISOString().split('T')[0];
-                if (((seed + i) % 10) > 3) {
-                    const learned = Math.floor(((seed + i) % 5)) + (totalCards > 8 ? 1 : 0);
-                    const mastered = ((seed + i) % 7) > 4 ? Math.floor(((seed + i) % 3)) : 0;
-                    history[dateStr] = { learnedToday: learned, masteredToday: mastered };
+                // Ngày càng gần (i nhỏ) thì số từ học càng cao
+                const baseLearned = Math.floor(2 + (29 - i) * 0.9 + ((seed + i) % 4));
+                const baseMastered = Math.floor(0.6 + (29 - i) * 0.35 + ((seed + i) % 3));
+                // Hầu hết ngày đều có hoạt động (chỉ bỏ 1-2 ngày)
+                if (((seed + i) % 11) > 1) {
+                    history[dateStr] = {
+                        learnedToday: Math.max(1, baseLearned),
+                        masteredToday: Math.max(0, baseMastered)
+                    };
                 }
             }
             return history;
@@ -1083,20 +1165,21 @@
 
         function createFakeUsers() {
             const users = [];
-            const domains = ["gmail.com","outlook.com","yahoo.com","gmail.com","gmail.com"];
+            const domains = ["gmail.com","outlook.com","yahoo.com","gmail.com","gmail.com","hotmail.com","icloud.com"];
+            // Tạo đủ 520 tài khoản ảo
             for (let i = 0; i < FAKE_NAMES.length; i++) {
                 const name = FAKE_NAMES[i];
                 const parts = name.toLowerCase()
                     .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
                     .replace(/đ/g, "d").replace(/Đ/g, "d")
                     .split(" ");
-                const emailName = parts.join("") + (100 + (i % 90));
+                const emailName = parts.join("") + (100 + (i % 900));
                 const email = emailName + "@" + domains[i % domains.length];
-                const year = 2025 + (i % 2);
+                const year = 2024 + (i % 3);
                 const month = 1 + (i % 12);
                 const day = 1 + (i % 28);
                 const createdAt = new Date(year, month - 1, day);
-                const banned = (i % 37 === 0);
+                const banned = (i % 47 === 0);
                 const cards = generateFakeCards(i + 17);
                 users.push({
                     id: "fake_u" + String(i + 1).padStart(3, "0"),
@@ -1418,7 +1501,8 @@ Chỉ trả về JSON, không thêm bất kỳ văn bản nào khác.`;
                 const fakeBanned = FAKE_USERS.filter(u => u.banned).length;
                 document.getElementById('total-users').textContent = realCount + FAKE_USERS.length;
                 document.getElementById('banned-users').textContent = bannedCount + fakeBanned;
-                document.getElementById('active-today').textContent = Math.floor(Math.random() * 12) + 28 + Math.floor(FAKE_USERS.length * 0.25);
+                // Số người hoạt động hôm nay rất cao và ổn định
+                document.getElementById('active-today').textContent = Math.floor(FAKE_USERS.length * 0.38) + Math.floor(Math.random() * 25) + 45;
             });
             db.collection('categories').get().then(snapshot => {
                 document.getElementById('total-categories').textContent = snapshot.size;
