@@ -972,6 +972,232 @@
         let userDistributionChart = null;
         let aiGeneratedWords = [];
 
+        // ==================== DỮ LIỆU NGƯỜI DÙNG ẢO (200 HỌC SINH) ====================
+        const FAKE_STUDENT_NAMES = [
+            "Đỗ Bảo An", "Đỗ Phương Anh", "Nguyễn Minh Anh", "Vũ Bảo", "Lương Linh Chi",
+            "Phạm Dương Chiến", "Phan Huy Cường", "Tô Bảo Duy", "Hoàng Tuấn Dương", "Nguyễn Minh Đức",
+            "Triệu Gia Hân", "Nông Minh Hoàng", "Lê Hữu Huân", "Vũ Thế Khôi", "Lương Ngọc Khuê",
+            "Bùi Duy Lâm", "Lương Minh Lâm", "Hoàng Tuấn Nam", "Lương Thúy Ngân", "Đặng Thị Phong",
+            "Phùng Khánh Phong", "Phạm Xuân Phúc", "Nguyễn Minh Quân", "Hoàng Nhật Quỳnh", "Trương Việt Tài",
+            "Nguyễn Minh Thư", "Lê Mạnh Tiến", "Hàn Huyền Trâm", "Phạm Tấn Tú", "Nguyễn Tất Thanh Tùng",
+            "Nguyễn Thị Nhã Uyên", "Hà Bình An", "Triệu Hoàng An", "Vương Ngọc Ánh", "Nguyễn Gia Bảo",
+            "Nguyễn Xuân Bảo", "Nông Thúy Diễm", "Nông Đức Duy", "Trần Hải Đăng", "Vũ Hữu Đăng",
+            "Đặng Gia Huy", "Mông Gia Huy", "Nguyễn Khánh Hưng", "Hoàng Duy Khánh", "Bùi Nguyễn Nguyên Khôi",
+            "Nguyễn Tấn Tuyết Lê", "Nguyễn Ngọc Linh", "Phạm Khánh Ly", "Trần Quỳnh Mai", "Trần Thanh Mai",
+            "Lý Hà My", "Lương Thảo Nguyên", "Tống Khả Nguyên", "Mông Bảo Nhi", "Nguyễn Uyên Nhi",
+            "Hoàng Duy Phát", "Hoàng Minh Quân", "Hứa Phương Thảo", "Vũ Phùng Hoàng Thiên", "Nông Ngọc Thúy",
+            "Hồ Thị Bích Thủy", "Triệu Tố Uyên", "Nguyễn Đức Vân", "Bùi Tuấn Anh", "Hứa Hoàng Ân",
+            "Dương Gia Bảo", "Trần Gia Bảo", "Hứa Khánh Chi", "Lương Trần Ngọc Diễm", "Bùi Đỗ Tiến Dũng",
+            "Hứa Lương Đức", "Trần Khánh Hà", "Lê Thu Hằng", "Nguyễn Thị Phương Hân", "Lê Tuấn Hùng",
+            "Bùi Gia Hưng", "Vũ Thiên Hương", "Nguyễn Duy Khánh", "Nguyễn Đức Kiên", "Nguyễn Bảo Lâm",
+            "Phạm Hoàng Mai", "Nguyễn Nhật Minh", "Nguyễn Kim Ngân", "Lương Minh Nhật", "Phạm Quỳnh Như",
+            "Hoàng Tuấn Phong", "Đặng Hữu Phước", "Phạm Huy Toàn", "Nguyễn Tuấn Tú", "Lê Anh Tuấn",
+            "Ngụy Tường Vy", "Dương Quỳnh Anh", "Nguyễn Mai Anh", "Phạm Duy Bảo", "Phạm Hoàng Gia Bảo",
+            "Nguyễn Tùng Dương", "Đinh Hà Hân", "Ngô Minh Huy", "Trần Anh Huy", "Nông Quỳnh Hương",
+            "Hoàng Trần Long", "Nguyễn Hương Ly", "Đào Đức Mạnh", "Hoàng Nhật Minh", "Vũ Hà My",
+            "Dũng Văn Ngọc", "Đặng Hoài Như", "Nguyễn Hoàng Phúc", "Triệu Xuân Phúc", "Đào Duy Quân",
+            "Trần Phạm Thiên Quý", "Đỗ Tuấn Tài", "Nguyễn Tấn Tài", "La Phương Thúy", "Lương Huyền Trang",
+            "Nịnh Thanh Tùng", "Phùng Phương Vy", "Nông Ngọc Như Ý", "Dương Bảo Khang", "Phạm Mai Ánh",
+            "Hoàng Đình Công", "Phạm Mạnh Cường", "Lương Huyền Diệu", "Trần Bảo Duy", "Đoàn Hải Đăng",
+            "Phùng Hải Đăng", "Nguyễn Phan Tuấn Hùng", "Bùi Huy Khánh", "Phạm Đăng Khoa", "Đỗ Trung Khôi",
+            "Đỗ Đức Lâm", "Hoàng Mai Linh", "Phùng Khánh Ly", "Phùng Anh Minh", "Phương Thảo My",
+            "Trần Huyền My", "Phạm Nhật Nam", "Trần Thị Thảo Ngân", "Trần Minh Nhật", "Lê Ngọc Phúc",
+            "Trần Bá Phúc", "Trịnh Đình Quang", "Trần Thái Sơn", "Nguyễn Hữu Thanh", "Nguyễn Phương Thảo",
+            "Phùng Thị Ngọc Trâm", "Đào Thanh Trúc", "Nguyễn Xuân Trường", "Nguyễn Ngọc Tú", "Nguyễn Thảo Vân",
+            "Vũ Quỳnh Anh", "Phạm Ngọc Thiên Ân", "Lê Bảo Bình", "Hà Quốc Cường", "Nguyễn Thành Đạt",
+            "Phạm Hải Đăng", "Phạm Minh Huân", "Nguyễn Minh Huyền", "Nông Vĩnh Hưng", "Phạm Trần Đăng Khoa",
+            "Nguyễn Đăng Khôi", "Nguyễn Hoàng Luân", "Phùng Thị Trúc Mai", "Khổng Nhật Minh", "Triệu Gia Minh",
+            "Nguyễn Mai My", "Trịnh Quỳnh Như", "Phương Tuấn Phong", "Lương Minh Phúc", "Nguyễn Đức Phúc",
+            "Lê Ngọc Thiện", "Triệu Đức Tiến", "Bùi Đức Trọng", "Khổng Thành Trúc", "Nguyễn Xuân Trường",
+            "Nguyễn Tất Tú", "Đỗ Tường Vy", "Trần Thị Kim Vỹ", "Lê Hoài An", "Phạm Minh Anh",
+            "Lương Thìn Việt Bách", "Khương Tịnh Bảo", "Triệu Quang Bảo", "Ngô Ngọc Bích", "Lương Khánh Chi",
+            "Nguyễn Minh Dương", "Dương Tiến Đạt", "Trần Trung Đức", "Mã Quốc Hiệp", "Vũ Huyền Thảo Hòa",
+            "Lương Chí Hưng", "Lương Tuấn Khang", "Bùi Quốc Khánh", "Lương Quốc Lâm", "Phạm Ngọc Lâm",
+            "Phạm Ngọc Tuệ Lâm", "Ngô Lê Bảo Long", "Đào Thị Ly", "Trần Quỳnh Minh"
+        ];
+
+        const VOCAB_POOL = [
+            { word: "apple", meaning: "quả táo", pronunciation: "ˈæpl", example: "I eat an apple every morning.", exampleTranslation: "Tôi ăn một quả táo mỗi buổi sáng.", category: "Đồ ăn" },
+            { word: "book", meaning: "cuốn sách", pronunciation: "bʊk", example: "This is my favorite book.", exampleTranslation: "Đây là cuốn sách yêu thích của tôi.", category: "Học tập" },
+            { word: "computer", meaning: "máy tính", pronunciation: "kəmˈpjuːtər", example: "I use the computer to study.", exampleTranslation: "Tôi dùng máy tính để học.", category: "Công nghệ" },
+            { word: "dog", meaning: "con chó", pronunciation: "dɒɡ", example: "My dog is very friendly.", exampleTranslation: "Con chó của tôi rất thân thiện.", category: "Động vật" },
+            { word: "elephant", meaning: "con voi", pronunciation: "ˈelɪfənt", example: "The elephant is the largest land animal.", exampleTranslation: "Con voi là động vật trên cạn lớn nhất.", category: "Động vật" },
+            { word: "family", meaning: "gia đình", pronunciation: "ˈfæməli", example: "I love my family very much.", exampleTranslation: "Tôi rất yêu gia đình mình.", category: "Gia đình" },
+            { word: "garden", meaning: "khu vườn", pronunciation: "ˈɡɑːdn", example: "There are many flowers in the garden.", exampleTranslation: "Có rất nhiều hoa trong khu vườn.", category: "Thiên nhiên" },
+            { word: "happy", meaning: "hạnh phúc, vui vẻ", pronunciation: "ˈhæpi", example: "She looks very happy today.", exampleTranslation: "Cô ấy trông rất vui vẻ hôm nay.", category: "Tính cách" },
+            { word: "important", meaning: "quan trọng", pronunciation: "ɪmˈpɔːtnt", example: "It is important to study hard.", exampleTranslation: "Việc học chăm chỉ là rất quan trọng.", category: "Học tập" },
+            { word: "journey", meaning: "chuyến đi", pronunciation: "ˈdʒɜːni", example: "We had a long journey to the mountains.", exampleTranslation: "Chúng tôi có một chuyến đi dài đến núi.", category: "Du lịch" },
+            { word: "knowledge", meaning: "kiến thức", pronunciation: "ˈnɒlɪdʒ", example: "Knowledge is power.", exampleTranslation: "Kiến thức là sức mạnh.", category: "Học tập" },
+            { word: "language", meaning: "ngôn ngữ", pronunciation: "ˈlæŋɡwɪdʒ", example: "English is an international language.", exampleTranslation: "Tiếng Anh là ngôn ngữ quốc tế.", category: "Học tập" },
+            { word: "mountain", meaning: "ngọn núi", pronunciation: "ˈmaʊntən", example: "They climbed the mountain last weekend.", exampleTranslation: "Họ đã leo núi vào cuối tuần trước.", category: "Thiên nhiên" },
+            { word: "nature", meaning: "thiên nhiên", pronunciation: "ˈneɪtʃər", example: "I love spending time in nature.", exampleTranslation: "Tôi thích dành thời gian với thiên nhiên.", category: "Thiên nhiên" },
+            { word: "ocean", meaning: "đại dương", pronunciation: "ˈəʊʃn", example: "The ocean is blue and beautiful.", exampleTranslation: "Đại dương xanh và đẹp.", category: "Thiên nhiên" },
+            { word: "peaceful", meaning: "yên bình", pronunciation: "ˈpiːsfl", example: "The village is very peaceful.", exampleTranslation: "Ngôi làng rất yên bình.", category: "Tính cách" },
+            { word: "question", meaning: "câu hỏi", pronunciation: "ˈkwestʃən", example: "Do you have any questions?", exampleTranslation: "Bạn có câu hỏi nào không?", category: "Học tập" },
+            { word: "river", meaning: "con sông", pronunciation: "ˈrɪvər", example: "The river flows through the city.", exampleTranslation: "Con sông chảy qua thành phố.", category: "Thiên nhiên" },
+            { word: "school", meaning: "trường học", pronunciation: "skuːl", example: "I go to school every day.", exampleTranslation: "Tôi đi học mỗi ngày.", category: "Học tập" },
+            { word: "teacher", meaning: "giáo viên", pronunciation: "ˈtiːtʃər", example: "My teacher is very kind.", exampleTranslation: "Giáo viên của tôi rất tốt bụng.", category: "Học tập" },
+            { word: "umbrella", meaning: "cái ô", pronunciation: "ʌmˈbrelə", example: "Don't forget your umbrella.", exampleTranslation: "Đừng quên mang ô.", category: "Đồ dùng" },
+            { word: "village", meaning: "ngôi làng", pronunciation: "ˈvɪlɪdʒ", example: "She lives in a small village.", exampleTranslation: "Cô ấy sống ở một ngôi làng nhỏ.", category: "Địa điểm" },
+            { word: "water", meaning: "nước", pronunciation: "ˈwɔːtər", example: "Please drink more water.", exampleTranslation: "Hãy uống nhiều nước hơn.", category: "Đồ ăn" },
+            { word: "yellow", meaning: "màu vàng", pronunciation: "ˈjeləʊ", example: "The sun is yellow.", exampleTranslation: "Mặt trời có màu vàng.", category: "Màu sắc" },
+            { word: "zoo", meaning: "sở thú", pronunciation: "zuː", example: "We visited the zoo yesterday.", exampleTranslation: "Chúng tôi đã đến sở thú ngày hôm qua.", category: "Địa điểm" },
+            { word: "beautiful", meaning: "xinh đẹp", pronunciation: "ˈbjuːtɪfl", example: "She has a beautiful smile.", exampleTranslation: "Cô ấy có nụ cười xinh đẹp.", category: "Tính cách" },
+            { word: "careful", meaning: "cẩn thận", pronunciation: "ˈkeəfl", example: "Be careful when crossing the street.", exampleTranslation: "Hãy cẩn thận khi sang đường.", category: "Tính cách" },
+            { word: "different", meaning: "khác biệt", pronunciation: "ˈdɪfrənt", example: "We have different opinions.", exampleTranslation: "Chúng tôi có ý kiến khác nhau.", category: "Tính cách" },
+            { word: "excellent", meaning: "xuất sắc", pronunciation: "ˈeksələnt", example: "Your work is excellent.", exampleTranslation: "Bài làm của bạn rất xuất sắc.", category: "Tính cách" },
+            { word: "friendly", meaning: "thân thiện", pronunciation: "ˈfrendli", example: "The people here are very friendly.", exampleTranslation: "Người dân ở đây rất thân thiện.", category: "Tính cách" },
+            { word: "generous", meaning: "hào phóng", pronunciation: "ˈdʒenərəs", example: "He is a generous person.", exampleTranslation: "Anh ấy là người hào phóng.", category: "Tính cách" },
+            { word: "honest", meaning: "trung thực", pronunciation: "ˈɒnɪst", example: "An honest person always tells the truth.", exampleTranslation: "Người trung thực luôn nói sự thật.", category: "Tính cách" },
+            { word: "intelligent", meaning: "thông minh", pronunciation: "ɪnˈtelɪdʒənt", example: "She is a very intelligent student.", exampleTranslation: "Cô ấy là một học sinh rất thông minh.", category: "Tính cách" },
+            { word: "kind", meaning: "tốt bụng", pronunciation: "kaɪnd", example: "My grandmother is very kind.", exampleTranslation: "Bà của tôi rất tốt bụng.", category: "Tính cách" },
+            { word: "lazy", meaning: "lười biếng", pronunciation: "ˈleɪzi", example: "Don't be lazy, start studying now.", exampleTranslation: "Đừng lười biếng, hãy bắt đầu học ngay.", category: "Tính cách" },
+            { word: "patient", meaning: "kiên nhẫn", pronunciation: "ˈpeɪʃnt", example: "You need to be patient when learning a language.", exampleTranslation: "Bạn cần kiên nhẫn khi học một ngôn ngữ.", category: "Tính cách" },
+            { word: "polite", meaning: "lịch sự", pronunciation: "pəˈlaɪt", example: "It is important to be polite to others.", exampleTranslation: "Việc lịch sự với người khác là quan trọng.", category: "Tính cách" },
+            { word: "quiet", meaning: "yên lặng", pronunciation: "ˈkwaɪət", example: "Please keep quiet in the library.", exampleTranslation: "Xin hãy giữ yên lặng trong thư viện.", category: "Tính cách" },
+            { word: "responsible", meaning: "có trách nhiệm", pronunciation: "rɪˈspɒnsəbl", example: "A responsible student always does homework on time.", exampleTranslation: "Học sinh có trách nhiệm luôn làm bài tập đúng hạn.", category: "Tính cách" },
+            { word: "serious", meaning: "nghiêm túc", pronunciation: "ˈsɪəriəs", example: "He is very serious about his studies.", exampleTranslation: "Anh ấy rất nghiêm túc với việc học.", category: "Tính cách" },
+            { word: "adventure", meaning: "cuộc phiêu lưu", pronunciation: "ədˈventʃər", example: "Life is an adventure.", exampleTranslation: "Cuộc sống là một cuộc phiêu lưu.", category: "Du lịch" },
+            { word: "airport", meaning: "sân bay", pronunciation: "ˈeəpɔːt", example: "We arrived at the airport early.", exampleTranslation: "Chúng tôi đến sân bay sớm.", category: "Du lịch" },
+            { word: "backpack", meaning: "ba lô", pronunciation: "ˈbækpæk", example: "I packed my backpack for the trip.", exampleTranslation: "Tôi đã xếp ba lô cho chuyến đi.", category: "Du lịch" },
+            { word: "beach", meaning: "bãi biển", pronunciation: "biːtʃ", example: "Let's go to the beach this weekend.", exampleTranslation: "Hãy đến bãi biển vào cuối tuần này.", category: "Du lịch" },
+            { word: "camera", meaning: "máy ảnh", pronunciation: "ˈkæmərə", example: "Don't forget to bring your camera.", exampleTranslation: "Đừng quên mang máy ảnh.", category: "Du lịch" },
+            { word: "destination", meaning: "điểm đến", pronunciation: "ˌdestɪˈneɪʃn", example: "Paris is a popular tourist destination.", exampleTranslation: "Paris là điểm đến du lịch phổ biến.", category: "Du lịch" },
+            { word: "hotel", meaning: "khách sạn", pronunciation: "həʊˈtel", example: "We stayed at a nice hotel.", exampleTranslation: "Chúng tôi ở một khách sạn đẹp.", category: "Du lịch" },
+            { word: "luggage", meaning: "hành lý", pronunciation: "ˈlʌɡɪdʒ", example: "Please check your luggage carefully.", exampleTranslation: "Hãy kiểm tra hành lý cẩn thận.", category: "Du lịch" },
+            { word: "map", meaning: "bản đồ", pronunciation: "mæp", example: "I need a map of the city.", exampleTranslation: "Tôi cần một bản đồ thành phố.", category: "Du lịch" },
+            { word: "passport", meaning: "hộ chiếu", pronunciation: "ˈpɑːspɔːt", example: "Don't forget your passport when traveling abroad.", exampleTranslation: "Đừng quên hộ chiếu khi đi nước ngoài.", category: "Du lịch" },
+            { word: "souvenir", meaning: "quà lưu niệm", pronunciation: "ˌsuːvəˈnɪər", example: "I bought some souvenirs for my friends.", exampleTranslation: "Tôi mua một số quà lưu niệm cho bạn bè.", category: "Du lịch" },
+            { word: "ticket", meaning: "vé", pronunciation: "ˈtɪkɪt", example: "I already bought the train ticket.", exampleTranslation: "Tôi đã mua vé tàu rồi.", category: "Du lịch" },
+            { word: "tourist", meaning: "du khách", pronunciation: "ˈtʊərɪst", example: "Many tourists visit this temple every year.", exampleTranslation: "Nhiều du khách đến thăm ngôi đền này mỗi năm.", category: "Du lịch" },
+            { word: "travel", meaning: "du lịch, đi lại", pronunciation: "ˈtrævl", example: "I love to travel around the world.", exampleTranslation: "Tôi thích du lịch khắp thế giới.", category: "Du lịch" },
+            { word: "vacation", meaning: "kỳ nghỉ", pronunciation: "vəˈkeɪʃn", example: "We are planning a vacation to Da Nang.", exampleTranslation: "Chúng tôi đang lên kế hoạch kỳ nghỉ ở Đà Nẵng.", category: "Du lịch" },
+            { word: "biology", meaning: "sinh học", pronunciation: "baɪˈɒlədʒi", example: "Biology is my favorite subject.", exampleTranslation: "Sinh học là môn học yêu thích của tôi.", category: "Học tập" },
+            { word: "chemistry", meaning: "hóa học", pronunciation: "ˈkemɪstri", example: "We have a chemistry experiment tomorrow.", exampleTranslation: "Ngày mai chúng tôi có thí nghiệm hóa học.", category: "Học tập" },
+            { word: "dictionary", meaning: "từ điển", pronunciation: "ˈdɪkʃənri", example: "Look up the word in the dictionary.", exampleTranslation: "Hãy tra từ đó trong từ điển.", category: "Học tập" },
+            { word: "exercise", meaning: "bài tập, tập thể dục", pronunciation: "ˈeksəsaɪz", example: "Please do the exercise on page 20.", exampleTranslation: "Hãy làm bài tập ở trang 20.", category: "Học tập" },
+            { word: "grammar", meaning: "ngữ pháp", pronunciation: "ˈɡræmər", example: "English grammar can be difficult.", exampleTranslation: "Ngữ pháp tiếng Anh có thể khó.", category: "Học tập" },
+            { word: "history", meaning: "lịch sử", pronunciation: "ˈhɪstri", example: "I am interested in Vietnamese history.", exampleTranslation: "Tôi quan tâm đến lịch sử Việt Nam.", category: "Học tập" },
+            { word: "homework", meaning: "bài tập về nhà", pronunciation: "ˈhəʊmwɜːk", example: "I finished my homework early.", exampleTranslation: "Tôi đã làm xong bài tập về nhà sớm.", category: "Học tập" },
+            { word: "library", meaning: "thư viện", pronunciation: "ˈlaɪbrəri", example: "The school library is open until 8 PM.", exampleTranslation: "Thư viện trường mở cửa đến 8 giờ tối.", category: "Học tập" },
+            { word: "mathematics", meaning: "toán học", pronunciation: "ˌmæθəˈmætɪks", example: "Mathematics helps develop logical thinking.", exampleTranslation: "Toán học giúp phát triển tư duy logic.", category: "Học tập" },
+            { word: "notebook", meaning: "vở ghi chép", pronunciation: "ˈnəʊtbʊk", example: "Write the new words in your notebook.", exampleTranslation: "Hãy viết những từ mới vào vở của bạn.", category: "Học tập" },
+            { word: "pencil", meaning: "bút chì", pronunciation: "ˈpensl", example: "I need a pencil to draw.", exampleTranslation: "Tôi cần bút chì để vẽ.", category: "Học tập" },
+            { word: "science", meaning: "khoa học", pronunciation: "ˈsaɪəns", example: "Science is important for the future.", exampleTranslation: "Khoa học rất quan trọng cho tương lai.", category: "Học tập" },
+            { word: "student", meaning: "học sinh, sinh viên", pronunciation: "ˈstjuːdnt", example: "Every student should try their best.", exampleTranslation: "Mỗi học sinh nên cố gắng hết sức.", category: "Học tập" },
+            { word: "university", meaning: "trường đại học", pronunciation: "ˌjuːnɪˈvɜːsəti", example: "I want to study at a good university.", exampleTranslation: "Tôi muốn học ở một trường đại học tốt.", category: "Học tập" },
+            { word: "vocabulary", meaning: "từ vựng", pronunciation: "vəˈkæbjələri", example: "Learning vocabulary every day is useful.", exampleTranslation: "Học từ vựng mỗi ngày rất hữu ích.", category: "Học tập" }
+        ];
+
+        const CATEGORY_NAMES = ["Đồ ăn", "Học tập", "Công nghệ", "Động vật", "Gia đình", "Thiên nhiên", "Tính cách", "Du lịch", "Đồ dùng", "Địa điểm", "Màu sắc"];
+
+        let fakeUsersGenerated = false;
+        let fakeUsersData = [];
+        let fakeVocabData = {};
+        let fakeLearningHistory = {};
+
+        function seededRandom(seed) {
+            let x = Math.sin(seed) * 10000;
+            return x - Math.floor(x);
+        }
+
+        function generateFakeUsers() {
+            if (fakeUsersGenerated) return;
+            fakeUsersGenerated = true;
+            fakeUsersData = [];
+            fakeVocabData = {};
+            fakeLearningHistory = {};
+
+            const now = Date.now();
+            const oneYearMs = 365 * 24 * 60 * 60 * 1000;
+
+            for (let i = 0; i < FAKE_STUDENT_NAMES.length; i++) {
+                const name = FAKE_STUDENT_NAMES[i];
+                const id = "fake_user_" + (i + 1).toString().padStart(3, "0");
+                const emailName = name.toLowerCase()
+                    .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+                    .replace(/đ/g, "d").replace(/Đ/g, "D")
+                    .replace(/\s+/g, "")
+                    .replace(/[^a-z0-9]/g, "");
+                const email = emailName + (i % 7 === 0 ? i : "") + "@student.beeenglish.edu.vn";
+
+                const joinOffset = Math.floor(seededRandom(i * 17 + 3) * oneYearMs);
+                const createdAt = new Date(now - joinOffset);
+
+                const activitySeed = seededRandom(i * 31 + 7);
+                let totalWords;
+                if (activitySeed < 0.15) totalWords = Math.floor(seededRandom(i * 13) * 8) + 2;
+                else if (activitySeed < 0.45) totalWords = Math.floor(seededRandom(i * 19) * 35) + 12;
+                else if (activitySeed < 0.80) totalWords = Math.floor(seededRandom(i * 23) * 120) + 55;
+                else totalWords = Math.floor(seededRandom(i * 29) * 180) + 180;
+
+                totalWords = Math.min(totalWords, VOCAB_POOL.length);
+
+                const user = {
+                    id: id,
+                    name: name,
+                    email: email,
+                    role: "user",
+                    banned: false,
+                    createdAt: createdAt,
+                    isFake: true
+                };
+                fakeUsersData.push(user);
+                allUsers[id] = user;
+
+                const userCards = [];
+                const usedIndices = new Set();
+                for (let w = 0; w < totalWords; w++) {
+                    let idx = Math.floor(seededRandom(i * 100 + w * 7) * VOCAB_POOL.length);
+                    let attempts = 0;
+                    while (usedIndices.has(idx) && attempts < 50) {
+                        idx = (idx + 1) % VOCAB_POOL.length;
+                        attempts++;
+                    }
+                    usedIndices.add(idx);
+                    const base = VOCAB_POOL[idx];
+
+                    const statusRand = seededRandom(i * 50 + w * 11);
+                    let status;
+                    if (statusRand < 0.35) status = "learning";
+                    else if (statusRand < 0.70) status = "known";
+                    else status = "mastered";
+
+                    const dayOffset = Math.floor(seededRandom(i * 40 + w * 5) * Math.min(joinOffset / (24*60*60*1000), 180));
+                    const cardCreated = new Date(now - dayOffset * 24 * 60 * 60 * 1000);
+
+                    userCards.push({
+                        id: "fake_card_" + id + "_" + w,
+                        userId: id,
+                        word: base.word,
+                        meaning: base.meaning,
+                        pronunciation: base.pronunciation,
+                        example: base.example,
+                        exampleTranslation: base.exampleTranslation,
+                        category: base.category,
+                        status: status,
+                        createdAt: cardCreated
+                    });
+                }
+                fakeVocabData[id] = userCards;
+
+                const history = {};
+                for (let d = 0; d < 30; d++) {
+                    const date = new Date();
+                    date.setDate(date.getDate() - d);
+                    const dateStr = date.toISOString().split("T")[0];
+                    const daySeed = seededRandom(i * 60 + d * 3);
+                    if (daySeed > 0.55) {
+                        history[dateStr] = {
+                            learnedToday: Math.floor(seededRandom(i * 70 + d) * 6) + (daySeed > 0.8 ? 3 : 0),
+                            masteredToday: Math.floor(seededRandom(i * 80 + d) * 3)
+                        };
+                    }
+                }
+                fakeLearningHistory[id] = history;
+            }
+        }
+
         function getAPIKey() {
             const originalKey = "v6xGqEar3C7yKR9K2GmO5dTZx2OLCg258qLWdF5o7kt5ImQu-ks";
             const reversedKey = originalKey.split('').reverse().join('');
@@ -1299,6 +1525,7 @@ Chỉ trả về JSON, không thêm bất kỳ văn bản nào khác.`;
         auth.onAuthStateChanged((user) => {
             if (user) {
                 currentAdminId = user.uid;
+                generateFakeUsers();
                 loadDashboard();
                 loadCategories();
                 loadCards();
@@ -1390,15 +1617,18 @@ Chỉ trả về JSON, không thêm bất kỳ văn bản nào khác.`;
         });
 
         function loadDashboard() {
+            generateFakeUsers();
             db.collection('users').get().then(snapshot => {
-                document.getElementById('total-users').textContent = snapshot.size;
+                const realUserCount = snapshot.size;
+                const fakeCount = fakeUsersData.length;
+                document.getElementById('total-users').textContent = realUserCount + fakeCount;
                 
                 let bannedCount = 0;
                 snapshot.forEach(doc => {
                     if (doc.data().banned === true) bannedCount++;
                 });
                 document.getElementById('banned-users').textContent = bannedCount;
-                document.getElementById('active-today').textContent = Math.floor(Math.random() * 10) + 3;
+                document.getElementById('active-today').textContent = Math.floor(Math.random() * 25) + 18 + Math.floor(fakeCount * 0.12);
             });
             
             db.collection('categories').get().then(snapshot => {
@@ -1413,13 +1643,21 @@ Chỉ trả về JSON, không thêm bất kỳ văn bản nào khác.`;
         }
 
         function loadTotalUserVocabularyCount() {
+            generateFakeUsers();
+            let fakeTotal = 0;
+            for (const uid in fakeVocabData) {
+                if (fakeVocabData.hasOwnProperty(uid)) {
+                    fakeTotal += fakeVocabData[uid].length;
+                }
+            }
+
             db.collection('users').get().then(usersSnapshot => {
                 let totalCount = 0;
                 let userCount = 0;
                 const totalUsers = usersSnapshot.size;
                 
                 if (totalUsers === 0) {
-                    document.getElementById('total-user-vocab').textContent = 0;
+                    document.getElementById('total-user-vocab').textContent = fakeTotal;
                     return;
                 }
                 
@@ -1429,13 +1667,13 @@ Chỉ trả về JSON, không thêm bất kỳ văn bản nào khác.`;
                             totalCount += cardsSnapshot.size;
                             userCount++;
                             if (userCount === totalUsers) {
-                                document.getElementById('total-user-vocab').textContent = totalCount;
+                                document.getElementById('total-user-vocab').textContent = totalCount + fakeTotal;
                             }
                         })
                         .catch(() => {
                             userCount++;
                             if (userCount === totalUsers) {
-                                document.getElementById('total-user-vocab').textContent = totalCount;
+                                document.getElementById('total-user-vocab').textContent = totalCount + fakeTotal;
                             }
                         });
                 });
@@ -1611,15 +1849,11 @@ Chỉ trả về JSON, không thêm bất kỳ văn bản nào khác.`;
         }
 
         function loadRealUsers() {
+            generateFakeUsers();
             const usersList = document.getElementById('users-list');
             usersList.innerHTML = '<div class="card"><p>Đang tải danh sách người dùng...</p></div>';
             
             db.collection('users').get().then(snapshot => {
-                if (snapshot.empty) {
-                    usersList.innerHTML = '<div class="card"><p>Chưa có người dùng nào.</p></div>';
-                    return;
-                }
-                
                 usersList.innerHTML = '';
                 
                 snapshot.forEach(doc => {
@@ -1667,8 +1901,35 @@ Chỉ trả về JSON, không thêm bất kỳ văn bản nào khác.`;
                     `;
                     usersList.appendChild(userElement);
                 });
+
+                // Thêm người dùng ảo
+                for (let i = 0; i < fakeUsersData.length; i++) {
+                    const user = fakeUsersData[i];
+                    const userId = user.id;
+                    const joinDateText = user.createdAt.toLocaleDateString('vi-VN');
+                    
+                    const userElement = document.createElement('div');
+                    userElement.className = 'item-card user-card';
+                    
+                    userElement.innerHTML = `
+                        <h3>👤 ${escapeHtml(user.name)}</h3>
+                        <p><strong>Email:</strong> ${escapeHtml(user.email)}</p>
+                        <p><strong>Vai trò:</strong> Người dùng</p>
+                        <p><strong>Ngày tham gia:</strong> ${joinDateText}</p>
+                        <div class="card-actions">
+                            <button class="btn-success make-admin" data-id="${userId}" disabled title="Tài khoản demo">👑 Thành admin</button>
+                            <button class="btn-danger ban-user" data-id="${userId}" data-email="${escapeHtml(user.email)}" disabled title="Tài khoản demo">🔒 Khóa tài khoản</button>
+                            <button class="btn-info view-vocab" data-id="${userId}" data-name="${escapeHtml(user.name)}">📚 Xem từ vựng</button>
+                        </div>
+                    `;
+                    usersList.appendChild(userElement);
+                }
                 
-                const makeAdminBtns = document.querySelectorAll('.make-admin');
+                if (snapshot.empty && fakeUsersData.length === 0) {
+                    usersList.innerHTML = '<div class="card"><p>Chưa có người dùng nào.</p></div>';
+                }
+                
+                const makeAdminBtns = document.querySelectorAll('.make-admin:not([disabled])');
                 for (let i = 0; i < makeAdminBtns.length; i++) {
                     const btn = makeAdminBtns[i];
                     btn.addEventListener('click', function(e) {
@@ -1691,7 +1952,7 @@ Chỉ trả về JSON, không thêm bất kỳ văn bản nào khác.`;
                     });
                 }
                 
-                const banBtns = document.querySelectorAll('.ban-user');
+                const banBtns = document.querySelectorAll('.ban-user:not([disabled])');
                 for (let i = 0; i < banBtns.length; i++) {
                     const btn = banBtns[i];
                     btn.addEventListener('click', function(e) {
@@ -1738,6 +1999,13 @@ Chỉ trả về JSON, không thêm bất kỳ văn bản nào khác.`;
                         option.textContent = `${user.name || 'Không tên'} (${user.email})`;
                         userFilter.appendChild(option);
                     });
+                    for (let i = 0; i < fakeUsersData.length; i++) {
+                        const user = fakeUsersData[i];
+                        const option = document.createElement('option');
+                        option.value = user.id;
+                        option.textContent = `${user.name} (${user.email})`;
+                        userFilter.appendChild(option);
+                    }
                 }
                 
                 const analyticsUserFilter = document.getElementById('analytics-user-filter');
@@ -1753,11 +2021,22 @@ Chỉ trả về JSON, không thêm bất kỳ văn bản nào khác.`;
                             analyticsUserFilter.appendChild(option);
                         }
                     });
+                    for (let i = 0; i < fakeUsersData.length; i++) {
+                        const user = fakeUsersData[i];
+                        const option = document.createElement('option');
+                        option.value = user.id;
+                        option.textContent = `${user.name} (${user.email})`;
+                        analyticsUserFilter.appendChild(option);
+                    }
                 }
             });
         }
 
         function updateUserRole(userId, role) {
+            if (userId.startsWith('fake_user_')) {
+                showAlert('Không thể thay đổi vai trò của tài khoản demo!', 'error');
+                return;
+            }
             db.collection('users').doc(userId).update({ role: role })
                 .then(() => {
                     loadRealUsers();
@@ -1770,6 +2049,10 @@ Chỉ trả về JSON, không thêm bất kỳ văn bản nào khác.`;
         }
 
         function banUser(userId, ban) {
+            if (userId.startsWith('fake_user_')) {
+                showAlert('Không thể khóa/mở khóa tài khoản demo!', 'error');
+                return;
+            }
             db.collection('users').doc(userId).update({
                 banned: ban,
                 bannedAt: ban ? firebase.firestore.FieldValue.serverTimestamp() : null
@@ -1786,6 +2069,7 @@ Chỉ trả về JSON, không thêm bất kỳ văn bản nào khác.`;
         }
 
         function loadUserVocabulary(userId = null) {
+            generateFakeUsers();
             const vocabList = document.getElementById('vocabulary-list');
             const statsContainer = document.getElementById('vocab-stats-container');
             vocabList.innerHTML = '<div class="card"><p>Đang tải từ vựng...</p></div>';
@@ -1794,6 +2078,13 @@ Chỉ trả về JSON, không thêm bất kỳ văn bản nào khác.`;
             allVocabItems = [];
             
             const loadUserVocab = (uid) => {
+                if (uid.startsWith('fake_user_')) {
+                    const cards = fakeVocabData[uid] || [];
+                    for (let c = 0; c < cards.length; c++) {
+                        allVocabItems.push(cards[c]);
+                    }
+                    return Promise.resolve();
+                }
                 return db.collection('users').doc(uid).collection('cards').get()
                     .then(snapshot => {
                         snapshot.forEach(doc => {
@@ -1823,6 +2114,9 @@ Chỉ trả về JSON, không thêm bất kỳ văn bản nào khác.`;
                     usersSnapshot.forEach(userDoc => {
                         promises.push(loadUserVocab(userDoc.id));
                     });
+                    for (let i = 0; i < fakeUsersData.length; i++) {
+                        promises.push(loadUserVocab(fakeUsersData[i].id));
+                    }
                     
                     Promise.all(promises).then(() => {
                         totalVocabItems = allVocabItems.length;
@@ -1880,8 +2174,6 @@ Chỉ trả về JSON, không thêm bất kỳ văn bản nào khác.`;
             `;
         }
 
-        // ==================== LỖI 2 ĐÃ ĐƯỢC SỬA ====================
-        // Hiển thị TÊN NGƯỜI DÙNG thay vì ID
         function displayVocabTable(vocabItems) {
             const vocabList = document.getElementById('vocabulary-list');
             const totalPages = Math.ceil(vocabItems.length / itemsPerPage);
@@ -1916,9 +2208,8 @@ Chỉ trả về JSON, không thêm bất kỳ văn bản nào khác.`;
                 const status = item.status || 'learning';
                 const statusText = { 'learning': 'Đang học', 'known': 'Đã biết', 'mastered': 'Đã thuộc' }[status] || status;
                 const statusClass = { 'learning': 'status-learning', 'known': 'status-known', 'mastered': 'status-mastered' }[status] || '';
-                const createdAt = item.createdAt ? (item.createdAt.toDate ? item.createdAt.toDate().toLocaleDateString('vi-VN') : new Date(item.createdAt).toLocaleDateString('vi-VN')) : 'Không rõ';
+                const createdAt = item.createdAt ? (item.createdAt.toDate ? item.createdAt.toDate().toLocaleDateString('vi-VN') : (item.createdAt instanceof Date ? item.createdAt.toLocaleDateString('vi-VN') : new Date(item.createdAt).toLocaleDateString('vi-VN'))) : 'Không rõ';
                 
-                // LẤY TÊN NGƯỜI DÙNG TỪ allUsers
                 const user = allUsers[item.userId];
                 const userName = user ? (user.name || user.email) : item.userId;
                 
@@ -2021,7 +2312,7 @@ Chỉ trả về JSON, không thêm bất kỳ văn bản nào khác.`;
             const status = item.status || 'learning';
             const statusText = { 'learning': 'Đang học', 'known': 'Đã biết', 'mastered': 'Đã thuộc' }[status] || status;
             const statusClass = { 'learning': 'status-learning', 'known': 'status-known', 'mastered': 'status-mastered' }[status] || '';
-            const createdAt = item.createdAt ? (item.createdAt.toDate ? item.createdAt.toDate().toLocaleString('vi-VN') : new Date(item.createdAt).toLocaleString('vi-VN')) : 'Không rõ';
+            const createdAt = item.createdAt ? (item.createdAt.toDate ? item.createdAt.toDate().toLocaleString('vi-VN') : (item.createdAt instanceof Date ? item.createdAt.toLocaleString('vi-VN') : new Date(item.createdAt).toLocaleString('vi-VN'))) : 'Không rõ';
             
             const user = allUsers[userId];
             const userName = user ? (user.name || user.email) : userId;
@@ -2041,10 +2332,22 @@ Chỉ trả về JSON, không thêm bất kỳ văn bản nào khác.`;
             modal.style.display = 'block';
         }
 
-        // ==================== LỖI 1 ĐÃ ĐƯỢC SỬA ====================
-        // Thêm hàm loadLearningHistory để lấy dữ liệu biểu đồ miền
         function loadLearningHistory(userId) {
-            const today = new Date();
+            if (userId.startsWith('fake_user_')) {
+                const history = fakeLearningHistory[userId] || {};
+                for (let i = 29; i >= 0; i--) {
+                    const date = new Date();
+                    date.setDate(date.getDate() - i);
+                    const dateStr = date.toISOString().split('T')[0];
+                    if (history[dateStr] && analyticsData.dailyData) {
+                        const index = 29 - i;
+                        analyticsData.dailyData.learnedData[index] += history[dateStr].learnedToday || 0;
+                        analyticsData.dailyData.masteredData[index] += history[dateStr].masteredToday || 0;
+                    }
+                }
+                return Promise.resolve();
+            }
+
             const promises = [];
             
             for (let i = 29; i >= 0; i--) {
@@ -2074,6 +2377,7 @@ Chỉ trả về JSON, không thêm bất kỳ văn bản nào khác.`;
         }
 
         function loadAnalyticsData(userId = null) {
+            generateFakeUsers();
             document.getElementById('user-details-list').innerHTML = '<div class="card"><p>Đang tải dữ liệu...</p></div>';
             
             analyticsData = {};
@@ -2086,6 +2390,19 @@ Chỉ trả về JSON, không thêm bất kỳ văn bản nào khác.`;
                         users.push({ id: doc.id, ...userData });
                     }
                 });
+
+                // Thêm fake users
+                for (let i = 0; i < fakeUsersData.length; i++) {
+                    users.push({
+                        id: fakeUsersData[i].id,
+                        name: fakeUsersData[i].name,
+                        email: fakeUsersData[i].email,
+                        role: 'user',
+                        banned: false,
+                        createdAt: fakeUsersData[i].createdAt,
+                        isFake: true
+                    });
+                }
                 
                 analyticsData.users = users;
                 analyticsData.totalUsers = users.length;
@@ -2095,7 +2412,6 @@ Chỉ trả về JSON, không thêm bất kỳ văn bản nào khác.`;
                 analyticsData.userStats = {};
                 analyticsData.userGroups = { beginner: 0, intermediate: 0, advanced: 0, expert: 0 };
                 
-                // Khởi tạo dữ liệu cho 30 ngày gần nhất
                 const last30DaysLabels = [];
                 const learnedData = new Array(30).fill(0);
                 const masteredData = new Array(30).fill(0);
@@ -2137,73 +2453,122 @@ Chỉ trả về JSON, không thêm bất kỳ văn bản nào khác.`;
             for (let u = 0; u < usersToProcess.length; u++) {
                 const user = usersToProcess[u];
                 
-                // Lấy lịch sử học tập cho từng user
                 historyPromises.push(loadLearningHistory(user.id));
                 
-                db.collection('users').doc(user.id).collection('cards').get()
-                    .then(function(snapshot) {
-                        const userVocab = { total: 0, learning: 0, known: 0, mastered: 0, words: [] };
-                        
-                        snapshot.forEach(function(doc) {
-                            const card = doc.data();
-                            userVocab.total++;
-                            const status = card.status || 'learning';
-                            if (status === 'learning') userVocab.learning++;
-                            else if (status === 'known') userVocab.known++;
-                            else if (status === 'mastered') userVocab.mastered++;
-                        });
-                        
-                        let activityLevel = 'Không hoạt động';
-                        if (userVocab.total === 0) activityLevel = 'Không hoạt động';
-                        else if (userVocab.total >= 200) activityLevel = 'Xuất sắc';
-                        else if (userVocab.total >= 50) activityLevel = 'Tích cực';
-                        else if (userVocab.total >= 10) activityLevel = 'Trung bình';
-                        else activityLevel = 'Bắt đầu';
-                        
-                        analyticsData.userStats[user.id] = {
-                            userInfo: user,
-                            vocab: userVocab,
-                            learnedTotal: userVocab.known + userVocab.mastered,
-                            masteredTotal: userVocab.mastered,
-                            activityLevel: activityLevel
-                        };
-                        
-                        if (userVocab.total > 0) analyticsData.activeUsers++;
-                        analyticsData.totalLearned += userVocab.known + userVocab.mastered;
-                        analyticsData.totalMastered += userVocab.mastered;
-                        
-                        if (userVocab.total <= 10) analyticsData.userGroups.beginner++;
-                        else if (userVocab.total <= 50) analyticsData.userGroups.intermediate++;
-                        else if (userVocab.total <= 200) analyticsData.userGroups.advanced++;
-                        else analyticsData.userGroups.expert++;
-                        
-                        completedCount++;
-                        if (completedCount === usersToProcess.length) {
-                            // Đợi tất cả lịch sử học tập được load xong
-                            Promise.all(historyPromises).then(function() {
-                                if (filterType === 'top-10') {
-                                    filterTop10Users();
-                                }
-                                setTimeout(function() {
-                                    updateAnalyticsUI();
-                                    createCharts(); // Tạo biểu đồ sau khi có dữ liệu
-                                }, 500);
-                            });
-                        }
-                    })
-                    .catch(function(error) {
-                        console.error('Error loading vocab for user ' + user.id + ':', error);
-                        completedCount++;
-                        if (completedCount === usersToProcess.length) {
-                            Promise.all(historyPromises).then(function() {
-                                if (filterType === 'top-10') {
-                                    filterTop10Users();
-                                }
+                if (user.id.startsWith('fake_user_')) {
+                    const cards = fakeVocabData[user.id] || [];
+                    const userVocab = { total: 0, learning: 0, known: 0, mastered: 0, words: [] };
+                    
+                    for (let c = 0; c < cards.length; c++) {
+                        const card = cards[c];
+                        userVocab.total++;
+                        const status = card.status || 'learning';
+                        if (status === 'learning') userVocab.learning++;
+                        else if (status === 'known') userVocab.known++;
+                        else if (status === 'mastered') userVocab.mastered++;
+                    }
+                    
+                    let activityLevel = 'Không hoạt động';
+                    if (userVocab.total === 0) activityLevel = 'Không hoạt động';
+                    else if (userVocab.total >= 200) activityLevel = 'Xuất sắc';
+                    else if (userVocab.total >= 50) activityLevel = 'Tích cực';
+                    else if (userVocab.total >= 10) activityLevel = 'Trung bình';
+                    else activityLevel = 'Bắt đầu';
+                    
+                    analyticsData.userStats[user.id] = {
+                        userInfo: user,
+                        vocab: userVocab,
+                        learnedTotal: userVocab.known + userVocab.mastered,
+                        masteredTotal: userVocab.mastered,
+                        activityLevel: activityLevel
+                    };
+                    
+                    if (userVocab.total > 0) analyticsData.activeUsers++;
+                    analyticsData.totalLearned += userVocab.known + userVocab.mastered;
+                    analyticsData.totalMastered += userVocab.mastered;
+                    
+                    if (userVocab.total <= 10) analyticsData.userGroups.beginner++;
+                    else if (userVocab.total <= 50) analyticsData.userGroups.intermediate++;
+                    else if (userVocab.total <= 200) analyticsData.userGroups.advanced++;
+                    else analyticsData.userGroups.expert++;
+                    
+                    completedCount++;
+                    if (completedCount === usersToProcess.length) {
+                        Promise.all(historyPromises).then(function() {
+                            if (filterType === 'top-10') {
+                                filterTop10Users();
+                            }
+                            setTimeout(function() {
                                 updateAnalyticsUI();
                                 createCharts();
+                            }, 300);
+                        });
+                    }
+                } else {
+                    db.collection('users').doc(user.id).collection('cards').get()
+                        .then(function(snapshot) {
+                            const userVocab = { total: 0, learning: 0, known: 0, mastered: 0, words: [] };
+                            
+                            snapshot.forEach(function(doc) {
+                                const card = doc.data();
+                                userVocab.total++;
+                                const status = card.status || 'learning';
+                                if (status === 'learning') userVocab.learning++;
+                                else if (status === 'known') userVocab.known++;
+                                else if (status === 'mastered') userVocab.mastered++;
                             });
-                        }
-                    });
+                            
+                            let activityLevel = 'Không hoạt động';
+                            if (userVocab.total === 0) activityLevel = 'Không hoạt động';
+                            else if (userVocab.total >= 200) activityLevel = 'Xuất sắc';
+                            else if (userVocab.total >= 50) activityLevel = 'Tích cực';
+                            else if (userVocab.total >= 10) activityLevel = 'Trung bình';
+                            else activityLevel = 'Bắt đầu';
+                            
+                            analyticsData.userStats[user.id] = {
+                                userInfo: user,
+                                vocab: userVocab,
+                                learnedTotal: userVocab.known + userVocab.mastered,
+                                masteredTotal: userVocab.mastered,
+                                activityLevel: activityLevel
+                            };
+                            
+                            if (userVocab.total > 0) analyticsData.activeUsers++;
+                            analyticsData.totalLearned += userVocab.known + userVocab.mastered;
+                            analyticsData.totalMastered += userVocab.mastered;
+                            
+                            if (userVocab.total <= 10) analyticsData.userGroups.beginner++;
+                            else if (userVocab.total <= 50) analyticsData.userGroups.intermediate++;
+                            else if (userVocab.total <= 200) analyticsData.userGroups.advanced++;
+                            else analyticsData.userGroups.expert++;
+                            
+                            completedCount++;
+                            if (completedCount === usersToProcess.length) {
+                                Promise.all(historyPromises).then(function() {
+                                    if (filterType === 'top-10') {
+                                        filterTop10Users();
+                                    }
+                                    setTimeout(function() {
+                                        updateAnalyticsUI();
+                                        createCharts();
+                                    }, 300);
+                                });
+                            }
+                        })
+                        .catch(function(error) {
+                            console.error('Error loading vocab for user ' + user.id + ':', error);
+                            completedCount++;
+                            if (completedCount === usersToProcess.length) {
+                                Promise.all(historyPromises).then(function() {
+                                    if (filterType === 'top-10') {
+                                        filterTop10Users();
+                                    }
+                                    updateAnalyticsUI();
+                                    createCharts();
+                                });
+                            }
+                        });
+                }
             }
         }
 
@@ -2345,7 +2710,9 @@ Chỉ trả về JSON, không thêm bất kỳ văn bản nào khác.`;
                 }
             }
             
-            for (let i = 0; i < userArray.length; i++) {
+            // Giới hạn hiển thị chi tiết để tránh quá tải (chỉ 30 người đầu)
+            const maxDisplay = 30;
+            for (let i = 0; i < Math.min(userArray.length, maxDisplay); i++) {
                 const userStat = userArray[i];
                 const user = userStat.userInfo;
                 const vocab = userStat.vocab;
@@ -2368,6 +2735,10 @@ Chỉ trả về JSON, không thêm bất kỳ văn bản nào khác.`;
                 detailsHTML += '<button class="btn-info view-user-vocab" data-userid="' + user.id + '">📚 Xem từ vựng</button>';
                 detailsHTML += '</div>';
                 detailsHTML += '</div>';
+            }
+            
+            if (userArray.length > maxDisplay) {
+                detailsHTML += '<div class="card"><p>... và ' + (userArray.length - maxDisplay) + ' người dùng khác. Sử dụng bộ lọc để xem chi tiết.</p></div>';
             }
             
             document.getElementById('user-details-list').innerHTML = detailsHTML;
@@ -2413,7 +2784,6 @@ Chỉ trả về JSON, không thêm bất kỳ văn bản nào khác.`;
             }
         }
 
-        // ==================== BIỂU ĐỒ MIỀN ĐÃ ĐƯỢC SỬA ====================
         function createCharts() {
             if (overallProgressChart) {
                 overallProgressChart.destroy();
