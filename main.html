@@ -192,9 +192,12 @@
 
         #buttons {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 15px;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
             margin-top: 30px;
+            max-width: 520px;
+            margin-left: auto;
+            margin-right: auto;
         }
 
         .action-btn {
@@ -202,34 +205,104 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 20px;
+            padding: 22px 16px;
             background: #f8f9fa;
             color: #333;
             text-decoration: none;
-            border-radius: 15px;
+            border-radius: 16px;
             cursor: pointer;
             font-weight: 600;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
             transition: all 0.3s ease;
             border: none;
-            min-height: 100px;
+            min-height: 110px;
+            font-size: 15px;
         }
 
         .action-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+            transform: translateY(-4px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.14);
         }
 
         .action-btn.primary {
             background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
             color: white;
+            grid-column: 1 / -1;
+            min-height: 120px;
+            font-size: 18px;
+        }
+
+        .action-btn.primary .material-symbols-outlined {
+            font-size: 40px;
+            margin-bottom: 10px;
+        }
+
+        /* Popup Học tập - 6 nút con */
+        .study-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 14px;
+            margin-top: 10px;
+        }
+
+        .study-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 22px 12px;
+            background: #f8f9fa;
+            border-radius: 14px;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.25s ease;
+            font-weight: 600;
+            color: #333;
+            min-height: 110px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.06);
+        }
+
+        .study-item:hover {
+            transform: translateY(-3px);
+            border-color: #FFD700;
+            box-shadow: 0 8px 20px rgba(255, 165, 0, 0.18);
+            background: #fffef5;
+        }
+
+        .study-item.primary-item {
+            background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+            color: white;
+            grid-column: 1 / -1;
+            min-height: 100px;
+        }
+
+        .study-item.primary-item:hover {
+            border-color: transparent;
+            background: linear-gradient(135deg, #FFC107 0%, #FF8F00 100%);
+            box-shadow: 0 8px 22px rgba(255, 165, 0, 0.35);
+        }
+
+        .study-item .material-symbols-outlined {
+            font-size: 34px;
+            margin-bottom: 8px;
+        }
+
+        .study-item.primary-item .material-symbols-outlined {
+            font-size: 36px;
+        }
+
+        #study-menu .pop-up-content {
+            max-width: 480px;
         }
 
         .action-btn.classroom {
-            background: linear-gradient(135deg, #4CAF50 0%, #2E7D32 100%);
+            background: linear-gradient(135deg, #FF9800 0%, #F57C00 100%);
             color: white;
         }
-
+.action-btn.analytics-btn {
+    background: linear-gradient(135deg, #2196F3 0%, #1565C0 100%);
+    color: white;
+}
         .action-btn.admin-btn {
             background: linear-gradient(135deg, #FF5722 0%, #FF9800 100%);
             color: white;
@@ -731,12 +804,19 @@
                 gap: 10px;
             }
             #buttons {
-                grid-template-columns: repeat(2, 1fr);
-                gap: 10px;
+                grid-template-columns: 1fr;
+                gap: 12px;
+                max-width: 100%;
             }
             .action-btn {
-                min-height: 80px;
-                padding: 15px;
+                min-height: 90px;
+                padding: 18px;
+            }
+            .action-btn.primary {
+                min-height: 100px;
+            }
+            .study-grid {
+                grid-template-columns: 1fr;
             }
             .category-grid {
                 grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
@@ -1155,6 +1235,45 @@
             </div>
         </div>
 
+
+        <!-- Popup Học tập (gộp 6 nút) -->
+        <div class="pop-up" id="study-menu">
+            <div class="pop-up-content">
+                <span id="close-study-menu" class="material-symbols-outlined close">close</span>
+                <h2 style="margin-bottom: 8px;">
+                    <span class="material-symbols-outlined" style="vertical-align: middle; color: #FFA500;">school</span>
+                    Học tập
+                </h2>
+                <p style="text-align: center; color: #666; margin-bottom: 18px; font-size: 14px;">Chọn chức năng bạn muốn sử dụng</p>
+                <div class="study-grid">
+                    <div class="study-item primary-item" id="study-start">
+                        <span class="material-symbols-outlined">play_arrow</span>
+                        Bắt đầu học
+                    </div>
+                    <div class="study-item" id="study-review">
+                        <span class="material-symbols-outlined">refresh</span>
+                        Ôn tập
+                    </div>
+                    <div class="study-item" id="study-library">
+                        <span class="material-symbols-outlined">local_library</span>
+                        Thư viện
+                    </div>
+                    <div class="study-item" id="study-add">
+                        <span class="material-symbols-outlined">add</span>
+                        Thêm từ
+                    </div>
+                    <div class="study-item" id="study-ai-add">
+                        <span class="material-symbols-outlined">smart_toy</span>
+                        Thêm từ bằng AI
+                    </div>
+                    <div class="study-item" id="study-list">
+                        <span class="material-symbols-outlined">view_carousel</span>
+                        Danh sách
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- Nội dung chính -->
         <div id="content">
             <div class="dashboard">
@@ -1180,31 +1299,14 @@
                 </div>
 
                 <div id="buttons">
-                    <button class="action-btn primary" id="start">
-                        <span class="material-symbols-outlined">play_arrow</span>
-                        Bắt đầu học
+                    <!-- Nút Học tập (gộp 6 chức năng) -->
+                    <button class="action-btn primary" id="study-main">
+                        <span class="material-symbols-outlined">school</span>
+                        Học tập
                     </button>
-                    <button class="action-btn" id="review">
-                        <span class="material-symbols-outlined">refresh</span>
-                        Ôn tập
-                    </button>
-                    <button class="action-btn" id="library">
-                        <span class="material-symbols-outlined">local_library</span>
-                        Thư viện
-                    </button>
-                    <button class="action-btn" id="add">
-                        <span class="material-symbols-outlined">add</span>
-                        Thêm từ
-                    </button>
-                    <button class="action-btn" id="ai-add">
-                        <span class="material-symbols-outlined">smart_toy</span>
-                        Thêm từ bằng AI
-                    </button>
-                    <button class="action-btn" id="list">
-                        <span class="material-symbols-outlined">view_carousel</span>
-                        Danh sách
-                    </button>
-                    <button class="action-btn" id="analytics">
+
+                    <!-- Các nút còn lại -->
+                    <button class="action-btn analytics-btn" id="analytics">
                         <span class="material-symbols-outlined">analytics</span>
                         Thống kê
                     </button>
@@ -2920,37 +3022,124 @@
                 });
             }
             
-            const addBtn = document.getElementById('add');
-            if (addBtn) {
-                addBtn.addEventListener('click', function() {
+            // ===== NÚT HỌC TẬP CHÍNH (mở popup 6 chức năng) =====
+            const studyMainBtn = document.getElementById('study-main');
+            if (studyMainBtn) {
+                studyMainBtn.addEventListener('click', function() {
+                    const studyMenu = document.getElementById('study-menu');
+                    if (studyMenu) studyMenu.classList.add('active');
+                });
+            }
+
+            const closeStudyBtn = document.getElementById('close-study-menu');
+            if (closeStudyBtn) {
+                closeStudyBtn.addEventListener('click', function() {
+                    const studyMenu = document.getElementById('study-menu');
+                    if (studyMenu) studyMenu.classList.remove('active');
+                });
+            }
+
+            // Các nút con trong popup Học tập
+            const studyStart = document.getElementById('study-start');
+            if (studyStart) {
+                studyStart.addEventListener('click', function() {
+                    document.getElementById('study-menu').classList.remove('active');
+                    // Gọi logic bắt đầu học
+                    if (userCards.length === 0) {
+                        showAlert('Bạn chưa có thẻ nào để học! Hãy thêm một số thẻ trước.');
+                        return;
+                    }
+                    cardsToLearn = [];
+                    for (let i = 0; i < userCards.length; i++) {
+                        const card = userCards[i];
+                        if (card.status === 'learning' || !card.status) {
+                            cardsToLearn.push(card);
+                        }
+                    }
+                    if (cardsToLearn.length === 0) {
+                        showAlert('Tất cả các thẻ của bạn đã được học!');
+                        return;
+                    }
+                    for (let i = cardsToLearn.length - 1; i > 0; i--) {
+                        const j = Math.floor(Math.random() * (i + 1));
+                        const temp = cardsToLearn[i];
+                        cardsToLearn[i] = cardsToLearn[j];
+                        cardsToLearn[j] = temp;
+                    }
+                    currentCardIndex = 0;
+                    showCard();
+                    const learnMenu = document.getElementById('learn-menu');
+                    if (learnMenu) learnMenu.classList.add('active');
+                });
+            }
+
+            const studyReview = document.getElementById('study-review');
+            if (studyReview) {
+                studyReview.addEventListener('click', function() {
+                    document.getElementById('study-menu').classList.remove('active');
+                    if (userCards.length === 0) {
+                        showAlert('Bạn chưa có thẻ nào để ôn tập!');
+                        return;
+                    }
+                    cardsToReview = [];
+                    for (let i = 0; i < userCards.length; i++) {
+                        const card = userCards[i];
+                        if (card.status === 'known') {
+                            cardsToReview.push(card);
+                        }
+                    }
+                    if (cardsToReview.length === 0) {
+                        showAlert('Bạn chưa có từ nào để ôn tập! Hãy học một số từ trước.');
+                        return;
+                    }
+                    for (let i = cardsToReview.length - 1; i > 0; i--) {
+                        const j = Math.floor(Math.random() * (i + 1));
+                        const temp = cardsToReview[i];
+                        cardsToReview[i] = cardsToReview[j];
+                        cardsToReview[j] = temp;
+                    }
+                    currentCardIndex = 0;
+                    showReviewCard();
+                    const reviewMenu = document.getElementById('review-menu');
+                    if (reviewMenu) reviewMenu.classList.add('active');
+                });
+            }
+
+            const studyLibrary = document.getElementById('study-library');
+            if (studyLibrary) {
+                studyLibrary.addEventListener('click', function() {
+                    document.getElementById('study-menu').classList.remove('active');
+                    loadLibraryCategories();
+                    const libraryMenu = document.getElementById('library-menu');
+                    if (libraryMenu) libraryMenu.classList.add('active');
+                });
+            }
+
+            const studyAdd = document.getElementById('study-add');
+            if (studyAdd) {
+                studyAdd.addEventListener('click', function() {
+                    document.getElementById('study-menu').classList.remove('active');
                     const addMenu = document.getElementById('add-menu');
                     if (addMenu) addMenu.classList.add('active');
                 });
             }
-            
-            const aiAddBtn = document.getElementById('ai-add');
-            if (aiAddBtn) {
-                aiAddBtn.addEventListener('click', function() {
+
+            const studyAIAdd = document.getElementById('study-ai-add');
+            if (studyAIAdd) {
+                studyAIAdd.addEventListener('click', function() {
+                    document.getElementById('study-menu').classList.remove('active');
                     resetAIPopup();
                     const aiAddMenu = document.getElementById('ai-add-menu');
                     if (aiAddMenu) aiAddMenu.classList.add('active');
                 });
             }
-            
-            const listBtn = document.getElementById('list');
-            if (listBtn) {
-                listBtn.addEventListener('click', function() {
+
+            const studyList = document.getElementById('study-list');
+            if (studyList) {
+                studyList.addEventListener('click', function() {
+                    document.getElementById('study-menu').classList.remove('active');
                     const cardListMenu = document.getElementById('card-list-menu');
                     if (cardListMenu) cardListMenu.classList.add('active');
-                });
-            }
-            
-            const libraryBtn = document.getElementById('library');
-            if (libraryBtn) {
-                libraryBtn.addEventListener('click', function() {
-                    loadLibraryCategories();
-                    const libraryMenu = document.getElementById('library-menu');
-                    if (libraryMenu) libraryMenu.classList.add('active');
                 });
             }
             
@@ -3077,76 +3266,6 @@
             if (chatbotBtn) {
                 chatbotBtn.addEventListener('click', function() {
                     window.open('https://hmtuan002.github.io/beeenglish/chat', '_blank');
-                });
-            }
-            
-            const startBtn = document.getElementById('start');
-            if (startBtn) {
-                startBtn.addEventListener('click', function() {
-                    if (userCards.length === 0) {
-                        showAlert('Bạn chưa có thẻ nào để học! Hãy thêm một số thẻ trước.');
-                        return;
-                    }
-                    
-                    cardsToLearn = [];
-                    for (let i = 0; i < userCards.length; i++) {
-                        const card = userCards[i];
-                        if (card.status === 'learning' || !card.status) {
-                            cardsToLearn.push(card);
-                        }
-                    }
-                    
-                    if (cardsToLearn.length === 0) {
-                        showAlert('Tất cả các thẻ của bạn đã được học!');
-                        return;
-                    }
-                    
-                    for (let i = cardsToLearn.length - 1; i > 0; i--) {
-                        const j = Math.floor(Math.random() * (i + 1));
-                        const temp = cardsToLearn[i];
-                        cardsToLearn[i] = cardsToLearn[j];
-                        cardsToLearn[j] = temp;
-                    }
-                    
-                    currentCardIndex = 0;
-                    showCard();
-                    const learnMenu = document.getElementById('learn-menu');
-                    if (learnMenu) learnMenu.classList.add('active');
-                });
-            }
-            
-            const reviewBtn = document.getElementById('review');
-            if (reviewBtn) {
-                reviewBtn.addEventListener('click', function() {
-                    if (userCards.length === 0) {
-                        showAlert('Bạn chưa có thẻ nào để ôn tập!');
-                        return;
-                    }
-                    
-                    cardsToReview = [];
-                    for (let i = 0; i < userCards.length; i++) {
-                        const card = userCards[i];
-                        if (card.status === 'known') {
-                            cardsToReview.push(card);
-                        }
-                    }
-                    
-                    if (cardsToReview.length === 0) {
-                        showAlert('Bạn chưa có từ nào để ôn tập! Hãy học một số từ trước.');
-                        return;
-                    }
-                    
-                    for (let i = cardsToReview.length - 1; i > 0; i--) {
-                        const j = Math.floor(Math.random() * (i + 1));
-                        const temp = cardsToReview[i];
-                        cardsToReview[i] = cardsToReview[j];
-                        cardsToReview[j] = temp;
-                    }
-                    
-                    currentCardIndex = 0;
-                    showReviewCard();
-                    const reviewMenu = document.getElementById('review-menu');
-                    if (reviewMenu) reviewMenu.classList.add('active');
                 });
             }
             
